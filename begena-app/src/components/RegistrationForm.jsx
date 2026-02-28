@@ -95,12 +95,39 @@ const RegistrationForm = () => {
         }
 
         setIsSubmitting(true);
+        setErrors({});
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        try {
+            const formDataToSend = new FormData();
+            formDataToSend.append('fullName', formData.fullName);
+            formDataToSend.append('countryCode', formData.countryCode);
+            formDataToSend.append('phoneNumber', formData.phoneNumber);
+            formDataToSend.append('telegram', formData.telegram);
+            if (formData.photo) {
+                formDataToSend.append('photo', formData.photo);
+            }
 
-        setIsSubmitting(false);
-        setShowSuccess(true);
+            const response = await fetch('http://localhost:5000/api/register', {
+                method: 'POST',
+                body: formDataToSend,
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to submit registration');
+            }
+
+            const result = await response.json();
+
+            // Set the complete user data from the backend to pass to the modal
+            setFormData(prev => ({ ...prev, serverData: result.user }));
+            setShowSuccess(true);
+        } catch (error) {
+            console.error('Registration error:', error);
+            setErrors({ submit: error.message || 'Something went wrong. Please try again later.' });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleCloseSuccess = () => {
@@ -281,7 +308,7 @@ const RegistrationForm = () => {
             <SuccessModal
                 isOpen={showSuccess}
                 onClose={handleCloseSuccess}
-                name={formData.fullName}
+                userData={{ ...formData, ...formData.serverData }}
             />
         </>
     );

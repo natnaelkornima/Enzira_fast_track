@@ -74,20 +74,39 @@ const About = () => {
                     {features.map((feature, index) => (
                         <div
                             key={index}
-                            className="fade-in-up glass rounded-2xl p-7 group hover:-translate-y-2 transition-all duration-500 hover:shadow-lg hover:shadow-gold-600/10"
+                            className="fade-in-up group relative rounded-2xl"
                             style={{ transitionDelay: `${index * 100}ms` }}
                         >
-                            <div className="text-4xl mb-5 group-hover:scale-110 transition-transform duration-300">
-                                {feature.icon}
+                            {/* Animated glowing border background */}
+                            <div className="absolute -inset-[1px] bg-gradient-to-br from-gold-400/0 via-gold-500/0 to-gold-600/0 group-hover:from-gold-400 group-hover:via-gold-500 group-hover:to-gold-600 rounded-2xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-700" />
+
+                            {/* Card Content Container */}
+                            <div className="relative h-full glass-strong rounded-2xl p-7 flex flex-col items-start transition-transform duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_10px_40px_rgba(200,146,45,0.15)] overflow-hidden text-left bg-[#1a120b]/60 backdrop-blur-xl border border-white/5 group-hover:border-gold-500/50">
+
+                                {/* Inner glow effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-gold-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                                <div className="relative z-10">
+                                    {/* Icon with glowing shadow */}
+                                    <div className="relative mb-6">
+                                        <div className="text-4xl relative z-10 group-hover:scale-110 transition-transform duration-500">
+                                            {feature.icon}
+                                        </div>
+                                        <div className="absolute inset-0 bg-gold-400/20 blur-xl rounded-full scale-0 group-hover:scale-150 transition-transform duration-500" />
+                                    </div>
+
+                                    <h3 className="font-heading text-xl font-semibold text-gold-400 mb-3 group-hover:text-gold-300 transition-colors duration-300">
+                                        {feature.title}
+                                    </h3>
+
+                                    <p className="text-brown-300 text-sm leading-relaxed group-hover:text-brown-200 transition-colors duration-300">
+                                        {feature.description}
+                                    </p>
+
+                                    {/* Decorative animated line */}
+                                    <div className="mt-6 w-12 h-0.5 bg-gradient-to-r from-gold-500 to-transparent rounded-full group-hover:w-full group-hover:from-gold-400 group-hover:to-gold-600 transition-all duration-700 ease-out" />
+                                </div>
                             </div>
-                            <h3 className="font-heading text-xl font-semibold text-gold-400 mb-3">
-                                {feature.title}
-                            </h3>
-                            <p className="text-brown-300 text-sm leading-relaxed">
-                                {feature.description}
-                            </p>
-                            {/* Decorative line */}
-                            <div className="mt-5 w-12 h-0.5 bg-gradient-to-r from-gold-500 to-transparent rounded-full group-hover:w-full transition-all duration-500" />
                         </div>
                     ))}
                 </div>

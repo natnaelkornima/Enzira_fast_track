@@ -32,13 +32,13 @@ const Hero = () => {
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-950 pt-20">
             {/* Ripple Grid Background */}
-            <RippleGrid
+            {/* <RippleGrid
                 gridColor="#981c00"
                 rippleColor="#ffffff"
                 opacity={0.15}
                 gridSize={60}
                 rippleIntensity={15}
-            />
+            /> */}
 
             {/* Background Glows */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-7xl pointer-events-none">

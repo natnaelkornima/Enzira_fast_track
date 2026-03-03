@@ -29,8 +29,8 @@ const RegistrationForm = () => {
     });
     const [photoPreview, setPhotoPreview] = useState(null);
     const [errors, setErrors] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
+    const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
+    const [errorMessage, setErrorMessage] = useState('');
     const fileInputRef = useRef(null);
 
     const handleChange = (e) => {

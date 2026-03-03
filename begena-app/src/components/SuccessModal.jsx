@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, Download, X, FileText } from 'lucide-react';
+import { CheckCircle, Download, X, FileText, Share2, Sparkles } from 'lucide-react';
 import 'jspdf-autotable';
 
 const SuccessModal = ({ isOpen, onClose, userData }) => {
@@ -8,137 +8,127 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
         if (!userData) return;
 
         const doc = new jsPDF();
-
-        // Add PDF Header content
-        doc.setFillColor(30, 20, 10);
+        doc.setFillColor(152, 28, 0); // brand-red
         doc.rect(0, 0, 210, 40, 'F');
 
-        doc.setTextColor(200, 146, 45); // Gold color
+        doc.setTextColor(255, 255, 255);
         doc.setFontSize(24);
         doc.setFont('helvetica', 'bold');
-        doc.text('Begena Training Registration', 105, 20, { align: 'center' });
+        doc.text('Begena Fast Track', 105, 20, { align: 'center' });
 
-        doc.setTextColor(255, 255, 255);
         doc.setFontSize(12);
         doc.setFont('helvetica', 'normal');
         doc.text('Official Registration Receipt', 105, 30, { align: 'center' });
 
-        // User Details Table
         doc.autoTable({
             startY: 50,
             head: [['Field', 'Details']],
             body: [
-                ['Registration ID', `#${userData.serverData?.id || 'N/A'}`],
                 ['Full Name', userData.fullName],
                 ['Phone Number', `${userData.countryCode} ${userData.phoneNumber}`],
-                ['Telegram Username', `@${userData.telegram}`],
+                ['Telegram Username', userData.telegram],
                 ['Date', new Date().toLocaleDateString()],
             ],
             theme: 'grid',
-            headStyles: { fillColor: [200, 146, 45], textColor: [255, 255, 255] },
+            headStyles: { fillColor: [152, 28, 0], textColor: [255, 255, 255] },
             styles: { fontSize: 11, cellPadding: 5 },
-            columnStyles: {
-                0: { fontStyle: 'bold', cellWidth: 50 },
-                1: { cellWidth: 100 }
-            }
         });
 
-        // Add Photo Preview if available
-        if (userData.photo && userData.photo instanceof File) {
-            const finalY = doc.lastAutoTable.finalY || 100;
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                const imgData = event.target.result;
-                doc.setFontSize(14);
-                doc.setTextColor(0, 0, 0);
-                doc.text('Student Photo:', 15, finalY + 15);
-
-                // Add the image (x, y, width, height)
-                doc.addImage(imgData, 'JPEG', 15, finalY + 20, 40, 40);
-
-                // Save after image loads
-                doc.save(`Begena_Registration_${userData.fullName.replace(/\s+/g, '_')}.pdf`);
-            };
-            reader.readAsDataURL(userData.photo);
-        } else {
-            // Document without photo save
-            doc.save(`Begena_Registration_${userData.fullName.replace(/\s+/g, '_')}.pdf`);
-        }
+        doc.save(`Begena_Receipt_${userData.fullName.replace(/\s+/g, '_')}.pdf`);
     };
 
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-100 flex items-center justify-center p-6 overflow-hidden">
+                <div className="fixed inset-0 z-100 flex items-center justify-center p-6">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="absolute inset-0 bg-dark-900/80 backdrop-blur-md"
+                        className="absolute inset-0 bg-dark-950/90 backdrop-blur-md"
                     />
 
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="relative glass rounded-[2.5rem] p-10 max-w-md w-full shadow-2xl border border-white/10 text-center"
-                        onClick={(e) => e.stopPropagation()}
+                        className="relative w-full max-w-lg glass rounded-4xl p-10 border border-white/10 shadow-2xl overflow-hidden"
                     >
+                        <div className="absolute -top-24 -right-24 w-64 h-64 bg-brand-red/20 rounded-full blur-[100px] -z-10" />
+
+                        <div className="text-center relative z-10">
+                            <div className="relative inline-block mb-8">
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ type: "spring", damping: 12, delay: 0.2 }}
+                                    className="w-24 h-24 rounded-3xl bg-linear-to-br from-brand-red to-brand-red-light flex items-center justify-center shadow-xl shadow-brand-red/30"
+                                >
+                                    <CheckCircle className="w-12 h-12 text-white" strokeWidth={2.5} />
+                                </motion.div>
+                                <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                    className="absolute -inset-4 border-2 border-dashed border-brand-red/20 rounded-full"
+                                />
+                            </div>
+
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                            >
+                                <div className="flex items-center justify-center gap-2 mb-4">
+                                    <Sparkles className="w-4 h-4 text-brand-red" />
+                                    <span className="text-brand-red text-xs font-black uppercase tracking-widest">Registration Secured</span>
+                                </div>
+                                <h2 className="text-3xl font-black text-white mb-4 tracking-tight">Welcome to the Path, <br /><span className="text-brand-red italic font-heading">{userData.fullName}!</span></h2>
+                                <p className="text-white/40 text-sm leading-relaxed mb-10 max-w-sm mx-auto font-light">
+                                    Your journey into the sacred art of Begena has officially begun. Check your Telegram <span className="text-white font-bold">{userData.telegram}</span> for orientation details.
+                                </p>
+                            </motion.div>
+
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4 }}
+                                className="grid grid-cols-2 gap-4"
+                            >
+                                <button
+                                    onClick={handleDownloadPDF}
+                                    className="flex flex-col items-center gap-3 p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-brand-red/30 hover:bg-brand-red/5 transition-all group"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-all">
+                                        <Download className="w-5 h-5 text-brand-red group-hover:text-white" />
+                                    </div>
+                                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest group-hover:text-white">Save Receipt</span>
+                                </button>
+                                <button className="flex flex-col items-center gap-3 p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-brand-red/30 hover:bg-brand-red/5 transition-all group">
+                                    <div className="w-10 h-10 rounded-xl bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-all">
+                                        <Share2 className="w-5 h-5 text-brand-red group-hover:text-white" />
+                                    </div>
+                                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest group-hover:text-white">Share Journey</span>
+                                </button>
+                            </motion.div>
+
+                            <motion.button
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.6 }}
+                                onClick={onClose}
+                                className="mt-8 text-[10px] font-bold text-white/20 uppercase tracking-[0.3em] hover:text-brand-red transition-colors"
+                            >
+                                Close Window
+                            </motion.button>
+                        </div>
+
                         <button
                             onClick={onClose}
-                            className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 text-brown-100/30 hover:text-white transition-all"
+                            className="absolute top-8 right-8 text-white/20 hover:text-white hover:rotate-90 transition-all duration-300"
                         >
-                            <X className="w-5 h-5" />
+                            <X className="w-6 h-6" />
                         </button>
-
-                        {/* Success icon */}
-                        <div className="relative w-24 h-24 mx-auto mb-8">
-                            <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ delay: 0.2, type: "spring" }}
-                                className="w-full h-full rounded-3xl bg-linear-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-2xl shadow-gold-500/20"
-                            >
-                                <CheckCircle className="w-12 h-12 text-dark-900" strokeWidth={2.5} />
-                            </motion.div>
-                            <motion.div
-                                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
-                                transition={{ repeat: Infinity, duration: 2 }}
-                                className="absolute inset-0 rounded-3xl bg-gold-400 blur-2xl -z-10"
-                            />
-                        </div>
-
-                        <h3 className="font-heading text-3xl font-bold text-white mb-4 tracking-tight">
-                            Registration <span className="text-gold-400 italic">Confirmed</span>
-                        </h3>
-
-                        <p className="text-brown-100/60 mb-8 leading-relaxed">
-                            Thank you, <span className="text-gold-400 font-bold">{userData?.fullName}</span>. Your application for the Begena training program is now being processed.
-                        </p>
-
-                        <div className="space-y-4">
-                            <motion.button
-                                whileHover={{ scale: 1.02, y: -2 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={handleDownloadPDF}
-                                className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl border border-gold-500/30 text-gold-400 hover:bg-gold-500/5 transition-all font-bold text-sm"
-                            >
-                                <FileText className="w-4 h-4" />
-                                Download PDF Receipt
-                                <Download className="w-4 h-4" />
-                            </motion.button>
-
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={onClose}
-                                className="btn-primary w-full py-4 text-sm"
-                            >
-                                Return to Home
-                            </motion.button>
-                        </div>
                     </motion.div>
                 </div>
             )}

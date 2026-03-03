@@ -1,43 +1,58 @@
 import { motion } from 'framer-motion';
-import { Music, Send, Youtube, Mail, Phone, ArrowUpRight, Heart } from 'lucide-react';
+import {
+    Music, Send, Youtube, Instagram,
+    Mail, Phone, ArrowUpRight, Heart, Sparkles
+} from 'lucide-react';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
 
-    return (
-        <footer id="contact" className="relative pt-24 pb-12 px-6 overflow-hidden">
-            {/* Background Decorations */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-linear-to-r from-transparent via-gold-500/20 to-transparent" />
-            <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-gold-600/5 rounded-full blur-[100px]" />
+    const socialLinks = [
+        { icon: Youtube, label: 'YouTube', href: '#' },
+        { icon: Instagram, label: 'Instagram', href: '#' },
+        { icon: Send, label: 'Telegram', href: '#' }
+    ];
 
-            <div className="max-w-6xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+    const quickLinks = [
+        { name: 'About the Art', href: '#about' },
+        { name: 'Training Modules', href: '#training' },
+        { name: 'Global Admissions', href: '#register' },
+        { name: 'Sacred History', href: '#' }
+    ];
+
+    return (
+        <footer className="relative bg-dark-950 pt-24 pb-12 overflow-hidden">
+            {/* Background Decorations */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-brand-red/20 to-transparent" />
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-brand-red/5 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2" />
+
+            <div className="container mx-auto px-6 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
                     {/* Brand Section */}
-                    <div className="lg:col-span-1">
-                        <div className="flex items-center gap-3 mb-8 group cursor-pointer w-fit">
-                            <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-lg group-hover:shadow-gold-500/50 transition-all duration-500">
-                                <Music className="w-5 h-5 text-dark-900" strokeWidth={2.5} />
+                    <div className="lg:col-span-2">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            viewport={{ once: true }}
+                            className="flex items-center gap-3 mb-8"
+                        >
+                            <div className="w-12 h-12 rounded-2xl bg-brand-red flex items-center justify-center shadow-lg shadow-brand-red/20">
+                                <Music className="w-6 h-6 text-white" strokeWidth={2.5} />
                             </div>
-                            <span className="font-heading text-xl font-bold text-white tracking-tight">
-                                Begena<span className="text-gold-400">.</span>
+                            <span className="font-heading text-2xl font-black text-white tracking-tighter">
+                                Begena<span className="text-brand-red">.</span>
                             </span>
-                        </div>
-                        <p className="text-brown-100/50 text-sm leading-relaxed mb-8 max-w-xs font-light">
-                            Preserving the sacred art of Begena — Ethiopia&apos;s ancient harp of meditation and spiritual praise.
+                        </motion.div>
+                        <p className="text-white/30 text-lg leading-relaxed max-w-md font-light mb-10">
+                            Dedicated to the preservation and teaching of Ethiopia's most sacred musical heritage. Join us in carrying forward the Harp of David.
                         </p>
                         <div className="flex gap-4">
-                            {[
-                                { icon: Send, label: 'Telegram', href: 'https://t.me/' },
-                                { icon: Youtube, label: 'YouTube', href: 'https://youtube.com/' }
-                            ].map((social, i) => (
+                            {socialLinks.map((social, i) => (
                                 <motion.a
                                     key={i}
                                     href={social.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    whileHover={{ y: -3, scale: 1.05 }}
-                                    className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-brown-100/40 hover:text-gold-400 hover:border-gold-500/30 transition-all shadow-xl"
-                                    aria-label={social.label}
+                                    whileHover={{ y: -5, scale: 1.1 }}
+                                    className="w-12 h-12 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center hover:border-brand-red/30 hover:bg-brand-red/5 transition-all text-white/30 hover:text-brand-red"
                                 >
                                     <social.icon className="w-5 h-5" />
                                 </motion.a>
@@ -47,20 +62,12 @@ const Footer = () => {
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="font-heading text-white font-bold mb-8 tracking-widest uppercase text-xs">Explore</h4>
+                        <h4 className="text-xs font-black uppercase tracking-[0.3em] text-white/50 mb-10">Exploration</h4>
                         <ul className="space-y-4">
-                            {[
-                                { name: 'About', href: '#about' },
-                                { name: 'Register', href: '#register' },
-                                { name: 'Tradition', href: '#' },
-                                { name: 'Support', href: '#' }
-                            ].map((link, i) => (
+                            {quickLinks.map((link, i) => (
                                 <li key={i}>
-                                    <a
-                                        href={link.href}
-                                        className="text-brown-100/40 hover:text-gold-400 text-sm transition-all duration-300 flex items-center gap-2 group"
-                                    >
-                                        <div className="w-1 h-1 rounded-full bg-gold-500/0 group-hover:bg-gold-500 transition-all" />
+                                    <a href={link.href} className="text-sm text-white/30 hover:text-brand-red transition-all flex items-center gap-2 group">
+                                        <div className="w-1 h-1 rounded-full bg-brand-red scale-0 group-hover:scale-100 transition-transform" />
                                         {link.name}
                                     </a>
                                 </li>
@@ -70,62 +77,44 @@ const Footer = () => {
 
                     {/* Contact Info */}
                     <div>
-                        <h4 className="font-heading text-white font-bold mb-8 tracking-widest uppercase text-xs">Contact</h4>
-                        <ul className="space-y-6">
-                            <li>
-                                <a href="mailto:info@begenatraining.com" className="group block">
-                                    <span className="text-brown-100/30 text-[10px] uppercase font-bold tracking-widest block mb-1">Email Us</span>
-                                    <span className="text-brown-100/60 group-hover:text-gold-400 transition-colors text-sm flex items-center gap-2">
-                                        <Mail className="w-4 h-4" />
-                                        info@begenatraining.com
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="tel:+251911000000" className="group block">
-                                    <span className="text-brown-100/30 text-[10px] uppercase font-bold tracking-widest block mb-1">Call Us</span>
-                                    <span className="text-brown-100/60 group-hover:text-gold-400 transition-colors text-sm flex items-center gap-2">
-                                        <Phone className="w-4 h-4" />
-                                        +251 911 000 000
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {/* Newsletter/CTA */}
-                    <div className="lg:col-span-1">
-                        <div className="glass rounded-3xl p-6 border border-white/5 relative overflow-hidden group">
-                            <div className="relative z-10">
-                                <h4 className="text-white font-bold mb-2">Join Our Newsletter</h4>
-                                <p className="text-brown-100/40 text-xs mb-4">Stay updated with class schedules and spiritual gatherings.</p>
-                                <div className="relative">
-                                    <input
-                                        type="email"
-                                        placeholder="Email address"
-                                        className="w-full bg-dark-900 border border-white/10 rounded-xl py-3 px-4 text-xs text-white placeholder-brown-100/20 focus:outline-hidden focus:border-gold-500/50 transition-all"
-                                    />
-                                    <button className="absolute right-2 top-1.5 p-1.5 bg-gold-500 rounded-lg group-hover:bg-gold-400 transition-colors">
-                                        <ArrowUpRight className="w-4 h-4 text-dark-900" />
-                                    </button>
+                        <h4 className="text-xs font-black uppercase tracking-[0.3em] text-white/50 mb-10">Connect</h4>
+                        <div className="space-y-6">
+                            <a href="mailto:info@begena.org" className="flex items-center gap-4 group">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:border-brand-red transition-all">
+                                    <Mail className="w-4 h-4 text-brand-red" />
                                 </div>
-                            </div>
-                            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-gold-400/5 blur-2xl group-hover:bg-gold-400/10 transition-colors" />
+                                <div>
+                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Email Us</p>
+                                    <p className="text-sm text-white/60 group-hover:text-white transition-colors">info@begena.org</p>
+                                </div>
+                            </a>
+                            <a href="tel:+251911223344" className="flex items-center gap-4 group">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:border-brand-red transition-all">
+                                    <Phone className="w-4 h-4 text-brand-red" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Call Center</p>
+                                    <p className="text-sm text-white/60 group-hover:text-white transition-colors">+251 911 22 33 44</p>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <p className="text-brown-100/30 text-[10px] uppercase font-bold tracking-widest">
-                        © {currentYear} Begena Training Center. All Rights Reserved.
-                    </p>
-                    <div className="flex items-center gap-6 text-brown-100/30 text-[10px] uppercase font-bold tracking-widest">
-                        <a href="#" className="hover:text-gold-400 transition-colors">Privacy</a>
-                        <a href="#" className="hover:text-gold-400 transition-colors">Terms</a>
-                        <span className="flex items-center gap-1.5">
-                            Made with <Heart className="w-3 h-3 text-red-500/50" /> in Ethiopia
-                        </span>
+                <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">
+                        <span>© {currentYear} Begena Fast Track </span>
+                        <div className="w-1 h-1 rounded-full bg-brand-red" />
+                        <span>All Rights Reserved</span>
+                    </div>
+
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2 group cursor-default">
+                            <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest group-hover:text-white transition-colors">Handcrafted by</span>
+                            <Sparkles className="w-3.5 h-3.5 text-brand-red animate-pulse" />
+                            <span className="text-[10px] font-black text-brand-red uppercase tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Begena Tech</span>
+                        </div>
                     </div>
                 </div>
             </div>

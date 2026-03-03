@@ -79,281 +79,243 @@ const RegistrationForm = () => {
 
         setIsSubmitting(true);
         setErrors({});
+        setStatus('loading');
 
         try {
-            const formDataToSend = new FormData();
-            formDataToSend.append('fullName', formData.fullName);
-            formDataToSend.append('countryCode', formData.countryCode);
-            formDataToSend.append('phoneNumber', formData.phoneNumber);
-            formDataToSend.append('telegram', formData.telegram);
-            if (formData.photo) {
-                formDataToSend.append('photo', formData.photo);
-            }
-
-            const response = await fetch('http://localhost:5000/api/register', {
-                method: 'POST',
-                body: formDataToSend,
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to submit registration');
-            }
-
-            const result = await response.json();
-            setFormData(prev => ({ ...prev, serverData: result.user }));
-            setShowSuccess(true);
+            // Simulated API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            setStatus('success');
         } catch (error) {
-            console.error('Registration error:', error);
-            setErrors({ submit: error.message || 'Something went wrong. Please try again later.' });
-        } finally {
-            setIsSubmitting(false);
+            setErrorMessage('Something went wrong. Please try again.');
+            setStatus('error');
         }
     };
 
-    const handleCloseSuccess = () => {
-        setShowSuccess(false);
-        setFormData({
-            fullName: '',
-            countryCode: '+251',
-            phoneNumber: '',
-            telegram: '',
-            photo: null,
-        });
-        setPhotoPreview(null);
-    };
-
     const containerVariants = {
-        hidden: { opacity: 0, y: 40 },
+        hidden: { opacity: 0 },
         visible: {
             opacity: 1,
-            y: 0,
-            transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, x: -20 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: { duration: 0.5 }
         }
     };
 
     return (
-        <section id="register" className="relative section-container overflow-hidden">
-            {/* Background decorations */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-linear-to-r from-transparent via-gold-500/20 to-transparent" />
-            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gold-600/5 rounded-full blur-[100px] animate-glow" />
+        <section id="register" className="section-container relative bg-dark-950 overflow-hidden">
+            {/* Background elements */}
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-red/5 rounded-full blur-[150px] -z-10 translate-x-1/2 -translate-y-1/2" />
 
-            <div className="max-w-2xl mx-auto relative z-10">
-                {/* Section Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-12"
-                >
-                    <span className="inline-block px-5 py-1.5 glass rounded-full text-gold-400 text-[10px] font-bold tracking-[0.3em] uppercase mb-6">
-                        Start Your Mastery
-                    </span>
-                    <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4 tracking-tight">
-                        <span className="text-white">Join the </span>
-                        <span className="italic text-transparent bg-clip-text bg-linear-to-r from-gold-300 to-gold-600">
-                            Training Program
-                        </span>
-                    </h2>
-                    <p className="text-brown-100/50 text-lg font-light">
-                        Embark on your spiritual and musical journey today.
-                    </p>
-                </motion.div>
-
-                {/* Form Card */}
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    className="glass rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-white/5"
-                >
-                    <form onSubmit={handleSubmit} className="space-y-8">
-                        {/* Full Name */}
-                        <div className="space-y-3">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-brown-100/70 ml-1">
-                                <User className="w-4 h-4 text-gold-500/60" />
-                                Full Name
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    name="fullName"
-                                    value={formData.fullName}
-                                    onChange={handleChange}
-                                    placeholder="Enter your full name"
-                                    className="input-modern"
-                                />
-                                <AnimatePresence>
-                                    {errors.fullName && (
-                                        <motion.div
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0 }}
-                                            className="absolute -bottom-6 left-1 flex items-center gap-1.5 text-red-400 text-[11px] font-medium"
-                                        >
-                                            <AlertCircle className="w-3 h-3" />
-                                            {errors.fullName}
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
+            <div className="max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+                    {/* Left Side: Info */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="lg:sticky lg:top-32"
+                    >
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red text-xs font-bold tracking-widest uppercase mb-6">
+                            <Sparkles className="w-3.5 h-3.5" />
+                            Admission Open
                         </div>
+                        <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-8 leading-tight">
+                            Begin Your <br />
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white italic">Spiritual Path</span>
+                        </h2>
+                        <p className="text-white/40 text-lg leading-relaxed mb-12 max-w-lg">
+                            Join a community of dedicated practitioners and learn the sacred art of Begena. Secure your spot in our next training cycle.
+                        </p>
 
-                        {/* Phone Number */}
-                        <div className="space-y-3">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-brown-100/70 ml-1">
-                                <Phone className="w-4 h-4 text-gold-500/60" />
-                                Phone Number
-                            </label>
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <div className="relative group sm:w-48">
-                                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gold-500/40 group-focus-within:text-gold-400 transition-colors" />
-                                    <select
-                                        name="countryCode"
-                                        value={formData.countryCode}
-                                        onChange={handleChange}
-                                        className="input-modern pl-11 pr-4 appearance-none cursor-pointer"
-                                    >
-                                        {countryCodes.map((c, i) => (
-                                            <option key={i} value={c.code} className="bg-dark-900 text-brown-50">
-                                                {c.flag} {c.code}
-                                            </option>
-                                        ))}
-                                    </select>
+                        <div className="space-y-6">
+                            {[
+                                { title: 'Authentic Curriculum', desc: 'Direct from traditional masters.' },
+                                { title: 'Flexible Schedule', desc: 'Classes that fit your spiritual life.' },
+                                { title: 'Global Community', desc: 'Learn with students from around the world.' }
+                            ].map((item, i) => (
+                                <div key={i} className="flex gap-4">
+                                    <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center mt-1">
+                                        <div className="w-2 h-2 rounded-full bg-brand-red" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-white font-bold text-sm tracking-wide">{item.title}</h4>
+                                        <p className="text-white/30 text-xs mt-1">{item.desc}</p>
+                                    </div>
                                 </div>
-                                <div className="relative flex-1">
-                                    <input
-                                        type="tel"
-                                        name="phoneNumber"
-                                        value={formData.phoneNumber}
-                                        onChange={handleChange}
-                                        placeholder="912 345 678"
-                                        className="input-modern"
-                                    />
-                                </div>
-                            </div>
-                            <AnimatePresence>
-                                {errors.phoneNumber && (
-                                    <motion.p
-                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                        className="text-red-400 text-[11px] font-medium ml-1"
-                                    >
-                                        {errors.phoneNumber}
-                                    </motion.p>
-                                )}
-                            </AnimatePresence>
+                            ))}
                         </div>
+                    </motion.div>
 
-                        {/* Telegram Username */}
-                        <div className="space-y-3">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-brown-100/70 ml-1">
-                                <Send className="w-4 h-4 text-gold-500/60" />
-                                Telegram Username
-                            </label>
-                            <div className="relative">
-                                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gold-500 font-bold">@</span>
-                                <input
-                                    type="text"
-                                    name="telegram"
-                                    value={formData.telegram}
-                                    onChange={handleChange}
-                                    placeholder="username"
-                                    className="input-modern pl-10!"
-                                />
-                                <AnimatePresence>
-                                    {errors.telegram && (
-                                        <motion.p
-                                            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                            className="absolute -bottom-6 left-1 text-red-400 text-[11px] font-medium"
-                                        >
-                                            {errors.telegram}
-                                        </motion.p>
-                                    )}
-                                </AnimatePresence>
+                    {/* Right Side: Form */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="relative"
+                    >
+                        <div className="glass rounded-4xl p-8 md:p-12 border-white/5 relative overflow-hidden">
+                            {/* Form Header */}
+                            <div className="mb-10">
+                                <h3 className="text-2xl font-bold text-white mb-2">Registration Form</h3>
+                                <p className="text-white/30 text-sm">Please fill in your details accurately.</p>
                             </div>
-                        </div>
 
-                        {/* Photo Upload */}
-                        <div className="space-y-3">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-brown-100/70 ml-1">
-                                <Upload className="w-4 h-4 text-gold-500/60" />
-                                Profile Photo
-                            </label>
-                            <motion.div
-                                whileHover={{ scale: 1.01 }}
-                                whileTap={{ scale: 0.99 }}
-                                onClick={() => fileInputRef.current?.click()}
-                                className={`relative rounded-3xl p-8 border-2 border-dashed transition-all duration-300 group cursor-pointer text-center ${photoPreview ? 'border-gold-500/40 bg-gold-500/5' : 'border-white/10 hover:border-gold-500/30 bg-white/5'
-                                    }`}
-                            >
-                                {photoPreview ? (
-                                    <div className="flex flex-col items-center gap-4">
-                                        <div className="relative">
-                                            <img
-                                                src={photoPreview}
-                                                alt="Preview"
-                                                className="w-24 h-24 rounded-2xl object-cover border-2 border-gold-500/50 shadow-2xl"
+                            <form onSubmit={handleSubmit} className="space-y-8">
+                                <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
+                                    {/* Full Name */}
+                                    <motion.div variants={itemVariants} className="space-y-2">
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Full Name</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
+                                                <User className="w-5 h-5" />
+                                            </div>
+                                            <input
+                                                required
+                                                type="text"
+                                                name="fullName"
+                                                value={formData.fullName}
+                                                onChange={handleChange}
+                                                placeholder="John Doe"
+                                                className="input-modern pl-14"
                                             />
-                                            <div className="absolute -top-2 -right-2 bg-gold-500 rounded-full p-1 shadow-lg">
-                                                <CheckCircle className="w-4 h-4 text-dark-900" />
+                                        </div>
+                                    </motion.div>
+
+                                    {/* Phone Number */}
+                                    <motion.div variants={itemVariants} className="space-y-2">
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Phone Number</label>
+                                        <div className="grid grid-cols-[100px_1fr] gap-4">
+                                            <div className="relative group">
+                                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20">
+                                                    <Globe className="w-3.5 h-3.5" />
+                                                </div>
+                                                <select
+                                                    name="countryCode"
+                                                    value={formData.countryCode}
+                                                    onChange={handleChange}
+                                                    className="w-full h-full bg-dark-900 border border-white/5 rounded-2xl pl-10 pr-4 text-xs text-white appearance-none focus:outline-hidden focus:border-brand-red/50"
+                                                >
+                                                    <option value="+251">+251</option>
+                                                    <option value="+1">+1</option>
+                                                    <option value="+44">+44</option>
+                                                </select>
+                                            </div>
+                                            <div className="relative group">
+                                                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
+                                                    <Phone className="w-5 h-5" />
+                                                </div>
+                                                <input
+                                                    required
+                                                    type="tel"
+                                                    name="phoneNumber"
+                                                    value={formData.phoneNumber}
+                                                    onChange={handleChange}
+                                                    placeholder="911 22 33 44"
+                                                    className="input-modern pl-14"
+                                                />
                                             </div>
                                         </div>
-                                        <span className="text-gold-400 text-xs font-bold uppercase tracking-wider">Change Photo</span>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col items-center gap-3">
-                                        <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-gold-500/10 group-hover:border-gold-500/30 transition-all duration-500">
-                                            <Upload className="w-6 h-6 text-gold-500/40 group-hover:text-gold-400 transition-colors" />
+                                    </motion.div>
+
+                                    {/* Telegram */}
+                                    <motion.div variants={itemVariants} className="space-y-2">
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Telegram Username</label>
+                                        <div className="relative group">
+                                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
+                                                <Send className="w-5 h-5" />
+                                            </div>
+                                            <input
+                                                required
+                                                type="text"
+                                                name="telegram"
+                                                value={formData.telegram}
+                                                onChange={handleChange}
+                                                placeholder="@username"
+                                                className="input-modern pl-14"
+                                            />
                                         </div>
-                                        <div className="space-y-1">
-                                            <p className="text-brown-100 font-semibold">Drop your photo here</p>
-                                            <p className="text-brown-100/40 text-xs">JPG or PNG (max 5MB)</p>
-                                        </div>
-                                    </div>
-                                )}
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handlePhotoChange}
-                                    className="hidden"
-                                />
-                            </motion.div>
-                            <AnimatePresence>
-                                {errors.photo && (
-                                    <p className="text-red-400 text-[11px] font-medium ml-1">{errors.photo}</p>
-                                )}
-                            </AnimatePresence>
+                                    </motion.div>
+
+                                    {/* Photo Upload */}
+                                    <motion.div variants={itemVariants} className="space-y-2">
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Student Identification Photo</label>
+                                        <label className="block border-2 border-dashed border-white/5 rounded-4xl p-8 text-center hover:bg-white/5 hover:border-brand-red/30 transition-all cursor-pointer group">
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={handlePhotoChange}
+                                            />
+                                            {photoPreview ? (
+                                                <div className="relative w-24 h-24 mx-auto rounded-2xl overflow-hidden border-2 border-brand-red group-hover:scale-110 transition-transform">
+                                                    <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col items-center gap-3">
+                                                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-brand-red group-hover:text-white transition-all">
+                                                        <Upload className="w-6 h-6 text-white/20 group-hover:text-inherit" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-white/60 text-xs font-bold">Select Photo</p>
+                                                        <p className="text-white/20 text-[10px] mt-1 uppercase tracking-widest">JPG, PNG up to 5MB</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </label>
+                                    </motion.div>
+                                </motion.div>
+
+                                <motion.div variants={itemVariants} className="pt-4">
+                                    <button
+                                        type="submit"
+                                        disabled={status === 'loading'}
+                                        className="btn-primary w-full py-5 group relative overflow-hidden"
+                                    >
+                                        {status === 'loading' ? (
+                                            <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                                        ) : (
+                                            <div className="flex items-center justify-center gap-3">
+                                                <span>Confirm Registration</span>
+                                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                            </div>
+                                        )}
+                                        {/* Animated sweep effect */}
+                                        <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[sweep_2s_infinite]" />
+                                    </button>
+                                </motion.div>
+                            </form>
                         </div>
 
-                        {/* Submit Button */}
-                        <div className="pt-4">
-                            <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="btn-primary w-full py-4.5 text-lg disabled:opacity-70 disabled:grayscale transition-all"
-                            >
-                                {isSubmitting ? (
-                                    <div className="flex items-center gap-3">
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                        <span>Registering...</span>
-                                    </div>
-                                ) : (
-                                    'Complete Registration'
-                                )}
-                            </motion.button>
-                        </div>
-                    </form>
-                </motion.div>
+                        {/* Status Feedback */}
+                        <AnimatePresence>
+                            {status === 'error' && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 10 }}
+                                    className="mt-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-500 text-sm"
+                                >
+                                    <AlertCircle className="w-5 h-5" />
+                                    {errorMessage}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
+                </div>
             </div>
 
+            {/* Success Modal */}
             <SuccessModal
-                isOpen={showSuccess}
-                onClose={handleCloseSuccess}
-                userData={{ ...formData, ...formData.serverData }}
+                isOpen={status === 'success'}
+                onClose={() => setStatus('idle')}
+                userData={formData}
             />
         </section>
     );

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { History, GraduationCap, Music, PlayCircle, Heart, Star, Shield, Sun } from 'lucide-react';
+import begenaImg from '../assets/amanuel-yit-trial8w.jpg';
 
 const About = () => {
     const features = [
@@ -90,18 +91,18 @@ const About = () => {
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="relative"
+                        className="relative max-w-xs md:max-w-sm mx-auto lg:ml-auto lg:mr-0"
                     >
-                        <div className="aspect-square rounded-4xl overflow-hidden glass p-4 border-white/5 relative group">
-                            <div className="absolute inset-4 rounded-3xl bg-brand-red/20 mix-blend-overlay group-hover:bg-brand-red/10 transition-all duration-700" />
+                        <div className="aspect-3/4 w-full rounded-4xl overflow-hidden glass p-3 border-white/5 relative group">
+                            <div className="absolute inset-3 rounded-3xl bg-brand-red/10 mix-blend-overlay group-hover:bg-brand-red/5 transition-all duration-700 z-10" />
                             <img
-                                src="./begena-app/src/assets/amanuel-yit-trial8w.jpg"
+                                src={begenaImg}
                                 alt="Begena Strings"
-                                className="w-full h-full object-cover rounded-3xl grayscale group-hover:grayscale-0 transition-all duration-700"
+                                className="w-full h-full object-contain rounded-3xl grayscale group-hover:grayscale-0 transition-all duration-700"
                             />
                             {/* Decorative Frame */}
-                            <div className="absolute top-8 left-8 w-24 h-24 border-t-2 border-l-2 border-brand-red/50 rounded-tl-3xl" />
-                            <div className="absolute bottom-8 right-8 w-24 h-24 border-b-2 border-r-2 border-brand-red/50 rounded-br-3xl" />
+                            <div className="absolute top-6 left-6 w-16 h-16 border-t-[3px] border-l-[3px] border-brand-red/80 rounded-tl-3xl z-20 transition-all duration-500 group-hover:scale-110 group-hover:-translate-x-2 group-hover:-translate-y-2" />
+                            <div className="absolute bottom-6 right-6 w-16 h-16 border-b-[3px] border-r-[3px] border-brand-red/80 rounded-br-3xl z-20 transition-all duration-500 group-hover:scale-110 group-hover:translate-x-2 group-hover:translate-y-2" />
                         </div>
                     </motion.div>
                 </div>

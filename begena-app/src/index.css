@@ -146,3 +146,16 @@
 body {
   @apply bg-dark-950 text-white font-body antialiased;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-brand-red);
+  border-radius: 10px;
+}

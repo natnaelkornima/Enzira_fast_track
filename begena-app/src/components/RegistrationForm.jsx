@@ -1,22 +1,32 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Phone, Send, Upload, CheckCircle, AlertCircle, Loader2, Globe, Sparkles, ArrowRight } from 'lucide-react';
+import { User, Phone, Send, Upload, CheckCircle, AlertCircle, Loader2, Globe, Sparkles, ArrowRight, ChevronDown, Search } from 'lucide-react';
 import SuccessModal from './SuccessModal';
 
 const countryCodes = [
-    { code: '+251', country: 'Ethiopia', flag: '🇪🇹' },
-    { code: '+1', country: 'USA', flag: '🇺🇸' },
-    { code: '+44', country: 'UK', flag: '🇬🇧' },
-    { code: '+49', country: 'Germany', flag: '🇩🇪' },
-    { code: '+971', country: 'UAE', flag: '🇦🇪' },
-    { code: '+966', country: 'Saudi Arabia', flag: '🇸🇦' },
-    { code: '+27', country: 'South Africa', flag: '🇿🇦' },
-    { code: '+254', country: 'Kenya', flag: '🇰🇪' },
-    { code: '+39', country: 'Italy', flag: '🇮🇹' },
-    { code: '+46', country: 'Sweden', flag: '🇸🇪' },
-    { code: '+47', country: 'Norway', flag: '🇳🇴' },
-    { code: '+61', country: 'Australia', flag: '🇦🇺' },
-    { code: '+1', country: 'Canada', flag: '🇨🇦' },
+    { code: '+251', country: 'Ethiopia', iso: 'et' },
+    { code: '+1', country: 'USA', iso: 'us' },
+    { code: '+44', country: 'UK', iso: 'gb' },
+    { code: '+49', country: 'Germany', iso: 'de' },
+    { code: '+971', country: 'UAE', iso: 'ae' },
+    { code: '+966', country: 'Saudi Arabia', iso: 'sa' },
+    { code: '+27', country: 'South Africa', iso: 'za' },
+    { code: '+254', country: 'Kenya', iso: 'ke' },
+    { code: '+39', country: 'Italy', iso: 'it' },
+    { code: '+46', country: 'Sweden', iso: 'se' },
+    { code: '+47', country: 'Norway', iso: 'no' },
+    { code: '+61', country: 'Australia', iso: 'au' },
+    { code: '+1', country: 'Canada', iso: 'ca' },
+    { code: '+33', country: 'France', iso: 'fr' },
+    { code: '+31', country: 'Netherlands', iso: 'nl' },
+    { code: '+41', country: 'Switzerland', iso: 'ch' },
+    { code: '+32', country: 'Belgium', iso: 'be' },
+    { code: '+34', country: 'Spain', iso: 'es' },
+    { code: '+91', country: 'India', iso: 'in' },
+    { code: '+81', country: 'Japan', iso: 'jp' },
+    { code: '+82', country: 'South Korea', iso: 'kr' },
+    { code: '+86', country: 'China', iso: 'cn' },
+    { code: '+55', country: 'Brazil', iso: 'br' },
 ];
 
 const RegistrationForm = () => {
@@ -31,7 +41,28 @@ const RegistrationForm = () => {
     const [errors, setErrors] = useState({});
     const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
     const [errorMessage, setErrorMessage] = useState('');
+    const [isCountryPickerOpen, setIsCountryPickerOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const fileInputRef = useRef(null);
+    const countryPickerRef = useRef(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (countryPickerRef.current && !countryPickerRef.current.contains(event.target)) {
+                setIsCountryPickerOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const filteredCountries = countryCodes.filter(c =>
+        c.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.code.includes(searchQuery)
+    );
+
+    const selectedCountry = countryCodes.find(c => c.code === formData.countryCode) || countryCodes[0];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -183,7 +214,7 @@ const RegistrationForm = () => {
                                                 value={formData.fullName}
                                                 onChange={handleChange}
                                                 placeholder="John Doe"
-                                                className="input-modern pl-14"
+                                                className="input-modern"
                                             />
                                         </div>
                                     </motion.div>
@@ -192,20 +223,66 @@ const RegistrationForm = () => {
                                     <motion.div variants={itemVariants} className="space-y-2">
                                         <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Phone Number</label>
                                         <div className="grid grid-cols-[100px_1fr] gap-4">
-                                            <div className="relative group">
-                                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20">
-                                                    <Globe className="w-3.5 h-3.5" />
-                                                </div>
-                                                <select
-                                                    name="countryCode"
-                                                    value={formData.countryCode}
-                                                    onChange={handleChange}
-                                                    className="w-full h-full bg-dark-900 border border-white/5 rounded-2xl pl-10 pr-4 text-xs text-white appearance-none focus:outline-hidden focus:border-brand-red/50"
+                                            <div className="relative" ref={countryPickerRef}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsCountryPickerOpen(!isCountryPickerOpen)}
+                                                    className="w-full h-full bg-dark-900 border border-white/5 rounded-2xl pl-12 pr-4 text-xs text-white appearance-none focus:outline-hidden focus:border-brand-red flex items-center justify-between transition-all"
                                                 >
-                                                    <option value="+251">+251</option>
-                                                    <option value="+1">+1</option>
-                                                    <option value="+44">+44</option>
-                                                </select>
+                                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-4 flex items-center justify-center rounded-[2px] overflow-hidden">
+                                                        <img src={`https://flagcdn.com/w20/${selectedCountry.iso}.png`} srcSet={`https://flagcdn.com/w40/${selectedCountry.iso}.png 2x`} alt={selectedCountry.country} className="w-full h-full object-cover" />
+                                                    </div>
+                                                    <span>{selectedCountry.code}</span>
+                                                    <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${isCountryPickerOpen ? 'rotate-180' : ''}`} />
+                                                </button>
+
+                                                <AnimatePresence>
+                                                    {isCountryPickerOpen && (
+                                                        <motion.div
+                                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                            className="absolute top-full left-0 mt-2 w-64 glass rounded-2xl border border-white/10 shadow-2xl z-50 overflow-hidden"
+                                                        >
+                                                            <div className="p-3 border-b border-white/5">
+                                                                <div className="relative">
+                                                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/20" />
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder="Search country..."
+                                                                        value={searchQuery}
+                                                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                                                        className="w-full bg-white/5 border border-white/5 rounded-xl pl-9 pr-3 py-2 text-[10px] text-white focus:outline-hidden focus:border-brand-red/50"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                            <div className="max-h-60 overflow-y-auto custom-scrollbar">
+                                                                {filteredCountries.map((c, i) => (
+                                                                    <button
+                                                                        key={i}
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            setFormData(prev => ({ ...prev, countryCode: c.code }));
+                                                                            setIsCountryPickerOpen(false);
+                                                                        }}
+                                                                        className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors text-left ${formData.countryCode === c.code ? 'bg-brand-red/10' : ''}`}
+                                                                    >
+                                                                        <div className="w-5 h-3.5 shrink-0 flex items-center justify-center rounded-[2px] overflow-hidden drop-shadow-sm">
+                                                                            <img src={`https://flagcdn.com/w20/${c.iso}.png`} srcSet={`https://flagcdn.com/w40/${c.iso}.png 2x`} alt={c.country} className="w-full h-full object-cover" />
+                                                                        </div>
+                                                                        <div className="flex flex-col">
+                                                                            <span className="text-[10px] font-bold text-white tracking-wide">{c.country}</span>
+                                                                            <span className="text-[9px] text-white/30">{c.code}</span>
+                                                                        </div>
+                                                                        {formData.countryCode === c.code && (
+                                                                            <CheckCircle className="w-3 h-3 text-brand-red ml-auto" />
+                                                                        )}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
                                             </div>
                                             <div className="relative group">
                                                 <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
@@ -218,7 +295,7 @@ const RegistrationForm = () => {
                                                     value={formData.phoneNumber}
                                                     onChange={handleChange}
                                                     placeholder="911 22 33 44"
-                                                    className="input-modern pl-14"
+                                                    className="input-modern"
                                                 />
                                             </div>
                                         </div>
@@ -238,14 +315,14 @@ const RegistrationForm = () => {
                                                 value={formData.telegram}
                                                 onChange={handleChange}
                                                 placeholder="@username"
-                                                className="input-modern pl-14"
+                                                className="input-modern"
                                             />
                                         </div>
                                     </motion.div>
 
                                     {/* Photo Upload */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Student Identification Photo</label>
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Proof of Payment (Screenshot)</label>
                                         <label className="block border-2 border-dashed border-white/5 rounded-4xl p-8 text-center hover:bg-white/5 hover:border-brand-red/30 transition-all cursor-pointer group">
                                             <input
                                                 type="file"
@@ -263,8 +340,8 @@ const RegistrationForm = () => {
                                                         <Upload className="w-6 h-6 text-white/20 group-hover:text-inherit" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-white/60 text-xs font-bold">Select Photo</p>
-                                                        <p className="text-white/20 text-[10px] mt-1 uppercase tracking-widest">JPG, PNG up to 5MB</p>
+                                                        <p className="text-white/60 text-xs font-bold">Select Payment Screenshot</p>
+                                                        <p className="text-white/20 text-[10px] mt-1 uppercase tracking-widest">JPG, PNG receipts up to 5MB</p>
                                                     </div>
                                                 </div>
                                             )}

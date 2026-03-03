@@ -57,7 +57,7 @@ const Hero = () => {
                     <span className="group flex items-center gap-2 px-5 py-2 glass rounded-full border border-white/5 hover:border-brand-red/30 transition-all duration-500 cursor-pointer">
                         <div className="w-2 h-2 rounded-full bg-brand-red animate-pulse" />
                         <span className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 group-hover:text-white transition-colors">
-                            Sacred Ethiopian Heritage
+                            Enzira Begena
                         </span>
                     </span>
                 </motion.div>
@@ -65,9 +65,9 @@ const Hero = () => {
                 {/* Main Heading */}
                 <motion.div variants={itemVariants} className="max-w-5xl mx-auto mb-10">
                     <h1 className="font-heading text-5xl md:text-7xl lg:text-9xl font-black text-white leading-[0.95] tracking-tighter">
-                        Soul of <br />
+                        Advanced<br />
                         <span className="italic text-transparent bg-clip-text bg-linear-to-r from-brand-red via-brand-red-light to-white">
-                            Begena
+                            Begena Training
                         </span>
                     </h1>
                 </motion.div>
@@ -75,8 +75,8 @@ const Hero = () => {
                 {/* Description */}
                 <motion.div variants={itemVariants} className="max-w-2xl mx-auto mb-12">
                     <p className="text-white/40 text-lg md:text-xl font-light leading-relaxed">
-                        Journey through centuies of tradition. Our expert-led training unlocks the meditative
-                        and spiritual power of Ethiopia's most sacred harp.
+                        Have you ever wondered when you will finally be able to play the Begena fluently? In this advanced Begena training, we are designed
+                        to help you play the Begena with complete dexterity and ease.
                     </p>
                 </motion.div>
 

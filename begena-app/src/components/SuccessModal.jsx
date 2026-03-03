@@ -1,9 +1,9 @@
 import { jsPDF } from 'jspdf';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, Download, X, FileText } from 'lucide-react';
 import 'jspdf-autotable';
 
 const SuccessModal = ({ isOpen, onClose, userData }) => {
-    if (!isOpen) return null;
-
     const handleDownloadPDF = () => {
         if (!userData) return;
 
@@ -67,48 +67,82 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div
-                className="modal-content glass-strong rounded-3xl p-10 max-w-md w-full mx-6 text-center"
-                onClick={(e) => e.stopPropagation()}
-            >
-                {/* Success icon */}
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                </div>
-
-                <h3 className="font-heading text-2xl font-bold text-gold-400 mb-3">
-                    Registration Successful!
-                </h3>
-                <p className="text-brown-200 mb-2">
-                    Thank you, <span className="text-gold-400 font-semibold">{userData?.fullName}</span>!
-                </p>
-                <p className="text-brown-300 text-sm mb-8 leading-relaxed">
-                    Your registration has been received and saved securely in our system. We will contact you shortly with further details about the Begena training program.
-                </p>
-
-                <div className="flex flex-col gap-4">
-                    <button
-                        onClick={handleDownloadPDF}
-                        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-gold-500/50 text-gold-400 hover:bg-gold-500/10 transition-colors font-medium"
-                    >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Download PDF Receipt
-                    </button>
-
-                    <button
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-100 flex items-center justify-center p-6 overflow-hidden">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="glow-btn w-full"
+                        className="absolute inset-0 bg-dark-900/80 backdrop-blur-md"
+                    />
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                        className="relative glass rounded-[2.5rem] p-10 max-w-md w-full shadow-2xl border border-white/10 text-center"
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        Done
-                    </button>
+                        <button
+                            onClick={onClose}
+                            className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 text-brown-100/30 hover:text-white transition-all"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+
+                        {/* Success icon */}
+                        <div className="relative w-24 h-24 mx-auto mb-8">
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ delay: 0.2, type: "spring" }}
+                                className="w-full h-full rounded-3xl bg-linear-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-2xl shadow-gold-500/20"
+                            >
+                                <CheckCircle className="w-12 h-12 text-dark-900" strokeWidth={2.5} />
+                            </motion.div>
+                            <motion.div
+                                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                                transition={{ repeat: Infinity, duration: 2 }}
+                                className="absolute inset-0 rounded-3xl bg-gold-400 blur-2xl -z-10"
+                            />
+                        </div>
+
+                        <h3 className="font-heading text-3xl font-bold text-white mb-4 tracking-tight">
+                            Registration <span className="text-gold-400 italic">Confirmed</span>
+                        </h3>
+
+                        <p className="text-brown-100/60 mb-8 leading-relaxed">
+                            Thank you, <span className="text-gold-400 font-bold">{userData?.fullName}</span>. Your application for the Begena training program is now being processed.
+                        </p>
+
+                        <div className="space-y-4">
+                            <motion.button
+                                whileHover={{ scale: 1.02, y: -2 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={handleDownloadPDF}
+                                className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl border border-gold-500/30 text-gold-400 hover:bg-gold-500/5 transition-all font-bold text-sm"
+                            >
+                                <FileText className="w-4 h-4" />
+                                Download PDF Receipt
+                                <Download className="w-4 h-4" />
+                            </motion.button>
+
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={onClose}
+                                className="btn-primary w-full py-4 text-sm"
+                            >
+                                Return to Home
+                            </motion.button>
+                        </div>
+                    </motion.div>
                 </div>
-            </div>
-        </div>
+            )}
+        </AnimatePresence>
     );
 };
 

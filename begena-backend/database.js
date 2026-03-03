@@ -1,32 +1,17 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-const dbPath = path.resolve(__dirname, 'database.sqlite');
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Error connecting to SQLite database:', err.message);
-    } else {
-        console.log('Connected to the SQLite database.');
+// Using local MongoDB by default if no URI is provided in .env
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/begena_registration';
 
-        // Initialize the users table
-        db.run(`
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                full_name TEXT NOT NULL,
-                country_code TEXT NOT NULL,
-                phone_number TEXT NOT NULL,
-                telegram TEXT NOT NULL,
-                photo_path TEXT NOT NULL,
-                registration_date DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        `, (err) => {
-            if (err) {
-                console.error('Error creating users table:', err.message);
-            } else {
-                console.log('Users table initialized.');
-            }
-        });
+const connectDB = async () => {
+    try {
+        await mongoose.connect(MONGODB_URI);
+        console.log('MongoDB successfully connected.');
+    } catch (err) {
+        console.error('MongoDB connection error:', err.message);
+        process.exit(1);
     }
-});
+};
 
-module.exports = db;
+module.exports = connectDB;

@@ -4,12 +4,26 @@ const multer = require('multer');
 const path = require('path');
 const connectDB = require('./database');
 const Registration = require('./models/Registration');
+const Admin = require('./models/Admin');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET || 'begena_super_secret_key_2026';
 
 // Connect to MongoDB
-connectDB();
+connectDB().then(async () => {
+    // Seed default admin if it doesn't exist
+    const adminExists = await Admin.findOne({ email: 'admin@begena.com' });
+    if (!adminExists) {
+        const defaultAdmin = new Admin({
+            email: 'admin@begena.com',
+            password: 'securepassword123' // default password, will be hashed
+        });
+        await defaultAdmin.save();
+        console.log('Default admin seeded: admin@begena.com / securepassword123');
+    }
+});
 
 // Middleware
 app.use(cors());
@@ -80,8 +94,55 @@ app.post('/api/register', upload.single('receipt'), async (req, res) => {
     }
 });
 
+// --- Admin Authentication & Protected Routes ---
+
+// Admin Login
+app.post('/api/admin/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const admin = await Admin.findOne({ email });
+        if (!admin) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        const isMatch = await admin.comparePassword(password);
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        const token = jwt.sign(
+            { id: admin._id },
+            JWT_SECRET,
+            { expiresIn: '1d' }
+        );
+
+        res.status(200).json({ token });
+    } catch (error) {
+        console.error('Login Error:', error);
+        res.status(500).json({ error: 'Server error during login' });
+    }
+});
+
+// Authentication Middleware
+const authenticateAdmin = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Access denied. No token provided.' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.adminId = decoded.id;
+        next();
+    } catch (error) {
+        res.status(401).json({ error: 'Invalid token.' });
+    }
+};
+
 // Admin Route: Get all registrations
-app.get('/api/admin/registrations', async (req, res) => {
+app.get('/api/admin/registrations', authenticateAdmin, async (req, res) => {
     try {
         const registrations = await Registration.find().sort({ registrationDate: -1 });
         res.status(200).json(registrations);
@@ -91,7 +152,7 @@ app.get('/api/admin/registrations', async (req, res) => {
 });
 
 // Admin Route: Verify a payment
-app.put('/api/admin/registrations/:id/verify', async (req, res) => {
+app.put('/api/admin/registrations/:id/verify', authenticateAdmin, async (req, res) => {
     try {
         const { id } = req.params;
         const registration = await Registration.findByIdAndUpdate(

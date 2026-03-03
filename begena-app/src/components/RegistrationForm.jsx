@@ -108,16 +108,31 @@ const RegistrationForm = () => {
             return;
         }
 
-        // setIsSubmitting is not defined, we use status instead
         setErrors({});
         setStatus('loading');
 
         try {
-            // Simulated API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const submitData = new FormData();
+            submitData.append('fullName', formData.fullName);
+            submitData.append('countryCode', formData.countryCode);
+            submitData.append('phoneNumber', formData.phoneNumber);
+            submitData.append('telegram', formData.telegram);
+            submitData.append('receipt', formData.photo);
+
+            const res = await fetch('http://127.0.0.1:5000/api/register', {
+                method: 'POST',
+                body: submitData
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Failed to register');
+            }
+
             setStatus('success');
         } catch (error) {
-            setErrorMessage('Something went wrong. Please try again.');
+            console.error(error);
+            setErrorMessage(error.message || 'Something went wrong. Please try again.');
             setStatus('error');
         }
     };

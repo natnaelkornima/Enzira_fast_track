@@ -95,7 +95,7 @@ const About = () => {
                         <div className="aspect-square rounded-4xl overflow-hidden glass p-4 border-white/5 relative group">
                             <div className="absolute inset-4 rounded-3xl bg-brand-red/20 mix-blend-overlay group-hover:bg-brand-red/10 transition-all duration-700" />
                             <img
-                                src="/begena-detail.jpg"
+                                src="./begena-app/src/assets/amanuel-yit-trial8w.jpg"
                                 alt="Begena Strings"
                                 className="w-full h-full object-cover rounded-3xl grayscale group-hover:grayscale-0 transition-all duration-700"
                             />

@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Phone, Send, Upload, CheckCircle, AlertCircle, Loader2, Globe } from 'lucide-react';
+import { User, Phone, Send, Upload, CheckCircle, AlertCircle, Loader2, Globe, Sparkles, ArrowRight } from 'lucide-react';
 import SuccessModal from './SuccessModal';
 
 const countryCodes = [
@@ -77,7 +77,7 @@ const RegistrationForm = () => {
             return;
         }
 
-        setIsSubmitting(true);
+        // setIsSubmitting is not defined, we use status instead
         setErrors({});
         setStatus('loading');
 

@@ -16,19 +16,19 @@ const MarqueeGallery = () => {
 
             <div className="relative w-full max-w-[100vw] overflow-hidden py-10" style={{ perspective: '1200px' }}>
                 {/* 3D Container */}
-                <div className="flex w-max animate-marquee-3d" style={{ transformStyle: 'preserve-3d' }}>
+                <div className="flex w-max animate-marquee-fast" style={{ transformStyle: 'preserve-3d' }}>
                     {/* Double the images for seamless looping */}
                     {[...images, ...images].map((src, index) => (
                         <div
                             key={index}
-                            className="relative shrink-0 w-[280px] md:w-[350px] h-[350px] md:h-[450px] mx-4 lg:mx-6 rounded-4xl overflow-hidden bg-dark-900 border border-white/10 shadow-[0_0_40px_rgba(152,28,0,0.2)] group transform transition-all duration-700 hover:scale-105 hover:shadow-[0_0_80px_rgba(152,28,0,0.5)] hover:-translate-y-6 hover:border-brand-red/50 hover:z-50"
+                            className="relative shrink-0 w-[180px] md:w-[220px] h-[240px] md:h-[300px] mx-3 lg:mx-4 rounded-3xl overflow-hidden bg-dark-900 border border-white/10 shadow-[0_0_30px_rgba(152,28,0,0.15)] group transform transition-all duration-700 hover:scale-110 hover:shadow-[0_0_50px_rgba(152,28,0,0.4)] hover:-translate-y-2 hover:border-brand-red/50 hover:z-50"
                         >
                             <img
                                 src={src}
                                 alt={`Gallery ${index}`}
-                                className="w-full h-full object-cover rounded-4xl opacity-70 group-hover:opacity-100 transition-opacity duration-700 grayscale group-hover:grayscale-0"
+                                className="w-full h-full object-cover rounded-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-700 grayscale group-hover:grayscale-0"
                             />
-                            <div className="absolute inset-0 bg-linear-to-t from-dark-950 via-dark-950/20 to-transparent opacity-80 group-hover:opacity-30 transition-opacity duration-700 pointer-events-none" />
+                            <div className="absolute inset-0 bg-linear-to-t from-dark-950 via-dark-950/10 to-transparent opacity-90 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none" />
                         </div>
                     ))}
                 </div>

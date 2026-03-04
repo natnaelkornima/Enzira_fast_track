@@ -160,21 +160,21 @@ body {
   border-radius: 10px;
 }
 
-@keyframes marquee-3d {
+@keyframes marquee-fast {
   0% {
-    transform: translateX(0) rotateX(5deg) rotateY(-5deg) rotateZ(2deg);
+    transform: translateX(0);
   }
 
   100% {
-    transform: translateX(-50%) rotateX(5deg) rotateY(-5deg) rotateZ(2deg);
+    transform: translateX(-50%);
   }
 }
 
-.animate-marquee-3d {
-  animation: marquee-3d 40s linear infinite;
+.animate-marquee-fast {
+  animation: marquee-fast 30s linear infinite;
   will-change: transform;
 }
 
-.animate-marquee-3d:hover {
+.animate-marquee-fast:hover {
   animation-play-state: paused;
 }

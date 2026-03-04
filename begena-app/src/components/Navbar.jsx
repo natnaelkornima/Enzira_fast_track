@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronRight, Shield, ClipboardCheck, Settings, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/enzira-logo.png';
+import { useLanguage } from '../lib/LanguageContext';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const { language, toggleLanguage, t } = useLanguage();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -18,10 +20,10 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
-        { name: 'Home', href: '#home' },
-        { name: 'About', href: '#about' },
-        { name: 'Training', href: '#register' },
-        { name: 'Contact', href: '#footer' },
+        { name: t('nav.home'), href: '#home' },
+        { name: t('nav.about'), href: '#about' },
+        { name: t('nav.training'), href: '#register' },
+        { name: t('nav.contact'), href: '#footer' },
     ];
 
     return (
@@ -72,7 +74,7 @@ const Navbar = () => {
                             className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/5 border border-white/5 text-white/60 hover:text-white hover:border-white/10 transition-all text-sm font-medium"
                         >
                             <ClipboardCheck className="w-4 h-4" />
-                            Check Status
+                            {t('nav.checkStatus')}
                         </Link>
 
                         {/* Settings Dropdown */}
@@ -96,11 +98,14 @@ const Navbar = () => {
                                         transition={{ duration: 0.2 }}
                                         className="absolute right-0 top-full mt-2 w-48 bg-dark-900 border border-white/10 rounded-2xl p-2 shadow-2xl flex flex-col gap-1 z-50 backdrop-blur-xl"
                                     >
-                                        <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors text-white/70 hover:text-brand-red group w-full text-left">
+                                        <button
+                                            onClick={() => { toggleLanguage(); setIsSettingsOpen(false); }}
+                                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors text-white/70 hover:text-brand-red group w-full text-left"
+                                        >
                                             <div className="w-6 h-6 rounded-md bg-white/5 border border-white/10 flex items-center justify-center text-[9px] font-bold group-hover:border-brand-red/30 transition-colors">
-                                                EN
+                                                {t('nav.languageBadge')}
                                             </div>
-                                            <span className="text-sm font-medium">አማርኛ</span>
+                                            <span className="text-sm font-medium">{t('nav.language')}</span>
                                         </button>
                                         <div className="h-px bg-white/5 my-1 mx-2" />
                                         <Link
@@ -109,7 +114,7 @@ const Navbar = () => {
                                             className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors text-white/70 hover:text-white group w-full text-left"
                                         >
                                             <Shield className="w-4 h-4" />
-                                            <span className="text-sm font-medium">Admin Login</span>
+                                            <span className="text-sm font-medium">{t('nav.adminLogin')}</span>
                                         </Link>
                                     </motion.div>
                                 )}
@@ -120,7 +125,7 @@ const Navbar = () => {
                             href="#register"
                             className="btn-primary py-2.5! px-7! text-sm group"
                         >
-                            <span>Enroll Now</span>
+                            <span>{t('nav.enrollNow')}</span>
                             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </a>
                     </motion.div>
@@ -162,13 +167,14 @@ const Navbar = () => {
 
                                 {/* Mobile Language Switcher */}
                                 <button
+                                    onClick={() => { toggleLanguage(); setIsMobileMenuOpen(false); }}
                                     className="text-lg font-medium text-white/70 hover:text-brand-red transition-colors flex items-center justify-between group"
                                 >
                                     <span className="flex items-center gap-3">
                                         <span className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-[11px] bg-white/5 group-hover:border-brand-red group-hover:text-brand-red transition-all">
-                                            EN
+                                            {t('nav.languageBadge')}
                                         </span>
-                                        አማርኛ (Amharic)
+                                        {t('nav.language')}
                                     </span>
                                 </button>
 
@@ -177,7 +183,7 @@ const Navbar = () => {
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="text-lg font-medium text-white/70 hover:text-brand-red transition-colors flex items-center justify-between group"
                                 >
-                                    <span className="flex items-center gap-2"><ClipboardCheck className="w-5 h-5" /> Check Status</span>
+                                    <span className="flex items-center gap-2"><ClipboardCheck className="w-5 h-5" /> {t('nav.checkStatus')}</span>
                                     <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
                                 </Link>
                                 <Link
@@ -185,7 +191,7 @@ const Navbar = () => {
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="text-lg font-medium text-white/70 hover:text-brand-red transition-colors flex items-center justify-between group"
                                 >
-                                    <span className="flex items-center gap-2"><Shield className="w-5 h-5" /> Admin Login</span>
+                                    <span className="flex items-center gap-2"><Shield className="w-5 h-5" /> {t('nav.adminLogin')}</span>
                                     <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
                                 </Link>
                                 <a
@@ -193,7 +199,7 @@ const Navbar = () => {
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className="btn-primary w-full py-4 text-lg font-bold"
                                 >
-                                    Enroll Now
+                                    {t('nav.enrollNow')}
                                 </a>
                             </div>
                         </div>

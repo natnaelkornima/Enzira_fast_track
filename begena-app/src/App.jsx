@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { LanguageProvider } from './lib/LanguageContext';
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -12,23 +13,25 @@ import CheckStatus from './components/CheckStatus'
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-dark-950">
-        <Routes>
-          <Route path="/" element={
-            <>
-              <Navbar />
-              <Hero />
-              <About />
-              <MarqueeGallery />
-              <RegistrationForm />
-              <Footer />
-            </>
-          } />
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/status" element={<CheckStatus />} />
-        </Routes>
-      </div>
+      <LanguageProvider>
+        <div className="min-h-screen bg-dark-950">
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Navbar />
+                <Hero />
+                <About />
+                <MarqueeGallery />
+                <RegistrationForm />
+                <Footer />
+              </>
+            } />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/status" element={<CheckStatus />} />
+          </Routes>
+        </div>
+      </LanguageProvider>
     </Router>
   )
 }

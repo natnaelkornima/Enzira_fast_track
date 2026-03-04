@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Award, BookOpen, Clock, Play, ArrowRight } from 'lucide-react';
 import RippleGrid from './RippleGrid';
+import { useLanguage } from '../lib/LanguageContext';
 
 const AnimatedLetters = ({ text, className, delay = 0 }) => {
     return (
@@ -48,10 +49,11 @@ const AnimatedWords = ({ text, className, delay = 0 }) => {
 };
 
 const Hero = () => {
+    const { language, t } = useLanguage();
     const stats = [
-        { icon: Award, label: 'Traditional Mastery', value: '100%' },
-        { icon: BookOpen, label: 'Spiritual Paths', value: '12+' },
-        { icon: Clock, label: 'Training Hours', value: '500+' },
+        { icon: Award, label: t('hero.stat1Label'), value: t('hero.stat1Value') },
+        { icon: BookOpen, label: t('hero.stat2Label'), value: t('hero.stat2Value') },
+        { icon: Clock, label: t('hero.stat3Label'), value: t('hero.stat3Value') },
     ];
 
     const containerVariants = {
@@ -93,18 +95,18 @@ const Hero = () => {
                     <span className="group flex items-center gap-2 px-5 py-2 glass rounded-full border border-white/5 hover:border-brand-red/30 transition-all duration-500 cursor-pointer">
                         <div className="w-2 h-2 rounded-full bg-brand-red animate-pulse" />
                         <span className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 group-hover:text-white transition-colors">
-                            Enzira
+                            {t('hero.badge')}
                         </span>
                     </span>
                 </motion.div>
 
                 {/* Main Heading with Letter Animation */}
-                <div className="max-w-5xl mx-auto mb-10">
+                <div key={language} className="max-w-5xl mx-auto mb-10">
                     <h1 className="font-heading text-4xl md:text-6xl lg:text-8xl font-black text-white leading-[0.95] tracking-tighter">
-                        <AnimatedLetters text="Advanced" delay={0.5} />
+                        <AnimatedLetters text={t('hero.headingLine1')} delay={0.5} />
                         <br />
                         <span className="italic inline-block hero-shimmer-text">
-                            <AnimatedLetters text="Enzira Training" delay={0.9} />
+                            <AnimatedLetters text={t('hero.headingLine2')} delay={0.9} />
                         </span>
                     </h1>
                 </div>
@@ -113,8 +115,9 @@ const Hero = () => {
                 <div className="max-w-2xl mx-auto mb-12">
                     <p className="text-white/40 text-lg md:text-xl font-light leading-relaxed">
                         <AnimatedWords
-                            text="Have you ever wondered when you will finally be able to play the Begena fluently? In this advanced Enzira training, we are designed to help you play the Begena with complete dexterity and ease."
+                            text={t('hero.description')}
                             delay={1.6}
+                            key={language + '-desc'}
                         />
                     </p>
                 </div>
@@ -131,7 +134,7 @@ const Hero = () => {
                         whileTap={{ scale: 0.95 }}
                         className="btn-primary px-10 py-5 rounded-full"
                     >
-                        <span>Start Learning</span>
+                        <span>{t('hero.startLearning')}</span>
                         <ArrowRight className="w-5 h-5" />
                     </motion.button>
 
@@ -142,7 +145,7 @@ const Hero = () => {
                     >
                         <div className="absolute inset-0 bg-brand-red/0 group-hover:bg-brand-red/5 transition-colors" />
                         <Play className="w-5 h-5 text-brand-red group-hover:text-white transition-colors relative z-10" />
-                        <span className="relative z-10">Watch Journey</span>
+                        <span className="relative z-10">{t('hero.watchJourney')}</span>
                     </motion.button>
                 </motion.div>
 

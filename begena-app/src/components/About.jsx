@@ -1,31 +1,33 @@
 import { motion } from 'framer-motion';
 import { History, GraduationCap, Music, PlayCircle, Heart, Star, Shield, Sun } from 'lucide-react';
 import begenaImg from '../assets/about-image.jpg';
+import { useLanguage } from '../lib/LanguageContext';
 
 const About = () => {
+    const { t } = useLanguage();
     const features = [
         {
             icon: History,
-            title: "Ancient Roots",
-            description: "Dating back to the time of King David, the Begena is one of Ethiopia's oldest and most revered instruments.",
+            title: t('about.feature1Title'),
+            description: t('about.feature1Desc'),
             color: "brand-red"
         },
         {
             icon: Music,
-            title: "Spiritual Sound",
-            description: "Known as the 'Harp of David', its deep, resonant tones are uniquely designed for meditation and spiritual praise.",
+            title: t('about.feature2Title'),
+            description: t('about.feature2Desc'),
             color: "brand-red"
         },
         {
             icon: GraduationCap,
-            title: "Expert Guidance",
-            description: "Our training program is led by masters who have dedicated their lives to preserving this sacred art.",
+            title: t('about.feature3Title'),
+            description: t('about.feature3Desc'),
             color: "brand-red"
         },
         {
             icon: PlayCircle,
-            title: "Interactive Learning",
-            description: "A comprehensive curriculum that combines traditional techniques with modern pedagogical approaches.",
+            title: t('about.feature4Title'),
+            description: t('about.feature4Desc'),
             color: "brand-red"
         }
     ];
@@ -60,21 +62,21 @@ const About = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <h4 className="text-brand-red font-bold tracking-[0.3em] uppercase text-xs mb-6">Our Legacy</h4>
+                        <h4 className="text-brand-red font-bold tracking-[0.3em] uppercase text-xs mb-6">{t('about.subtitle')}</h4>
                         <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-8 leading-tight">
-                            The Sacred <br />
-                            <span className="italic text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white">Art of Devotion</span>
+                            {t('about.titleLine1')} <br />
+                            <span className="italic text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white">{t('about.titleLine2')}</span>
                         </h2>
                         <p className="text-white/40 text-lg leading-relaxed mb-8 max-w-xl">
-                            The Begena is more than an instrument; it is a gateway to the soul. For millennia, it has been the companion of hermits, kings, and the faithful, resonating through the highlands of Ethiopia.
+                            {t('about.description')}
                         </p>
 
                         <div className="grid grid-cols-2 gap-6">
                             {[
-                                { icon: Shield, label: 'Traditional Preservation' },
-                                { icon: Star, label: 'Spiritual Excellence' },
-                                { icon: Heart, label: 'Community Focused' },
-                                { icon: Sun, label: 'Cultural Heritage' }
+                                { icon: Shield, label: t('about.pill1') },
+                                { icon: Star, label: t('about.pill2') },
+                                { icon: Heart, label: t('about.pill3') },
+                                { icon: Sun, label: t('about.pill4') }
                             ].map((item, i) => (
                                 <div key={i} className="flex items-center gap-3 group">
                                     <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-brand-red/30 transition-all">

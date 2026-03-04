@@ -4,8 +4,10 @@ import {
     Mail, Phone, ArrowUpRight, Heart, Sparkles
 } from 'lucide-react';
 import logoImg from '../assets/enzira-logo.png';
+import { useLanguage } from '../lib/LanguageContext';
 
 const Footer = () => {
+    const { t } = useLanguage();
     const currentYear = new Date().getFullYear();
 
     const socialLinks = [
@@ -40,7 +42,7 @@ const Footer = () => {
                             <img src={logoImg} alt="Enzira Logo" className="h-12 w-auto object-contain" />
                         </motion.div>
                         <p className="text-white/30 text-lg leading-relaxed max-w-md font-light mb-10">
-                            Dedicated to the preservation and teaching of Ethiopia's most sacred musical heritage. Join us in carrying forward the Harp of David.
+                            {t('footer.tagline')}
                         </p>
                         <div className="flex gap-4">
                             {socialLinks.map((social, i) => (
@@ -58,7 +60,7 @@ const Footer = () => {
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="text-xs font-black uppercase tracking-[0.3em] text-white/50 mb-10">Exploration</h4>
+                        <h4 className="text-xs font-black uppercase tracking-[0.3em] text-white/50 mb-10">{t('footer.quickLinks')}</h4>
                         <ul className="space-y-4">
                             {quickLinks.map((link, i) => (
                                 <li key={i}>
@@ -73,7 +75,7 @@ const Footer = () => {
 
                     {/* Contact Info */}
                     <div>
-                        <h4 className="text-xs font-black uppercase tracking-[0.3em] text-white/50 mb-10">Connect</h4>
+                        <h4 className="text-xs font-black uppercase tracking-[0.3em] text-white/50 mb-10">{t('footer.connect')}</h4>
                         <div className="space-y-6">
                             <a href="mailto:info@begena.org" className="flex items-center gap-4 group">
                                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:border-brand-red transition-all">

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User, Phone, Send, Upload, CheckCircle, AlertCircle, Loader2, Globe, Sparkles, ArrowRight, ChevronDown, Search } from 'lucide-react';
 import SuccessModal from './SuccessModal';
 import { supabase } from '../lib/supabase';
+import { useLanguage } from '../lib/LanguageContext';
 
 const countryCodes = [
     { code: '+251', country: 'Ethiopia', iso: 'et' },
@@ -31,6 +32,7 @@ const countryCodes = [
 ];
 
 const RegistrationForm = () => {
+    const { t } = useLanguage();
     const [formData, setFormData] = useState({
         fullName: '',
         countryCode: '+251',
@@ -193,7 +195,7 @@ const RegistrationForm = () => {
                     >
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red text-xs font-bold tracking-widest uppercase mb-6">
                             <Sparkles className="w-3.5 h-3.5" />
-                            Admission Open
+                            {t('registration.sectionSubtitle')}
                         </div>
                         <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-8 leading-tight">
                             Begin Your <br />
@@ -232,15 +234,15 @@ const RegistrationForm = () => {
                         <div className="glass rounded-2xl p-8 md:p-12 border-white/5 relative overflow-hidden">
                             {/* Form Header */}
                             <div className="mb-10">
-                                <h3 className="text-2xl font-bold text-white mb-2">Registration Form</h3>
-                                <p className="text-white/30 text-sm">Please fill in your details accurately.</p>
+                                <h3 className="text-2xl font-bold text-white mb-2">{t('registration.formTitle')}</h3>
+                                <p className="text-white/30 text-sm">{t('registration.formDesc')}</p>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
                                     {/* Full Name */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">Full Name</label>
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.fullName')}</label>
                                         <div className="relative group">
                                             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
                                                 <User className="w-5 h-5" />
@@ -251,7 +253,7 @@ const RegistrationForm = () => {
                                                 name="fullName"
                                                 value={formData.fullName}
                                                 onChange={handleChange}
-                                                placeholder="John Doe"
+                                                placeholder={t('registration.fullNamePlaceholder')}
                                                 className="input-modern"
                                             />
                                         </div>
@@ -259,7 +261,7 @@ const RegistrationForm = () => {
 
                                     {/* Phone Number */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">Phone Number</label>
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.phoneNumber')}</label>
                                         <div className="grid grid-cols-[100px_1fr] gap-4">
                                             <div className="relative" ref={countryPickerRef}>
                                                 <button
@@ -341,7 +343,7 @@ const RegistrationForm = () => {
 
                                     {/* Telegram */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">Telegram Username</label>
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.telegram')}</label>
                                         <div className="relative group">
                                             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
                                                 <Send className="w-5 h-5" />
@@ -360,7 +362,7 @@ const RegistrationForm = () => {
 
                                     {/* Photo Upload */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">Proof of Payment (Screenshot)</label>
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.proofOfPayment')}</label>
                                         <label className="block border-2 border-dashed border-white/20 rounded-2xl p-8 text-center hover:bg-white/5 hover:border-brand-red/30 transition-all cursor-pointer group">
                                             <input
                                                 type="file"
@@ -378,8 +380,8 @@ const RegistrationForm = () => {
                                                         <Upload className="w-6 h-6 text-white/20 group-hover:text-inherit" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-white/60 text-xs font-bold">Select Payment Screenshot</p>
-                                                        <p className="text-white/20 text-[10px] mt-1 uppercase tracking-widest">JPG, PNG receipts up to 5MB</p>
+                                                        <p className="text-white/60 text-xs font-bold">{t('registration.uploadText')}</p>
+                                                        <p className="text-white/20 text-[10px] mt-1 uppercase tracking-widest">{t('registration.uploadHint')}</p>
                                                     </div>
                                                 </div>
                                             )}
@@ -397,7 +399,7 @@ const RegistrationForm = () => {
                                             <Loader2 className="w-6 h-6 animate-spin mx-auto" />
                                         ) : (
                                             <div className="flex items-center justify-center gap-3">
-                                                <span>Confirm Registration</span>
+                                                <span>{t('registration.submitButton')}</span>
                                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                             </div>
                                         )}

@@ -6,6 +6,7 @@ import RegistrationForm from './components/RegistrationForm'
 import Footer from './components/Footer'
 import AdminLogin from './components/admin/AdminLogin'
 import AdminDashboard from './components/admin/AdminDashboard'
+import CheckStatus from './components/CheckStatus'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           } />
           <Route path="/admin" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/status" element={<CheckStatus />} />
         </Routes>
       </div>
     </Router>
@@ -30,3 +32,4 @@ function App() {
 }
 
 export default App
+

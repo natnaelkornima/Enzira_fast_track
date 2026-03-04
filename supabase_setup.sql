@@ -16,7 +16,10 @@ alter table public.registrations enable row level security;
 -- 3. Allow anyone to submit a registration (anonymous inserts)
 create policy "Allow anonymous inserts" on public.registrations for insert to anon with check (true);
 
--- 4. Allow the admin (authenticated user) to read and update registrations
+-- 4. Allow anonymous users to check their registration status
+create policy "Allow anonymous selects" on public.registrations for select to anon using (true);
+
+-- 5. Allow the admin (authenticated user) to read and update registrations
 create policy "Allow authenticated selects" on public.registrations for select to authenticated using (true);
 create policy "Allow authenticated updates" on public.registrations for update to authenticated using (true);
 

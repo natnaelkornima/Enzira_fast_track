@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send } from 'lucide-react';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send, MessageCircle, X, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const AdminDashboard = () => {
     const [registrations, setRegistrations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const [showBroadcast, setShowBroadcast] = useState(false);
+    const [broadcastMessage, setBroadcastMessage] = useState('');
+    const [broadcastStatus, setBroadcastStatus] = useState('idle'); // idle | sending | sent
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -54,7 +55,7 @@ const AdminDashboard = () => {
         navigate('/admin');
     };
 
-    const handleVerifyMode = async (id) => {
+    const handleVerifyPayment = async (id) => {
         try {
             const { error } = await supabase
                 .from('registrations')
@@ -69,46 +70,75 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleBroadcast = () => {
+        if (!broadcastMessage.trim()) return;
+        setBroadcastStatus('sending');
+
+        // Collect all Telegram usernames
+        const telegramUsers = registrations
+            .map(r => r.telegram)
+            .filter(t => t && t.trim() !== '');
+
+        // Build the pre-filled message for Telegram
+        const encodedMessage = encodeURIComponent(broadcastMessage);
+
+        // Open each Telegram user in a new tab with the message
+        // Using Telegram's t.me deep link with ?text= parameter
+        telegramUsers.forEach((username, index) => {
+            const cleanUsername = username.replace('@', '');
+            setTimeout(() => {
+                window.open(`https://t.me/${cleanUsername}?text=${encodedMessage}`, '_blank');
+            }, index * 500); // Stagger to avoid popup blocking
+        });
+
+        setBroadcastStatus('sent');
+        setTimeout(() => {
+            setBroadcastStatus('idle');
+            setShowBroadcast(false);
+            setBroadcastMessage('');
+        }, 2000);
+    };
+
     const downloadPDF = () => {
-        const doc = new jsPDF();
+        // Dynamic import to avoid bundling issues
+        import('jspdf').then(({ default: jsPDF }) => {
+            import('jspdf-autotable').then(() => {
+                const doc = new jsPDF();
 
-        // Add Logo or Header
-        doc.setFontSize(22);
-        doc.setTextColor(152, 28, 0); // brand-red
-        doc.text('Begena Training Registrations', 14, 20);
+                // Header
+                doc.setFontSize(22);
+                doc.setTextColor(152, 28, 0);
+                doc.text('Begena Training Registrations', 14, 20);
 
-        doc.setFontSize(10);
-        doc.setTextColor(100);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
+                doc.setFontSize(10);
+                doc.setTextColor(100);
+                doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
+                doc.text(`Total Registrations: ${filteredRegistrations.length}`, 14, 34);
 
-        // Table configuration
-        const tableColumn = ["#", "Date", "Full Name", "Phone", "Telegram", "Status"];
-        const tableRows = [];
+                // Table
+                const tableColumn = ["#", "Date", "Full Name", "Phone", "Telegram", "Status"];
+                const tableRows = filteredRegistrations.map((r, index) => [
+                    index + 1,
+                    new Date(r.registrationDate).toLocaleDateString(),
+                    r.fullName,
+                    `${r.countryCode} ${r.phoneNumber}`,
+                    r.telegram,
+                    r.status.toUpperCase()
+                ]);
 
-        filteredRegistrations.forEach((r, index) => {
-            const regDate = new Date(r.registrationDate).toLocaleDateString();
-            const rowData = [
-                index + 1,
-                regDate,
-                r.fullName,
-                `${r.countryCode} ${r.phoneNumber}`,
-                r.telegram,
-                r.status.toUpperCase()
-            ];
-            tableRows.push(rowData);
+                doc.autoTable({
+                    head: [tableColumn],
+                    body: tableRows,
+                    startY: 42,
+                    theme: 'grid',
+                    headStyles: { fillColor: [152, 28, 0] },
+                    alternateRowStyles: { fillColor: [245, 245, 245] },
+                    styles: { fontSize: 9 }
+                });
+
+                doc.save(`begena-registrations-${new Date().toISOString().split('T')[0]}.pdf`);
+            });
         });
-
-        doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: 40,
-            theme: 'grid',
-            headStyles: { fillColor: [152, 28, 0] },
-            alternateRowStyles: { fillColor: [245, 245, 245] },
-            styles: { fontSize: 9 }
-        });
-
-        doc.save(`begena-registrations-${new Date().toISOString().split('T')[0]}.pdf`);
     };
 
     const filteredRegistrations = registrations.filter(r =>
@@ -136,7 +166,11 @@ const AdminDashboard = () => {
                         <span className="text-white/40 text-xs tracking-widest uppercase">Owner Dashboard</span>
                     </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
+                    <button onClick={() => setShowBroadcast(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 transition-all text-sm font-bold text-blue-400">
+                        <MessageCircle className="w-4 h-4" />
+                        <span className="hidden sm:inline">Broadcast</span>
+                    </button>
                     <button onClick={downloadPDF} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-sm font-bold">
                         <FileDown className="w-4 h-4 text-brand-red" />
                         <span className="hidden sm:inline">Export PDF</span>
@@ -146,6 +180,75 @@ const AdminDashboard = () => {
                     </button>
                 </div>
             </nav>
+
+            {/* Telegram Broadcast Modal */}
+            <AnimatePresence>
+                {showBroadcast && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-100 flex items-center justify-center p-4"
+                        onClick={() => setShowBroadcast(false)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full max-w-lg glass rounded-3xl p-8 border border-white/10"
+                        >
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                                        <MessageCircle className="w-5 h-5 text-blue-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-lg">Telegram Broadcast</h3>
+                                        <p className="text-white/40 text-xs">Send a message to all {registrations.length} registered students</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setShowBroadcast(false)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </div>
+
+                            <textarea
+                                value={broadcastMessage}
+                                onChange={(e) => setBroadcastMessage(e.target.value)}
+                                placeholder="Type your message here... (e.g., 'Classes start on Monday at 9 AM!')"
+                                rows={5}
+                                className="w-full p-4 rounded-2xl bg-dark-900 border border-white/5 text-white placeholder-white/20 focus:outline-hidden focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-none text-sm mb-6"
+                            />
+
+                            <div className="flex items-center justify-between">
+                                <p className="text-white/30 text-xs">
+                                    This will open Telegram chats with pre-filled messages for each student.
+                                </p>
+                                <button
+                                    onClick={handleBroadcast}
+                                    disabled={!broadcastMessage.trim() || broadcastStatus === 'sending'}
+                                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm transition-all disabled:opacity-50"
+                                >
+                                    {broadcastStatus === 'sending' ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : broadcastStatus === 'sent' ? (
+                                        <>
+                                            <CheckCircle className="w-4 h-4" />
+                                            Sent!
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send className="w-4 h-4" />
+                                            Send to All
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-6 md:px-12 py-10 relative z-10">
@@ -247,11 +350,11 @@ const AdminDashboard = () => {
                                         <td className="px-6 py-4 text-right">
                                             {r.status === 'pending' && (
                                                 <button
-                                                    onClick={() => handleVerifyMode(r._id)}
+                                                    onClick={() => handleVerifyPayment(r._id)}
                                                     className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 text-xs font-bold transition-colors"
                                                 >
                                                     <CheckCircle className="w-3.5 h-3.5" />
-                                                    Verify Payment
+                                                    Approve
                                                 </button>
                                             )}
                                         </td>

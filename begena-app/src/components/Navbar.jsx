@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Music, ChevronRight } from 'lucide-react';
+import { Menu, X, Music, ChevronRight, Shield, ClipboardCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -62,12 +63,26 @@ const Navbar = () => {
                         ))}
                     </div>
 
-                    {/* Desktop Action */}
+                    {/* Desktop Actions */}
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="hidden md:block"
+                        className="hidden md:flex items-center gap-3"
                     >
+                        <Link
+                            to="/status"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/5 border border-white/5 text-white/60 hover:text-white hover:border-white/10 transition-all text-sm font-medium"
+                        >
+                            <ClipboardCheck className="w-4 h-4" />
+                            Check Status
+                        </Link>
+                        <Link
+                            to="/admin"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/5 border border-white/5 text-white/60 hover:text-white hover:border-white/10 transition-all text-sm font-medium"
+                        >
+                            <Shield className="w-4 h-4" />
+                            Admin
+                        </Link>
                         <a
                             href="#register"
                             className="btn-primary py-2.5! px-7! text-sm group"
@@ -111,6 +126,22 @@ const Navbar = () => {
                                         <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
                                     </a>
                                 ))}
+                                <Link
+                                    to="/status"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="text-lg font-medium text-white/70 hover:text-brand-red transition-colors flex items-center justify-between group"
+                                >
+                                    <span className="flex items-center gap-2"><ClipboardCheck className="w-5 h-5" /> Check Status</span>
+                                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                                </Link>
+                                <Link
+                                    to="/admin"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="text-lg font-medium text-white/70 hover:text-brand-red transition-colors flex items-center justify-between group"
+                                >
+                                    <span className="flex items-center gap-2"><Shield className="w-5 h-5" /> Admin Login</span>
+                                    <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                                </Link>
                                 <a
                                     href="#register"
                                     onClick={() => setIsMobileMenuOpen(false)}

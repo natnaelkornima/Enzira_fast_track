@@ -72,6 +72,23 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleDeclinePayment = async (id) => {
+        if (!window.confirm('Are you sure you want to decline this payment? This action cannot be undone.')) return;
+
+        try {
+            const { error } = await supabase
+                .from('registrations')
+                .update({ status: 'declined' })
+                .eq('id', id);
+
+            if (!error) {
+                setRegistrations(prev => prev.map(r => r._id === id ? { ...r, status: 'declined' } : r));
+            }
+        } catch (error) {
+            console.error('Error declining registration:', error);
+        }
+    };
+
     const handleBroadcast = () => {
         if (!broadcastMessage.trim()) return;
         setBroadcastStatus('sending');
@@ -250,18 +267,22 @@ const AdminDashboard = () => {
             {/* Main Content */}
             <main className="max-w-7xl mx-auto px-6 md:px-12 py-10 relative z-10">
                 {/* Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-10">
                     <div className="glass rounded-3xl p-6 border-white/5">
-                        <h3 className="text-white/40 text-sm font-bold uppercase tracking-widest mb-1">Total Students</h3>
+                        <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Total Students</h3>
                         <p className="text-4xl font-black">{registrations.length}</p>
                     </div>
                     <div className="glass rounded-3xl p-6 border-white/5">
-                        <h3 className="text-white/40 text-sm font-bold uppercase tracking-widest mb-1">Verified</h3>
+                        <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Verified</h3>
                         <p className="text-4xl font-black text-green-400">{registrations.filter(r => r.status === 'verified').length}</p>
                     </div>
                     <div className="glass rounded-3xl p-6 border-white/5">
-                        <h3 className="text-white/40 text-sm font-bold uppercase tracking-widest mb-1">Pending</h3>
-                        <p className="text-4xl font-black text-brand-red">{registrations.filter(r => r.status === 'pending').length}</p>
+                        <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Pending</h3>
+                        <p className="text-4xl font-black text-yellow-400">{registrations.filter(r => r.status === 'pending').length}</p>
+                    </div>
+                    <div className="glass rounded-3xl p-6 border-white/5">
+                        <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Declined</h3>
+                        <p className="text-4xl font-black text-brand-red">{registrations.filter(r => r.status === 'declined').length}</p>
                     </div>
                 </div>
 
@@ -339,20 +360,36 @@ const AdminDashboard = () => {
                                             </a>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${r.status === 'verified' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-brand-red/10 text-brand-red border border-brand-red/20'}`}>
-                                                {r.status === 'verified' ? <CheckCircle className="w-3 h-3" /> : <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />}
+                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${r.status === 'verified' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
+                                                    r.status === 'declined' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                                                        'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                                                }`}>
+                                                {r.status === 'verified' ? <CheckCircle className="w-3 h-3" /> :
+                                                    r.status === 'declined' ? <X className="w-3 h-3" /> :
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />}
                                                 {r.status}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             {r.status === 'pending' && (
-                                                <button
-                                                    onClick={() => handleVerifyPayment(r._id)}
-                                                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 text-xs font-bold transition-colors"
-                                                >
-                                                    <CheckCircle className="w-3.5 h-3.5" />
-                                                    Approve
-                                                </button>
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <button
+                                                        onClick={() => handleVerifyPayment(r._id)}
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 text-[11px] font-bold transition-colors"
+                                                        title="Approve Payment"
+                                                    >
+                                                        <CheckCircle className="w-3.5 h-3.5" />
+                                                        Approve
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeclinePayment(r._id)}
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[11px] font-bold transition-colors"
+                                                        title="Decline Payment"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                        Decline
+                                                    </button>
+                                                </div>
                                             )}
                                         </td>
                                     </motion.tr>

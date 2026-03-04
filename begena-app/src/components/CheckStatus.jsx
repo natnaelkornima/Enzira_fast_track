@@ -142,7 +142,9 @@ const CheckStatus = () => {
                             {/* Status Badge */}
                             <div className={`p-4 rounded-2xl flex items-center gap-3 ${result.status === 'verified'
                                     ? 'bg-green-500/10 border border-green-500/20'
-                                    : 'bg-yellow-500/10 border border-yellow-500/20'
+                                    : result.status === 'declined'
+                                        ? 'bg-red-500/10 border border-red-500/20'
+                                        : 'bg-yellow-500/10 border border-yellow-500/20'
                                 }`}>
                                 {result.status === 'verified' ? (
                                     <>
@@ -150,6 +152,14 @@ const CheckStatus = () => {
                                         <div>
                                             <p className="text-green-400 font-bold text-sm">Payment Verified ✓</p>
                                             <p className="text-green-400/60 text-xs">Your registration has been approved. Welcome aboard!</p>
+                                        </div>
+                                    </>
+                                ) : result.status === 'declined' ? (
+                                    <>
+                                        <AlertCircle className="w-6 h-6 text-red-400" />
+                                        <div>
+                                            <p className="text-red-400 font-bold text-sm">Payment Declined ✗</p>
+                                            <p className="text-red-400/60 text-xs">The payment screenshot was deemed invalid. Please try registering again or contact support.</p>
                                         </div>
                                     </>
                                 ) : (

@@ -25,6 +25,17 @@ const AdminLogin = () => {
                 setError(signInError.message || 'Invalid credentials');
                 setStatus('error');
             } else if (data.session) {
+                // Application-level security check: Only allow the specific admin email
+                const ALLOWED_ADMIN_EMAIL = 'admin@begena.com';
+
+                if (data.session.user.email !== ALLOWED_ADMIN_EMAIL) {
+                    // Force logout the unauthorized user immediately
+                    await supabase.auth.signOut();
+                    setError('Access denied. This portal is restricted to authorized administrators only.');
+                    setStatus('error');
+                    return;
+                }
+
                 setStatus('success');
                 navigate('/admin/dashboard');
             }

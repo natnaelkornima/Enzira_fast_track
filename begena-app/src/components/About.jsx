@@ -98,7 +98,7 @@ const About = () => {
                             <img
                                 src={begenaImg}
                                 alt="Begena Strings"
-                                className="w-full h-full object-contain rounded-3xl grayscale group-hover:grayscale-0 transition-all duration-700"
+                                className="w-[600px] h-[600px] object-contain rounded-3xl grayscale group-hover:grayscale-0 transition-all duration-700"
                             />
                             {/* Decorative Frame */}
                             <div className="absolute top-6 left-6 w-16 h-16 border-t-[3px] border-l-[3px] border-brand-red/80 rounded-tl-3xl z-20 transition-all duration-500 group-hover:scale-110 group-hover:-translate-x-2 group-hover:-translate-y-2" />

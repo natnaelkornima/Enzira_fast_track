@@ -159,3 +159,22 @@ body {
   background: var(--color-brand-red);
   border-radius: 10px;
 }
+
+@keyframes marquee-3d {
+  0% {
+    transform: translateX(0) rotateX(5deg) rotateY(-5deg) rotateZ(2deg);
+  }
+
+  100% {
+    transform: translateX(-50%) rotateX(5deg) rotateY(-5deg) rotateZ(2deg);
+  }
+}
+
+.animate-marquee-3d {
+  animation: marquee-3d 40s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-3d:hover {
+  animation-play-state: paused;
+}

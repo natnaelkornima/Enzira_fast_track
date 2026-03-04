@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
+import MarqueeGallery from './components/MarqueeGallery'
 import RegistrationForm from './components/RegistrationForm'
 import Footer from './components/Footer'
 import AdminLogin from './components/admin/AdminLogin'
@@ -18,6 +19,7 @@ function App() {
               <Navbar />
               <Hero />
               <About />
+              <MarqueeGallery />
               <RegistrationForm />
               <Footer />
             </>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send, MessageCircle, X, Loader2 } from 'lucide-react';
+import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send, MessageCircle, X, Loader2, Trash2, ExternalLink } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '../../lib/supabase';
@@ -102,12 +102,11 @@ const AdminDashboard = () => {
         const encodedMessage = encodeURIComponent(broadcastMessage);
 
         // Open each Telegram user in a new tab with the message
-        // Using Telegram's t.me deep link with ?text= parameter
         telegramUsers.forEach((username, index) => {
             const cleanUsername = username.replace('@', '');
             setTimeout(() => {
                 window.open(`https://t.me/${cleanUsername}?text=${encodedMessage}`, '_blank');
-            }, index * 500); // Stagger to avoid popup blocking
+            }, index * 500);
         });
 
         setBroadcastStatus('sent');
@@ -116,6 +115,29 @@ const AdminDashboard = () => {
             setShowBroadcast(false);
             setBroadcastMessage('');
         }, 2000);
+    };
+
+    const handleSendDM = (telegram) => {
+        if (!telegram) return;
+        const cleanUsername = telegram.replace('@', '');
+        window.open(`https://t.me/${cleanUsername}`, '_blank');
+    };
+
+    const handleDeleteUser = async (id) => {
+        if (!window.confirm('Are you sure you want to permanently remove this student? This action cannot be undone.')) return;
+
+        try {
+            const { error } = await supabase
+                .from('registrations')
+                .delete()
+                .eq('id', id);
+
+            if (!error) {
+                setRegistrations(prev => prev.filter(r => r._id !== id));
+            }
+        } catch (error) {
+            console.error('Error deleting registration:', error);
+        }
     };
 
     const downloadPDF = () => {
@@ -232,12 +254,34 @@ const AdminDashboard = () => {
                                 onChange={(e) => setBroadcastMessage(e.target.value)}
                                 placeholder="Type your message here... (e.g., 'Classes start on Monday at 9 AM!')"
                                 rows={5}
-                                className="w-full p-4 rounded-2xl bg-dark-900 border border-white/5 text-white placeholder-white/20 focus:outline-hidden focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-none text-sm mb-6"
+                                className="w-full p-4 rounded-xl bg-dark-900 border border-white/5 text-white placeholder-white/20 focus:outline-hidden focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-none text-sm mb-4"
                             />
+
+                            {/* Quick Template Buttons */}
+                            <div className="mb-6">
+                                <p className="text-white/30 text-[10px] uppercase tracking-widest font-bold mb-2">Quick Templates</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {[
+                                        '📢 Class starts tomorrow at 9 AM. Please be on time!',
+                                        '✅ Your payment has been verified. Welcome to Enzira!',
+                                        '📅 Reminder: Submit your materials before the deadline.',
+                                        '🎉 Congratulations on completing the course!'
+                                    ].map((template, i) => (
+                                        <button
+                                            key={i}
+                                            type="button"
+                                            onClick={() => setBroadcastMessage(template)}
+                                            className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-blue-500/10 border border-white/5 hover:border-blue-500/20 text-white/50 hover:text-blue-400 text-[11px] transition-all"
+                                        >
+                                            {template.slice(0, 40)}...
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
 
                             <div className="flex items-center justify-between">
                                 <p className="text-white/30 text-xs">
-                                    This will open Telegram chats with pre-filled messages for each student.
+                                    Sends to {registrations.filter(r => r.telegram && r.telegram.trim() !== '').length} students with Telegram.
                                 </p>
                                 <button
                                     onClick={handleBroadcast}
@@ -371,26 +415,46 @@ const AdminDashboard = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            {r.status === 'pending' && (
-                                                <div className="flex items-center justify-end gap-2">
+                                            <div className="flex items-center justify-end gap-2">
+                                                {r.status === 'pending' && (
+                                                    <>
+                                                        <button
+                                                            onClick={() => handleVerifyPayment(r._id)}
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 text-[11px] font-bold transition-colors"
+                                                            title="Approve Payment"
+                                                        >
+                                                            <CheckCircle className="w-3.5 h-3.5" />
+                                                            Approve
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeclinePayment(r._id)}
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[11px] font-bold transition-colors"
+                                                            title="Decline Payment"
+                                                        >
+                                                            <X className="w-3.5 h-3.5" />
+                                                            Decline
+                                                        </button>
+                                                    </>
+                                                )}
+                                                {r.telegram && (
                                                     <button
-                                                        onClick={() => handleVerifyPayment(r._id)}
-                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 text-[11px] font-bold transition-colors"
-                                                        title="Approve Payment"
+                                                        onClick={() => handleSendDM(r.telegram)}
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-[11px] font-bold transition-colors"
+                                                        title="Send Telegram DM"
                                                     >
-                                                        <CheckCircle className="w-3.5 h-3.5" />
-                                                        Approve
+                                                        <ExternalLink className="w-3.5 h-3.5" />
+                                                        DM
                                                     </button>
-                                                    <button
-                                                        onClick={() => handleDeclinePayment(r._id)}
-                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[11px] font-bold transition-colors"
-                                                        title="Decline Payment"
-                                                    >
-                                                        <X className="w-3.5 h-3.5" />
-                                                        Decline
-                                                    </button>
-                                                </div>
-                                            )}
+                                                )}
+                                                <button
+                                                    onClick={() => handleDeleteUser(r._id)}
+                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/40 hover:text-red-400 text-[11px] font-bold transition-colors"
+                                                    title="Remove Student"
+                                                >
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                    Remove
+                                                </button>
+                                            </div>
                                         </td>
                                     </motion.tr>
                                 ))}

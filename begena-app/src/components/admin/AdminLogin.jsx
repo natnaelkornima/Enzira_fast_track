@@ -10,6 +10,8 @@ const AdminLogin = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    const blockClipboard = (e) => e.preventDefault();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus('loading');
@@ -75,8 +77,11 @@ const AdminLogin = () => {
                                 required
                                 value={credentials.email}
                                 onChange={e => setCredentials({ ...credentials, email: e.target.value })}
-                                placeholder="admin@begena.com"
-                                className="w-full pr-6 pl-14 py-4 rounded-2xl bg-dark-900 border border-white/5 text-white placeholder-white/20 transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10"
+                                onCopy={blockClipboard}
+                                onPaste={blockClipboard}
+                                onCut={blockClipboard}
+                                placeholder="Add your email"
+                                className="w-full pr-6 pl-14 py-4 rounded-xl bg-dark-900 border border-white/5 text-white placeholder-white/20 transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10"
                             />
                         </div>
                     </div>
@@ -92,8 +97,11 @@ const AdminLogin = () => {
                                 required
                                 value={credentials.password}
                                 onChange={e => setCredentials({ ...credentials, password: e.target.value })}
+                                onCopy={blockClipboard}
+                                onPaste={blockClipboard}
+                                onCut={blockClipboard}
                                 placeholder="••••••••"
-                                className="w-full pr-6 pl-14 py-4 rounded-2xl bg-dark-900 border border-white/5 text-white placeholder-white/20 transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10"
+                                className="w-full pr-6 pl-14 py-4 rounded-xl bg-dark-900 border border-white/5 text-white placeholder-white/20 transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10"
                             />
                         </div>
                     </div>
@@ -102,7 +110,7 @@ const AdminLogin = () => {
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-500 text-sm"
+                            className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-500 text-sm"
                         >
                             <AlertCircle className="w-4 h-4 shrink-0" />
                             {error}
@@ -112,7 +120,7 @@ const AdminLogin = () => {
                     <button
                         type="submit"
                         disabled={status === 'loading'}
-                        className="w-full py-4 rounded-2xl bg-brand-red text-white font-bold tracking-wide hover:shadow-[0_0_30px_rgba(152,28,0,0.3)] transition-all flex items-center justify-center gap-3 group disabled:opacity-50"
+                        className="w-full py-4 rounded-xl bg-brand-red text-white font-bold tracking-wide hover:shadow-[0_0_30px_rgba(152,28,0,0.3)] transition-all flex items-center justify-center gap-3 group disabled:opacity-50"
                     >
                         {status === 'loading' ? (
                             <Loader2 className="w-5 h-5 animate-spin" />

@@ -240,7 +240,7 @@ const RegistrationForm = () => {
                                 <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
                                     {/* Full Name */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Full Name</label>
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">Full Name</label>
                                         <div className="relative group">
                                             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
                                                 <User className="w-5 h-5" />
@@ -259,13 +259,13 @@ const RegistrationForm = () => {
 
                                     {/* Phone Number */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Phone Number</label>
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">Phone Number</label>
                                         <div className="grid grid-cols-[100px_1fr] gap-4">
                                             <div className="relative" ref={countryPickerRef}>
                                                 <button
                                                     type="button"
                                                     onClick={() => setIsCountryPickerOpen(!isCountryPickerOpen)}
-                                                    className="w-full h-full bg-dark-900 border border-white/5 rounded-2xl pl-12 pr-4 text-xs text-white appearance-none focus:outline-hidden focus:border-brand-red flex items-center justify-between transition-all"
+                                                    className="w-full h-full bg-dark-900 border border-white/20 rounded-2xl pl-12 pr-4 text-xs text-white appearance-none focus:outline-hidden focus:border-brand-red flex items-center justify-between transition-all"
                                                 >
                                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-4 flex items-center justify-center rounded-[2px] overflow-hidden">
                                                         <img src={`https://flagcdn.com/w20/${selectedCountry.iso}.png`} srcSet={`https://flagcdn.com/w40/${selectedCountry.iso}.png 2x`} alt={selectedCountry.country} className="w-full h-full object-cover" />
@@ -341,7 +341,7 @@ const RegistrationForm = () => {
 
                                     {/* Telegram */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Telegram Username</label>
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">Telegram Username</label>
                                         <div className="relative group">
                                             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
                                                 <Send className="w-5 h-5" />
@@ -360,8 +360,8 @@ const RegistrationForm = () => {
 
                                     {/* Photo Upload */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Proof of Payment (Screenshot)</label>
-                                        <label className="block border-2 border-dashed border-white/5 rounded-4xl p-8 text-center hover:bg-white/5 hover:border-brand-red/30 transition-all cursor-pointer group">
+                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">Proof of Payment (Screenshot)</label>
+                                        <label className="block border-2 border-dashed border-white/20 rounded-4xl p-8 text-center hover:bg-white/5 hover:border-brand-red/30 transition-all cursor-pointer group">
                                             <input
                                                 type="file"
                                                 accept="image/*"

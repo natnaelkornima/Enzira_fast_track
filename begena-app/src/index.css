@@ -116,7 +116,7 @@
   }
 
   .input-modern {
-    @apply w-full pr-6 pl-14 py-4 rounded-2xl bg-dark-900 border border-white/5 text-white placeholder-white/20 transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10;
+    @apply w-full pr-6 pl-14 py-4 rounded-2xl bg-dark-900 border border-white/20 text-white placeholder-white/40 transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10;
   }
 
   .section-container {

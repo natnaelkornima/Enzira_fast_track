@@ -181,3 +181,27 @@ body {
     transform: translateX(0);
   }
 }
+
+@keyframes hero-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.hero-shimmer-text {
+  background: linear-gradient(90deg,
+      var(--color-brand-red) 0%,
+      #c22b0a 25%,
+      #ffffff 50%,
+      #c22b0a 75%,
+      var(--color-brand-red) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hero-shimmer 4s ease-in-out infinite;
+}

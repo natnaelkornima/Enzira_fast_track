@@ -2,6 +2,51 @@ import { motion } from 'framer-motion';
 import { Award, BookOpen, Clock, Play, ArrowRight } from 'lucide-react';
 import RippleGrid from './RippleGrid';
 
+const AnimatedLetters = ({ text, className, delay = 0 }) => {
+    return (
+        <span className={className}>
+            {text.split('').map((char, i) => (
+                <motion.span
+                    key={i}
+                    initial={{ opacity: 0, y: 40, rotateX: -90 }}
+                    animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                    transition={{
+                        duration: 0.6,
+                        delay: delay + i * 0.04,
+                        ease: [0.16, 1, 0.3, 1]
+                    }}
+                    style={{ display: 'inline-block', transformOrigin: 'bottom' }}
+                >
+                    {char === ' ' ? '\u00A0' : char}
+                </motion.span>
+            ))}
+        </span>
+    );
+};
+
+const AnimatedWords = ({ text, className, delay = 0 }) => {
+    const words = text.split(' ');
+    return (
+        <span className={className}>
+            {words.map((word, i) => (
+                <motion.span
+                    key={i}
+                    initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    transition={{
+                        duration: 0.7,
+                        delay: delay + i * 0.06,
+                        ease: [0.16, 1, 0.3, 1]
+                    }}
+                    style={{ display: 'inline-block', marginRight: '0.3em' }}
+                >
+                    {word}
+                </motion.span>
+            ))}
+        </span>
+    );
+};
+
 const Hero = () => {
     const stats = [
         { icon: Award, label: 'Traditional Mastery', value: '100%' },
@@ -31,15 +76,6 @@ const Hero = () => {
 
     return (
         <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-950 pt-32 lg:pt-40">
-            {/* Ripple Grid Background */}
-            {/* <RippleGrid
-                gridColor="#981c00"
-                rippleColor="#ffffff"
-                opacity={0.15}
-                gridSize={60}
-                rippleIntensity={15}
-            /> */}
-
             {/* Background Glows */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-7xl pointer-events-none">
                 <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-red/10 rounded-full blur-[120px] animate-glow" />
@@ -62,26 +98,34 @@ const Hero = () => {
                     </span>
                 </motion.div>
 
-                {/* Main Heading */}
-                <motion.div variants={itemVariants} className="max-w-5xl mx-auto mb-10">
+                {/* Main Heading with Letter Animation */}
+                <div className="max-w-5xl mx-auto mb-10">
                     <h1 className="font-heading text-4xl md:text-6xl lg:text-8xl font-black text-white leading-[0.95] tracking-tighter">
-                        Advanced<br />
-                        <span className="italic text-transparent bg-clip-text bg-linear-to-r from-brand-red via-brand-red-light to-white">
-                            Enzira Training
+                        <AnimatedLetters text="Advanced" delay={0.5} />
+                        <br />
+                        <span className="italic inline-block hero-shimmer-text">
+                            <AnimatedLetters text="Enzira Training" delay={0.9} />
                         </span>
                     </h1>
-                </motion.div>
+                </div>
 
-                {/* Description */}
-                <motion.div variants={itemVariants} className="max-w-2xl mx-auto mb-12">
+                {/* Description with Word Animation */}
+                <div className="max-w-2xl mx-auto mb-12">
                     <p className="text-white/40 text-lg md:text-xl font-light leading-relaxed">
-                        Have you ever wondered when you will finally be able to play the Begena fluently? In this advanced Enzira training, we are designed
-                        to help you play the Begena with complete dexterity and ease.
+                        <AnimatedWords
+                            text="Have you ever wondered when you will finally be able to play the Begena fluently? In this advanced Enzira training, we are designed to help you play the Begena with complete dexterity and ease."
+                            delay={1.6}
+                        />
                     </p>
-                </motion.div>
+                </div>
 
                 {/* CTA Buttons */}
-                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-20">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 2.4, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-20"
+                >
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -104,7 +148,9 @@ const Hero = () => {
 
                 {/* Stats */}
                 <motion.div
-                    variants={itemVariants}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 2.8, ease: [0.16, 1, 0.3, 1] }}
                     className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto border-t border-white/5 pt-12"
                 >
                     {stats.map((stat, index) => (

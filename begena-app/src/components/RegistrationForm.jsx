@@ -119,10 +119,15 @@ const RegistrationForm = () => {
 
             const { error: uploadError } = await supabase.storage
                 .from('receipts')
-                .upload(fileName, formData.photo)
+                .upload(fileName, formData.photo, {
+                    cacheControl: '3600',
+                    upsert: false,
+                    contentType: formData.photo.type
+                })
 
             if (uploadError) {
-                throw new Error('Failed to upload screenshot. Please try again.');
+                console.error('Upload error:', uploadError);
+                throw new Error(uploadError.message || 'Failed to upload screenshot. Please try again.');
             }
 
             const { data: publicUrlData } = supabase.storage

@@ -160,21 +160,22 @@ body {
   border-radius: 10px;
 }
 
-@keyframes marquee-fast {
+@keyframes marquee-forward {
   0% {
     transform: translateX(0);
   }
 
   100% {
-    transform: translateX(-50%);
+    transform: translateX(-33.333%);
   }
 }
 
-.animate-marquee-fast {
-  animation: marquee-fast 30s linear infinite;
-  will-change: transform;
-}
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-33.333%);
+  }
 
-.animate-marquee-fast:hover {
-  animation-play-state: paused;
+  100% {
+    transform: translateX(0);
+  }
 }

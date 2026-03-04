@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Music, ChevronRight, Shield, ClipboardCheck } from 'lucide-react';
+import { Menu, X, ChevronRight, Shield, ClipboardCheck, Settings, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/enzira-logo.png';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -29,8 +30,8 @@ const Navbar = () => {
                 }`}
         >
             <div className={`max-w-7xl mx-auto transition-all duration-500 ${isScrolled
-                ? 'glass rounded-4xl px-8 py-3 shadow-2xl border-none'
-                : 'bg-transparent py-5'
+                ? 'bg-dark-950/90 rounded-4xl px-8 py-3 shadow-2xl backdrop-blur-xl border border-transparent'
+                : 'bg-transparent py-5 border border-transparent'
                 }`}>
                 <div className="flex items-center justify-between">
                     {/* Logo */}
@@ -58,19 +59,6 @@ const Navbar = () => {
                             </motion.a>
                         ))}
 
-                        {/* Language Switcher */}
-                        <motion.button
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 }}
-                            className="flex items-center gap-2 text-sm font-medium text-white/60 hover:text-white transition-colors group relative"
-                        >
-                            <span className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-[10px] bg-white/5 group-hover:border-brand-red group-hover:text-brand-red transition-all">
-                                EN
-                            </span>
-                            <span>አማርኛ</span>
-                            <span className="absolute -bottom-1 left-0 w-0 h-px bg-brand-red transition-all duration-300 group-hover:w-full" />
-                        </motion.button>
                     </div>
 
                     {/* Desktop Actions */}
@@ -86,13 +74,48 @@ const Navbar = () => {
                             <ClipboardCheck className="w-4 h-4" />
                             Check Status
                         </Link>
-                        <Link
-                            to="/admin"
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/5 border border-white/5 text-white/60 hover:text-white hover:border-white/10 transition-all text-sm font-medium"
-                        >
-                            <Shield className="w-4 h-4" />
-                            Admin
-                        </Link>
+
+                        {/* Settings Dropdown */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                                className={`p-2.5 rounded-2xl border transition-all ${isSettingsOpen
+                                        ? 'bg-white/10 border-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.1)]'
+                                        : 'bg-white/5 border-white/5 text-white/60 hover:text-white hover:border-white/10'
+                                    }`}
+                            >
+                                <Settings className={`w-5 h-5 transition-transform duration-500 ${isSettingsOpen ? 'rotate-90' : ''}`} />
+                            </button>
+
+                            <AnimatePresence>
+                                {isSettingsOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute right-0 top-full mt-2 w-48 bg-dark-900 border border-white/10 rounded-2xl p-2 shadow-2xl flex flex-col gap-1 z-50 backdrop-blur-xl"
+                                    >
+                                        <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors text-white/70 hover:text-brand-red group w-full text-left">
+                                            <div className="w-6 h-6 rounded-md bg-white/5 border border-white/10 flex items-center justify-center text-[9px] font-bold group-hover:border-brand-red/30 transition-colors">
+                                                EN
+                                            </div>
+                                            <span className="text-sm font-medium">አማርኛ</span>
+                                        </button>
+                                        <div className="h-px bg-white/5 my-1 mx-2" />
+                                        <Link
+                                            to="/admin"
+                                            onClick={() => setIsSettingsOpen(false)}
+                                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 transition-colors text-white/70 hover:text-white group w-full text-left"
+                                        >
+                                            <Shield className="w-4 h-4" />
+                                            <span className="text-sm font-medium">Admin Login</span>
+                                        </Link>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
                         <a
                             href="#register"
                             className="btn-primary py-2.5! px-7! text-sm group"

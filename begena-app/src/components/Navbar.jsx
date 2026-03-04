@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Music, ChevronRight, Shield, ClipboardCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/enzira-logo.png';
-import logoImg from '../assets/enzira-logo.png';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -30,7 +29,7 @@ const Navbar = () => {
                 }`}
         >
             <div className={`max-w-7xl mx-auto transition-all duration-500 ${isScrolled
-                ? 'glass rounded-4xl px-8 py-3 shadow-2xl'
+                ? 'glass rounded-4xl px-8 py-3 shadow-2xl border-none'
                 : 'bg-transparent py-5'
                 }`}>
                 <div className="flex items-center justify-between">
@@ -40,7 +39,7 @@ const Navbar = () => {
                         animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-3 group cursor-pointer"
                     >
-                        <img src={logoImg} alt="Enzira Logo" className="h-10 w-auto object-contain" />
+                        <img src={logoImg} alt="Enzira Logo" className="h-14 w-auto object-contain transition-transform duration-500 group-hover:scale-105" />
                     </motion.div>
 
                     {/* Desktop Navigation */}
@@ -58,6 +57,20 @@ const Navbar = () => {
                                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-brand-red transition-all duration-300 group-hover:w-full" />
                             </motion.a>
                         ))}
+
+                        {/* Language Switcher */}
+                        <motion.button
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                            className="flex items-center gap-2 text-sm font-medium text-white/60 hover:text-white transition-colors group relative"
+                        >
+                            <span className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-[10px] bg-white/5 group-hover:border-brand-red group-hover:text-brand-red transition-all">
+                                EN
+                            </span>
+                            <span>አማርኛ</span>
+                            <span className="absolute -bottom-1 left-0 w-0 h-px bg-brand-red transition-all duration-300 group-hover:w-full" />
+                        </motion.button>
                     </div>
 
                     {/* Desktop Actions */}
@@ -123,6 +136,19 @@ const Navbar = () => {
                                         <ChevronRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
                                     </a>
                                 ))}
+
+                                {/* Mobile Language Switcher */}
+                                <button
+                                    className="text-lg font-medium text-white/70 hover:text-brand-red transition-colors flex items-center justify-between group"
+                                >
+                                    <span className="flex items-center gap-3">
+                                        <span className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center text-[11px] bg-white/5 group-hover:border-brand-red group-hover:text-brand-red transition-all">
+                                            EN
+                                        </span>
+                                        አማርኛ (Amharic)
+                                    </span>
+                                </button>
+
                                 <Link
                                     to="/status"
                                     onClick={() => setIsMobileMenuOpen(false)}

@@ -4,7 +4,6 @@ import {
     Mail, Phone, ArrowUpRight, Heart, Sparkles
 } from 'lucide-react';
 import logoImg from '../assets/enzira-logo.png';
-import logoImg from '../assets/enzira-logo.png';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();

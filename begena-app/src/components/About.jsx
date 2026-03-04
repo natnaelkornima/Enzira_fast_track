@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { History, GraduationCap, Music, PlayCircle, Heart, Star, Shield, Sun } from 'lucide-react';
-import begenaImg from '../assets/amanuel-yit-trial8w.jpg';
+import begenaImg from '../assets/about-image.jpg';
 
 const About = () => {
     const features = [

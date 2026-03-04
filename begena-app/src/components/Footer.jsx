@@ -22,9 +22,9 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="relative bg-dark-950 pt-24 pb-12 overflow-hidden">
-            {/* Background Decorations */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-brand-red/20 to-transparent" />
+        <footer id="footer" className="bg-dark-950 pt-24 pb-12 relative overflow-hidden border-t border-white/5">
+            {/* Background Glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-brand-red/5 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-brand-red/5 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2" />
 
             <div className="container mx-auto px-6 relative z-10">

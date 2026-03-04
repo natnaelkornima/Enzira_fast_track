@@ -30,7 +30,7 @@ const Hero = () => {
     };
 
     return (
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-950 pt-20">
+        <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-950 pt-32 lg:pt-40">
             {/* Ripple Grid Background */}
             {/* <RippleGrid
                 gridColor="#981c00"
@@ -64,7 +64,7 @@ const Hero = () => {
 
                 {/* Main Heading */}
                 <motion.div variants={itemVariants} className="max-w-5xl mx-auto mb-10">
-                    <h1 className="font-heading text-5xl md:text-7xl lg:text-9xl font-black text-white leading-[0.95] tracking-tighter">
+                    <h1 className="font-heading text-4xl md:text-6xl lg:text-8xl font-black text-white leading-[0.95] tracking-tighter">
                         Advanced<br />
                         <span className="italic text-transparent bg-clip-text bg-linear-to-r from-brand-red via-brand-red-light to-white">
                             Enzira Training

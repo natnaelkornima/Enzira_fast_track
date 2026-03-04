@@ -18,10 +18,10 @@ const Navbar = () => {
     }, []);
 
     const navLinks = [
-        { name: 'Home', href: '#' },
+        { name: 'Home', href: '#home' },
         { name: 'About', href: '#about' },
-        { name: 'Training', href: '#training' },
-        { name: 'Contact', href: '#contact' },
+        { name: 'Training', href: '#register' },
+        { name: 'Contact', href: '#footer' },
     ];
 
     return (
@@ -80,8 +80,8 @@ const Navbar = () => {
                             <button
                                 onClick={() => setIsSettingsOpen(!isSettingsOpen)}
                                 className={`p-2.5 rounded-2xl border transition-all ${isSettingsOpen
-                                        ? 'bg-white/10 border-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.1)]'
-                                        : 'bg-white/5 border-white/5 text-white/60 hover:text-white hover:border-white/10'
+                                    ? 'bg-white/10 border-white/20 text-white shadow-[0_0_15px_rgba(255,255,255,0.1)]'
+                                    : 'bg-white/5 border-white/5 text-white/60 hover:text-white hover:border-white/10'
                                     }`}
                             >
                                 <Settings className={`w-5 h-5 transition-transform duration-500 ${isSettingsOpen ? 'rotate-90' : ''}`} />

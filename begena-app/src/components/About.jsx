@@ -91,18 +91,30 @@ const About = () => {
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="relative max-w-xs md:max-w-sm mx-auto lg:ml-auto lg:mr-0"
+                        className="relative w-full max-w-lg mx-auto lg:ml-auto lg:mr-0 group"
                     >
-                        <div className="aspect-3/4 w-full rounded-4xl overflow-hidden glass p-3 border-white/5 relative group">
-                            <div className="absolute inset-3 rounded-3xl bg-brand-red/10 mix-blend-overlay group-hover:bg-brand-red/5 transition-all duration-700 z-10" />
+                        {/* Glow effect */}
+                        <div className="absolute -inset-4 bg-brand-red/20 rounded-[3rem] blur-2xl group-hover:bg-brand-red/30 transition-all duration-700 opacity-50 group-hover:opacity-100" />
+
+                        <div className="aspect-4/5 w-full rounded-[2.5rem] overflow-hidden bg-dark-900 border border-white/10 relative transform transition-all duration-700 group-hover:-translate-y-4 shadow-2xl shadow-black/50 group-hover:shadow-[0_20px_60px_-15px_rgba(152,28,0,0.5)]">
+                            <div className="absolute inset-0 bg-linear-to-tr from-brand-red/30 to-transparent mix-blend-overlay z-10 opacity-70 group-hover:opacity-30 transition-opacity duration-700" />
                             <img
                                 src={begenaImg}
                                 alt="Enzira Strings"
-                                className="w-full h-full object-cover rounded-3xl grayscale group-hover:grayscale-0 transition-all duration-700"
+                                className="w-full h-full object-cover rounded-[2.5rem] grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
                             />
-                            {/* Decorative Frame */}
-                            <div className="absolute top-6 legift-6 w-16 h-16 border-t-[3px] border-l-[3px] border-brand-red/80 rounded-tl-3xl z-20 transition-all duration-500 group-hover:scale-110 group-hover:-translate-x-2 group-hover:-translate-y-2" />
-                            <div className="absolute bottom-6 right-6 w-16 h-16 border-b-[3px] border-r-[3px] border-brand-red/80 rounded-br-3xl z-20 transition-all duration-500 group-hover:scale-110 group-hover:translate-x-2 group-hover:translate-y-2" />
+
+                            {/* Modern Decorative Accent */}
+                            <div className="absolute top-8 left-8 w-24 h-24 border-t-2 border-l-2 border-white/50 rounded-tl-3xl z-20 transition-all duration-700 opacity-0 group-hover:opacity-100 group-hover:scale-110" />
+                            <div className="absolute bottom-8 right-8 w-24 h-24 border-b-2 border-r-2 border-white/50 rounded-br-3xl z-20 transition-all duration-700 opacity-0 group-hover:opacity-100 group-hover:scale-110" />
+                        </div>
+
+                        {/* Floating elements */}
+                        <div className="absolute -right-8 top-1/4 w-16 h-16 glass rounded-2xl hidden md:flex items-center justify-center animate-float shadow-xl z-30 border border-white/10">
+                            <Star className="w-6 h-6 text-brand-red" />
+                        </div>
+                        <div className="absolute -left-6 bottom-1/4 w-12 h-12 glass rounded-full hidden md:flex items-center justify-center animate-float shadow-xl z-30 border border-white/10" style={{ animationDelay: '1s' }}>
+                            <Music className="w-4 h-4 text-white" />
                         </div>
                     </motion.div>
                 </div>

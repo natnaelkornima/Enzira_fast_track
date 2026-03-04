@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send } from 'lucide-react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { supabase } from '../../lib/supabase';
 
 const AdminDashboard = () => {
     const [registrations, setRegistrations] = useState([]);
@@ -13,24 +14,31 @@ const AdminDashboard = () => {
 
     useEffect(() => {
         const fetchRegistrations = async () => {
-            const token = localStorage.getItem('adminToken');
-            if (!token) {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
                 navigate('/admin');
                 return;
             }
 
             try {
-                const res = await fetch('http://127.0.0.1:5000/api/admin/registrations', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const { data, error } = await supabase
+                    .from('registrations')
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-                if (res.ok) {
-                    const data = await res.json();
-                    setRegistrations(data);
-                } else if (res.status === 401) {
-                    localStorage.removeItem('adminToken');
-                    navigate('/admin');
-                }
+                if (error) throw error;
+
+                const formattedData = data.map(r => ({
+                    ...r,
+                    _id: r.id,
+                    fullName: r.full_name,
+                    countryCode: r.country_code,
+                    phoneNumber: r.phone_number,
+                    registrationDate: r.created_at,
+                    paymentReceiptPath: r.payment_receipt_path
+                }));
+
+                setRegistrations(formattedData);
             } catch (error) {
                 console.error('Error fetching registrations:', error);
             } finally {
@@ -41,19 +49,19 @@ const AdminDashboard = () => {
         fetchRegistrations();
     }, [navigate]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('adminToken');
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
         navigate('/admin');
     };
 
     const handleVerifyMode = async (id) => {
-        const token = localStorage.getItem('adminToken');
         try {
-            const res = await fetch(`http://127.0.0.1:5000/api/admin/registrations/${id}/verify`, {
-                method: 'PUT',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
+            const { error } = await supabase
+                .from('registrations')
+                .update({ status: 'verified' })
+                .eq('id', id);
+
+            if (!error) {
                 setRegistrations(prev => prev.map(r => r._id === id ? { ...r, status: 'verified' } : r));
             }
         } catch (error) {
@@ -222,7 +230,7 @@ const AdminDashboard = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <a
-                                                href={`http://127.0.0.1:5000${r.paymentReceiptPath}`}
+                                                href={r.paymentReceiptPath}
                                                 target="_blank"
                                                 rel="noreferrer"
                                                 className="text-xs text-brand-red hover:underline"

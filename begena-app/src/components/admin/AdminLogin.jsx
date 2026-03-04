@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Mail, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
 
 const AdminLogin = () => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -15,21 +16,17 @@ const AdminLogin = () => {
         setError('');
 
         try {
-            const res = await fetch('http://127.0.0.1:5000/api/admin/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials)
+            const { data, error: signInError } = await supabase.auth.signInWithPassword({
+                email: credentials.email,
+                password: credentials.password
             });
 
-            const data = await res.json();
-
-            if (res.ok) {
-                localStorage.setItem('adminToken', data.token);
+            if (signInError) {
+                setError(signInError.message || 'Invalid credentials');
+                setStatus('error');
+            } else if (data.session) {
                 setStatus('success');
                 navigate('/admin/dashboard');
-            } else {
-                setError(data.error || 'Invalid credentials');
-                setStatus('error');
             }
         } catch (err) {
             setError('Server error. Please try again.');

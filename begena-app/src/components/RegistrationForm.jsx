@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Phone, Send, Upload, CheckCircle, AlertCircle, Loader2, Globe, Sparkles, ArrowRight, ChevronDown, Search } from 'lucide-react';
 import SuccessModal from './SuccessModal';
+import { supabase } from '../lib/supabase';
 
 const countryCodes = [
     { code: '+251', country: 'Ethiopia', iso: 'et' },
@@ -112,21 +113,38 @@ const RegistrationForm = () => {
         setStatus('loading');
 
         try {
-            const submitData = new FormData();
-            submitData.append('fullName', formData.fullName);
-            submitData.append('countryCode', formData.countryCode);
-            submitData.append('phoneNumber', formData.phoneNumber);
-            submitData.append('telegram', formData.telegram);
-            submitData.append('receipt', formData.photo);
+            // 1. Upload photo to Supabase Storage
+            const fileExt = formData.photo.name.split('.').pop()
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
 
-            const res = await fetch('http://127.0.0.1:5000/api/register', {
-                method: 'POST',
-                body: submitData
-            });
+            const { error: uploadError } = await supabase.storage
+                .from('receipts')
+                .upload(fileName, formData.photo)
 
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.error || 'Failed to register');
+            if (uploadError) {
+                throw new Error('Failed to upload screenshot. Please try again.');
+            }
+
+            const { data: publicUrlData } = supabase.storage
+                .from('receipts')
+                .getPublicUrl(fileName)
+
+            // 2. Insert into Supabase Database
+            const { error: dbError } = await supabase
+                .from('registrations')
+                .insert([
+                    {
+                        full_name: formData.fullName,
+                        country_code: formData.countryCode,
+                        phone_number: formData.phoneNumber,
+                        telegram: formData.telegram,
+                        payment_receipt_path: publicUrlData.publicUrl,
+                        status: 'pending'
+                    }
+                ])
+
+            if (dbError) {
+                throw new Error('Failed to save registration details. ' + dbError.message);
             }
 
             setStatus('success');

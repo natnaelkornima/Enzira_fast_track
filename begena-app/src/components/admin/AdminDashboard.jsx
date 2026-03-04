@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send, MessageCircle, X, Loader2 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { supabase } from '../../lib/supabase';
 
 const AdminDashboard = () => {
@@ -100,45 +102,40 @@ const AdminDashboard = () => {
     };
 
     const downloadPDF = () => {
-        // Dynamic import to avoid bundling issues
-        import('jspdf').then(({ default: jsPDF }) => {
-            import('jspdf-autotable').then(() => {
-                const doc = new jsPDF();
+        const doc = new jsPDF();
 
-                // Header
-                doc.setFontSize(22);
-                doc.setTextColor(152, 28, 0);
-                doc.text('Begena Training Registrations', 14, 20);
+        // Header
+        doc.setFontSize(22);
+        doc.setTextColor(152, 28, 0);
+        doc.text('Begena Training Registrations', 14, 20);
 
-                doc.setFontSize(10);
-                doc.setTextColor(100);
-                doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
-                doc.text(`Total Registrations: ${filteredRegistrations.length}`, 14, 34);
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
+        doc.text(`Total Registrations: ${filteredRegistrations.length}`, 14, 34);
 
-                // Table
-                const tableColumn = ["#", "Date", "Full Name", "Phone", "Telegram", "Status"];
-                const tableRows = filteredRegistrations.map((r, index) => [
-                    index + 1,
-                    new Date(r.registrationDate).toLocaleDateString(),
-                    r.fullName,
-                    `${r.countryCode} ${r.phoneNumber}`,
-                    r.telegram,
-                    r.status.toUpperCase()
-                ]);
+        // Table
+        const tableColumn = ["#", "Date", "Full Name", "Phone", "Telegram", "Status"];
+        const tableRows = filteredRegistrations.map((r, index) => [
+            index + 1,
+            new Date(r.registrationDate).toLocaleDateString(),
+            r.fullName,
+            `${r.countryCode} ${r.phoneNumber}`,
+            r.telegram,
+            r.status.toUpperCase()
+        ]);
 
-                doc.autoTable({
-                    head: [tableColumn],
-                    body: tableRows,
-                    startY: 42,
-                    theme: 'grid',
-                    headStyles: { fillColor: [152, 28, 0] },
-                    alternateRowStyles: { fillColor: [245, 245, 245] },
-                    styles: { fontSize: 9 }
-                });
-
-                doc.save(`begena-registrations-${new Date().toISOString().split('T')[0]}.pdf`);
-            });
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 42,
+            theme: 'grid',
+            headStyles: { fillColor: [152, 28, 0] },
+            alternateRowStyles: { fillColor: [245, 245, 245] },
+            styles: { fontSize: 9 }
         });
+
+        doc.save(`begena-registrations-${new Date().toISOString().split('T')[0]}.pdf`);
     };
 
     const filteredRegistrations = registrations.filter(r =>

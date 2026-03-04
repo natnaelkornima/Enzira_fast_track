@@ -94,14 +94,14 @@ const About = () => {
                         className="relative w-full max-w-lg mx-auto lg:ml-auto lg:mr-0 group"
                     >
                         {/* Glow effect */}
-                        <div className="absolute -inset-4 bg-brand-red/20 rounded-[3rem] blur-2xl group-hover:bg-brand-red/30 transition-all duration-700 opacity-50 group-hover:opacity-100" />
+                        <div className="absolute -inset-4 bg-brand-red/20 rounded-2xl blur-2xl group-hover:bg-brand-red/30 transition-all duration-700 opacity-50 group-hover:opacity-100" />
 
-                        <div className="aspect-4/5 w-full rounded-[2.5rem] overflow-hidden bg-dark-900 border border-white/10 relative transform transition-all duration-700 group-hover:-translate-y-4 shadow-2xl shadow-black/50 group-hover:shadow-[0_20px_60px_-15px_rgba(152,28,0,0.5)]">
+                        <div className="aspect-4/5 w-full rounded-2xl overflow-hidden bg-dark-900 border border-white/10 relative transform transition-all duration-700 group-hover:-translate-y-4 shadow-2xl shadow-black/50 group-hover:shadow-[0_20px_60px_-15px_rgba(152,28,0,0.5)]">
                             <div className="absolute inset-0 bg-linear-to-tr from-brand-red/30 to-transparent mix-blend-overlay z-10 opacity-70 group-hover:opacity-30 transition-opacity duration-700" />
                             <img
                                 src={begenaImg}
                                 alt="Enzira Strings"
-                                className="w-full h-full object-cover rounded-[2.5rem] grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
+                                className="w-full h-full object-cover rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
                             />
 
                             {/* Modern Decorative Accent */}
@@ -110,7 +110,7 @@ const About = () => {
                         </div>
 
                         {/* Floating elements */}
-                        <div className="absolute -right-8 top-1/4 w-16 h-16 glass rounded-2xl hidden md:flex items-center justify-center animate-float shadow-xl z-30 border border-white/10">
+                        <div className="absolute -right-8 top-1/4 w-16 h-16 glass rounded-xl hidden md:flex items-center justify-center animate-float shadow-xl z-30 border border-white/10">
                             <Star className="w-6 h-6 text-brand-red" />
                         </div>
                         <div className="absolute -left-6 bottom-1/4 w-12 h-12 glass rounded-full hidden md:flex items-center justify-center animate-float shadow-xl z-30 border border-white/10" style={{ animationDelay: '1s' }}>
@@ -124,23 +124,33 @@ const About = () => {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
                 >
                     {features.map((feature, index) => (
                         <motion.div
                             key={index}
                             variants={itemVariants}
-                            className="glass-card p-10 group"
+                            className="glass-card p-8 group relative overflow-hidden"
                         >
-                            <div className="w-14 h-14 rounded-2xl bg-brand-red/10 border border-brand-red/20 flex items-center justify-center mb-8 group-hover:bg-brand-red group-hover:border-brand-red transition-all duration-500">
-                                <feature.icon className="w-7 h-7 text-brand-red group-hover:text-white transition-colors" />
+                            {/* Hover glow */}
+                            <div className="absolute -top-12 -right-12 w-32 h-32 bg-brand-red/0 group-hover:bg-brand-red/10 rounded-full blur-2xl transition-all duration-700 pointer-events-none" />
+
+                            <div className="relative z-10">
+                                <div className="w-12 h-12 rounded-xl bg-linear-to-br from-brand-red/20 to-brand-red/5 border border-brand-red/20 flex items-center justify-center mb-6 group-hover:from-brand-red group-hover:to-brand-red-light group-hover:border-brand-red transition-all duration-500">
+                                    <feature.icon className="w-6 h-6 text-brand-red group-hover:text-white transition-colors duration-500" />
+                                </div>
+                                <h3 className="font-heading text-lg font-bold text-white mb-3 relative overflow-hidden">
+                                    <span className="relative z-10 bg-linear-to-r from-white to-white bg-[length:0%_100%] bg-no-repeat group-hover:bg-[length:100%_100%] bg-clip-text group-hover:text-transparent transition-all duration-700">
+                                        {feature.title}
+                                    </span>
+                                </h3>
+                                <p className="text-white/30 text-sm leading-relaxed font-light group-hover:text-white/50 transition-colors duration-500">
+                                    {feature.description}
+                                </p>
                             </div>
-                            <h3 className="font-heading text-xl font-bold text-white mb-4 group-hover:text-brand-red transition-colors">
-                                {feature.title}
-                            </h3>
-                            <p className="text-white/30 text-sm leading-relaxed font-light">
-                                {feature.description}
-                            </p>
+
+                            {/* Bottom accent line */}
+                            <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-linear-to-r from-brand-red to-transparent group-hover:w-full transition-all duration-700" />
                         </motion.div>
                     ))}
                 </motion.div>

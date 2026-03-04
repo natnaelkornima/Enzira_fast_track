@@ -30,7 +30,7 @@ const Navbar = () => {
                 }`}
         >
             <div className={`max-w-7xl mx-auto transition-all duration-500 ${isScrolled
-                ? 'bg-dark-950/90 rounded-4xl px-8 py-3 shadow-2xl backdrop-blur-xl border border-transparent'
+                ? 'bg-dark-950/90 rounded-2xl px-8 py-3 shadow-2xl backdrop-blur-xl border border-transparent'
                 : 'bg-transparent py-5 border border-transparent'
                 }`}>
                 <div className="flex items-center justify-between">
@@ -146,7 +146,7 @@ const Navbar = () => {
                         exit={{ opacity: 0, y: -20 }}
                         className="absolute top-full left-6 right-6 mt-4 md:hidden"
                     >
-                        <div className="glass rounded-3xl p-8 shadow-2xl">
+                        <div className="glass rounded-xl p-8 shadow-2xl">
                             <div className="flex flex-col gap-6">
                                 {navLinks.map((link) => (
                                     <a

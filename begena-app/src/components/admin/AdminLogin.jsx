@@ -53,7 +53,7 @@ const AdminLogin = () => {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md glass rounded-4xl p-8 md:p-12 border border-white/5 relative z-10"
+                className="w-full max-w-md glass rounded-2xl p-8 md:p-12 border border-white/5 relative z-10"
             >
                 <div className="text-center mb-10">
                     <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6">

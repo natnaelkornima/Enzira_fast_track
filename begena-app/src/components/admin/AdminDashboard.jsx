@@ -210,7 +210,7 @@ const AdminDashboard = () => {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-full max-w-lg glass rounded-3xl p-8 border border-white/10"
+                            className="w-full max-w-lg glass rounded-xl p-8 border border-white/10"
                         >
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
@@ -268,26 +268,26 @@ const AdminDashboard = () => {
             <main className="max-w-7xl mx-auto px-6 md:px-12 py-10 relative z-10">
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-10">
-                    <div className="glass rounded-3xl p-6 border-white/5">
+                    <div className="glass rounded-xl p-6 border-white/5">
                         <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Total Students</h3>
                         <p className="text-4xl font-black">{registrations.length}</p>
                     </div>
-                    <div className="glass rounded-3xl p-6 border-white/5">
+                    <div className="glass rounded-xl p-6 border-white/5">
                         <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Verified</h3>
                         <p className="text-4xl font-black text-green-400">{registrations.filter(r => r.status === 'verified').length}</p>
                     </div>
-                    <div className="glass rounded-3xl p-6 border-white/5">
+                    <div className="glass rounded-xl p-6 border-white/5">
                         <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Pending</h3>
                         <p className="text-4xl font-black text-yellow-400">{registrations.filter(r => r.status === 'pending').length}</p>
                     </div>
-                    <div className="glass rounded-3xl p-6 border-white/5">
+                    <div className="glass rounded-xl p-6 border-white/5">
                         <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Declined</h3>
                         <p className="text-4xl font-black text-brand-red">{registrations.filter(r => r.status === 'declined').length}</p>
                     </div>
                 </div>
 
                 {/* Table Section */}
-                <div className="glass rounded-3xl border-white/5 overflow-hidden">
+                <div className="glass rounded-xl border-white/5 overflow-hidden">
                     <div className="p-6 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <h2 className="text-lg font-bold">Recent Registrations</h2>
                         <div className="relative">

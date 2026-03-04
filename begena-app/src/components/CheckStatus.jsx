@@ -75,7 +75,7 @@ const CheckStatus = () => {
                 </div>
 
                 {/* Search Form */}
-                <form onSubmit={handleSearch} className="glass rounded-3xl p-8 border border-white/5 mb-6">
+                <form onSubmit={handleSearch} className="glass rounded-xl p-8 border border-white/5 mb-6">
                     <div className="space-y-2 mb-6">
                         <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Phone Number</label>
                         <div className="relative group">
@@ -116,7 +116,7 @@ const CheckStatus = () => {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            className="glass rounded-3xl p-8 border border-white/5"
+                            className="glass rounded-xl p-8 border border-white/5"
                         >
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="w-12 h-12 rounded-2xl bg-brand-red/20 text-brand-red flex items-center justify-center font-bold text-lg">
@@ -141,10 +141,10 @@ const CheckStatus = () => {
 
                             {/* Status Badge */}
                             <div className={`p-4 rounded-2xl flex items-center gap-3 ${result.status === 'verified'
-                                    ? 'bg-green-500/10 border border-green-500/20'
-                                    : result.status === 'declined'
-                                        ? 'bg-red-500/10 border border-red-500/20'
-                                        : 'bg-yellow-500/10 border border-yellow-500/20'
+                                ? 'bg-green-500/10 border border-green-500/20'
+                                : result.status === 'declined'
+                                    ? 'bg-red-500/10 border border-red-500/20'
+                                    : 'bg-yellow-500/10 border border-yellow-500/20'
                                 }`}>
                                 {result.status === 'verified' ? (
                                     <>

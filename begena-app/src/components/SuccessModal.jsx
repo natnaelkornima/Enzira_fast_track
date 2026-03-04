@@ -70,7 +70,7 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="relative w-full max-w-md glass rounded-4xl p-8 border border-white/10 shadow-2xl overflow-hidden"
+                        className="relative w-full max-w-md glass rounded-2xl p-8 border border-white/10 shadow-2xl overflow-hidden"
                     >
                         <div className="absolute -top-24 -right-24 w-64 h-64 bg-brand-red/20 rounded-full blur-[100px] -z-10" />
 
@@ -80,7 +80,7 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ type: "spring", damping: 12, delay: 0.2 }}
-                                    className="w-20 h-20 rounded-3xl bg-linear-to-br from-brand-red to-brand-red-light flex items-center justify-center shadow-xl shadow-brand-red/30 mx-auto"
+                                    className="w-20 h-20 rounded-xl bg-linear-to-br from-brand-red to-brand-red-light flex items-center justify-center shadow-xl shadow-brand-red/30 mx-auto"
                                 >
                                     <CheckCircle className="w-10 h-10 text-white" strokeWidth={2.5} />
                                 </motion.div>

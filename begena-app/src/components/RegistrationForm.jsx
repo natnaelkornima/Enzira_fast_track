@@ -229,7 +229,7 @@ const RegistrationForm = () => {
                         viewport={{ once: true }}
                         className="relative"
                     >
-                        <div className="glass rounded-4xl p-8 md:p-12 border-white/5 relative overflow-hidden">
+                        <div className="glass rounded-2xl p-8 md:p-12 border-white/5 relative overflow-hidden">
                             {/* Form Header */}
                             <div className="mb-10">
                                 <h3 className="text-2xl font-bold text-white mb-2">Registration Form</h3>
@@ -361,7 +361,7 @@ const RegistrationForm = () => {
                                     {/* Photo Upload */}
                                     <motion.div variants={itemVariants} className="space-y-2">
                                         <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">Proof of Payment (Screenshot)</label>
-                                        <label className="block border-2 border-dashed border-white/20 rounded-4xl p-8 text-center hover:bg-white/5 hover:border-brand-red/30 transition-all cursor-pointer group">
+                                        <label className="block border-2 border-dashed border-white/20 rounded-2xl p-8 text-center hover:bg-white/5 hover:border-brand-red/30 transition-all cursor-pointer group">
                                             <input
                                                 type="file"
                                                 accept="image/*"

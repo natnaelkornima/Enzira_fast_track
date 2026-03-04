@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Music, ChevronRight, Shield, ClipboardCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import logoImg from '../assets/enzira-logo.png';
+import logoImg from '../assets/enzira-logo.png';
 
 const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -38,12 +40,7 @@ const Navbar = () => {
                         animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-3 group cursor-pointer"
                     >
-                        <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-brand-red to-brand-red-light flex items-center justify-center shadow-lg group-hover:shadow-brand-red/50 transition-all duration-500">
-                            <Music className="w-5 h-5 text-white" strokeWidth={2.5} />
-                        </div>
-                        <span className="font-heading text-xl font-bold text-white tracking-tight">
-                            Begena<span className="text-brand-red">.</span>
-                        </span>
+                        <img src={logoImg} alt="Enzira Logo" className="h-10 w-auto object-contain" />
                     </motion.div>
 
                     {/* Desktop Navigation */}

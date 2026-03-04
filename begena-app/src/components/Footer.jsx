@@ -3,6 +3,8 @@ import {
     Music, Send, Youtube, Instagram,
     Mail, Phone, ArrowUpRight, Heart, Sparkles
 } from 'lucide-react';
+import logoImg from '../assets/enzira-logo.png';
+import logoImg from '../assets/enzira-logo.png';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -36,12 +38,7 @@ const Footer = () => {
                             viewport={{ once: true }}
                             className="flex items-center gap-3 mb-8"
                         >
-                            <div className="w-12 h-12 rounded-2xl bg-brand-red flex items-center justify-center shadow-lg shadow-brand-red/20">
-                                <Music className="w-6 h-6 text-white" strokeWidth={2.5} />
-                            </div>
-                            <span className="font-heading text-2xl font-black text-white tracking-tighter">
-                                Begena<span className="text-brand-red">.</span>
-                            </span>
+                            <img src={logoImg} alt="Enzira Logo" className="h-12 w-auto object-contain" />
                         </motion.div>
                         <p className="text-white/30 text-lg leading-relaxed max-w-md font-light mb-10">
                             Dedicated to the preservation and teaching of Ethiopia's most sacred musical heritage. Join us in carrying forward the Harp of David.
@@ -104,7 +101,7 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex items-center gap-2 text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">
-                        <span>© {currentYear} Begena Fast Track </span>
+                        <span>© {currentYear} Enzira Fast Track </span>
                         <div className="w-1 h-1 rounded-full bg-brand-red" />
                         <span>All Rights Reserved</span>
                     </div>
@@ -113,7 +110,7 @@ const Footer = () => {
                         <div className="flex items-center gap-2 group cursor-default">
                             <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest group-hover:text-white transition-colors">Handcrafted by</span>
                             <Sparkles className="w-3.5 h-3.5 text-brand-red animate-pulse" />
-                            <span className="text-[10px] font-black text-brand-red uppercase tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Begena Tech</span>
+                            <span className="text-[10px] font-black text-brand-red uppercase tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Enzira Tech</span>
                         </div>
                     </div>
                 </div>

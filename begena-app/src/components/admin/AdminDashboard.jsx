@@ -124,7 +124,7 @@ const AdminDashboard = () => {
         // Header
         doc.setFontSize(22);
         doc.setTextColor(152, 28, 0);
-        doc.text('Begena Training Registrations', 14, 20);
+        doc.text('Enzira Training Registrations', 14, 20);
 
         doc.setFontSize(10);
         doc.setTextColor(100);
@@ -361,8 +361,8 @@ const AdminDashboard = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${r.status === 'verified' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :
-                                                    r.status === 'declined' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                                                        'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                                                r.status === 'declined' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                                                    'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
                                                 }`}>
                                                 {r.status === 'verified' ? <CheckCircle className="w-3 h-3" /> :
                                                     r.status === 'declined' ? <X className="w-3 h-3" /> :

@@ -200,7 +200,7 @@ const RegistrationForm = () => {
                             <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white italic">Spiritual Path</span>
                         </h2>
                         <p className="text-white/40 text-lg leading-relaxed mb-12 max-w-lg">
-                            Join a community of dedicated practitioners and learn the sacred art of Begena. Secure your spot in our next training cycle.
+                            Join a community of dedicated practitioners and learn the sacred art of the Begena. Secure your spot in our next training cycle.
                         </p>
 
                         <div className="space-y-6">

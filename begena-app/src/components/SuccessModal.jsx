@@ -14,7 +14,7 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(24);
         doc.setFont('helvetica', 'bold');
-        doc.text('Begena Fast Track', 105, 20, { align: 'center' });
+        doc.text('Enzira Fast Track', 105, 20, { align: 'center' });
 
         doc.setFontSize(12);
         doc.setFont('helvetica', 'normal');
@@ -34,15 +34,15 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
             styles: { fontSize: 11, cellPadding: 5 },
         });
 
-        doc.save(`Begena_Receipt_${userData.fullName.replace(/\s+/g, '_')}.pdf`);
+        doc.save(`Enzira_Receipt_${userData.fullName.replace(/\s+/g, '_')}.pdf`);
     };
 
     const handleShare = async () => {
         try {
             if (navigator.share) {
                 await navigator.share({
-                    title: 'Begena Fast Track Training',
-                    text: `I just registered for the sacred art of Begena training! Join me on this spiritual journey.`,
+                    title: 'Enzira Fast Track Training',
+                    text: `I just registered for the sacred art of the Begena training with Enzira! Join me on this spiritual journey.`,
                     url: window.location.href,
                 });
             } else {
@@ -102,7 +102,7 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
                                 </div>
                                 <h2 className="text-2xl font-black text-white mb-3 tracking-tight">Welcome to the Path, <br /><span className="text-brand-red italic font-heading">{userData?.fullName}!</span></h2>
                                 <p className="text-white/40 text-[13px] leading-relaxed mb-8 max-w-[280px] mx-auto font-light">
-                                    Your journey into the sacred art of Begena has officially begun. Check your Telegram <span className="text-white font-bold">{userData?.telegram}</span> for details.
+                                    Your journey into the sacred art of the Begena has officially begun. Check your Telegram <span className="text-white font-bold">{userData?.telegram}</span> for details.
                                 </p>
                             </motion.div>
 

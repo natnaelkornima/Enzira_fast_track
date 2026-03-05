@@ -102,7 +102,7 @@ const Hero = () => {
 
                 {/* Main Heading with Letter Animation */}
                 <div key={language} className="max-w-5xl mx-auto mb-10">
-                    <h1 className="font-heading text-4xl md:text-6xl lg:text-8xl font-black text-white leading-[0.95] tracking-tighter">
+                    <h1 className="hero-title font-heading text-4xl md:text-6xl lg:text-8xl font-black text-white leading-[0.95] tracking-tighter">
                         <AnimatedLetters text={t('hero.headingLine1')} delay={0.5} />
                         <br />
                         <span className="italic inline-block hero-shimmer-text">

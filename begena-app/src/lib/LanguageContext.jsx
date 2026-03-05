@@ -1,10 +1,15 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { translations } from './translations';
 
 const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = useState('en');
+
+    // Set the lang attribute on <html> to trigger font switching
+    useEffect(() => {
+        document.documentElement.lang = language;
+    }, [language]);
 
     const toggleLanguage = () => {
         setLanguage(prev => (prev === 'en' ? 'am' : 'en'));

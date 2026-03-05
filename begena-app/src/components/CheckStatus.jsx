@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, CheckCircle, Clock, AlertCircle, ArrowLeft, Phone, Send, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../lib/LanguageContext';
 
 const CheckStatus = () => {
+    const { t } = useLanguage();
     const [phoneNumber, setPhoneNumber] = useState('');
     const [result, setResult] = useState(null);
     const [status, setStatus] = useState('idle'); // idle | loading | found | not_found | error
@@ -34,14 +36,14 @@ const CheckStatus = () => {
                     phone: `${data.country_code} ${data.phone_number}`,
                     telegram: data.telegram,
                     status: data.status,
-                    date: new Date(data.created_at).toLocaleDateString('en-US', {
+                    date: new Date(data.created_at).toLocaleDateString(language === 'am' ? 'am-ET' : 'en-US', {
                         year: 'numeric', month: 'long', day: 'numeric'
                     })
                 });
                 setStatus('found');
             }
         } catch (err) {
-            setErrorMsg('Something went wrong. Please try again.');
+            setErrorMsg(t('checkStatus.error'));
             setStatus('error');
         }
     };
@@ -57,7 +59,7 @@ const CheckStatus = () => {
                 className="absolute top-6 left-6 flex items-center gap-2 text-white/40 hover:text-white transition-colors text-sm font-medium z-20"
             >
                 <ArrowLeft className="w-4 h-4" />
-                Back to Home
+                {t('checkStatus.backToHome')}
             </Link>
 
             <motion.div
@@ -70,14 +72,14 @@ const CheckStatus = () => {
                     <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/5">
                         <Search className="w-8 h-8 text-brand-red" />
                     </div>
-                    <h1 className="text-2xl font-bold font-heading text-white mb-2">Check Registration Status</h1>
-                    <p className="text-white/40 text-sm">Enter your phone number to see your payment approval status.</p>
+                    <h1 className="text-2xl font-bold font-heading text-white mb-2">{t('checkStatus.title')}</h1>
+                    <p className="text-white/40 text-sm">{t('checkStatus.desc')}</p>
                 </div>
 
                 {/* Search Form */}
                 <form onSubmit={handleSearch} className="glass rounded-xl p-8 border border-white/5 mb-6">
                     <div className="space-y-2 mb-6">
-                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">Phone Number</label>
+                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/40 ml-4">{t('checkStatus.inputLabel')}</label>
                         <div className="relative group">
                             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
                                 <Phone className="w-5 h-5" />
@@ -101,7 +103,7 @@ const CheckStatus = () => {
                             <Loader2 className="w-5 h-5 animate-spin" />
                         ) : (
                             <>
-                                Check Status
+                                {t('checkStatus.button')}
                                 <Search className="w-4 h-4 group-hover:scale-110 transition-transform" />
                             </>
                         )}
@@ -124,7 +126,7 @@ const CheckStatus = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-white text-lg">{result.fullName}</h3>
-                                    <p className="text-white/30 text-xs">Registered on {result.date}</p>
+                                    <p className="text-white/30 text-xs">{t('checkStatus.registeredOn')} {result.date}</p>
                                 </div>
                             </div>
 
@@ -150,24 +152,24 @@ const CheckStatus = () => {
                                     <>
                                         <CheckCircle className="w-6 h-6 text-green-400" />
                                         <div>
-                                            <p className="text-green-400 font-bold text-sm">Payment Verified ✓</p>
-                                            <p className="text-green-400/60 text-xs">Your registration has been approved. Welcome aboard!</p>
+                                            <p className="text-green-400 font-bold text-sm">{t('checkStatus.verifiedTitle')}</p>
+                                            <p className="text-green-400/60 text-xs">{t('checkStatus.verifiedDesc')}</p>
                                         </div>
                                     </>
                                 ) : result.status === 'declined' ? (
                                     <>
                                         <AlertCircle className="w-6 h-6 text-red-400" />
                                         <div>
-                                            <p className="text-red-400 font-bold text-sm">Payment Declined ✗</p>
-                                            <p className="text-red-400/60 text-xs">The payment screenshot was deemed invalid. Please try registering again or contact support.</p>
+                                            <p className="text-red-400 font-bold text-sm">{t('checkStatus.declinedTitle')}</p>
+                                            <p className="text-red-400/60 text-xs">{t('checkStatus.declinedDesc')}</p>
                                         </div>
                                     </>
                                 ) : (
                                     <>
                                         <Clock className="w-6 h-6 text-yellow-400" />
                                         <div>
-                                            <p className="text-yellow-400 font-bold text-sm">Payment Pending</p>
-                                            <p className="text-yellow-400/60 text-xs">Your payment is being reviewed. Please check back later.</p>
+                                            <p className="text-yellow-400 font-bold text-sm">{t('checkStatus.pendingTitle')}</p>
+                                            <p className="text-yellow-400/60 text-xs">{t('checkStatus.pendingDesc')}</p>
                                         </div>
                                     </>
                                 )}
@@ -184,7 +186,7 @@ const CheckStatus = () => {
                             className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-400 text-sm"
                         >
                             <AlertCircle className="w-5 h-5 shrink-0" />
-                            No registration found with this phone number. Make sure you entered the correct number.
+                            {t('checkStatus.notFound')}
                         </motion.div>
                     )}
 

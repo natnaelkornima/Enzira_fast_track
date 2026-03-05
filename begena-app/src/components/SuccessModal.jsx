@@ -98,11 +98,11 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
                             >
                                 <div className="flex items-center justify-center gap-2 mb-3">
                                     <Sparkles className="w-4 h-4 text-brand-red" />
-                                    <span className="text-brand-red text-[10px] font-black uppercase tracking-widest">Registration Secured</span>
+                                    <span className="text-brand-red text-[10px] font-black uppercase tracking-widest">{t('registration.success.registrationSecured')}</span>
                                 </div>
-                                <h2 className="text-2xl font-black text-white mb-3 tracking-tight">Welcome to the Path, <br /><span className="text-brand-red italic font-heading">{userData?.fullName}!</span></h2>
+                                <h2 className="text-2xl font-black text-white mb-3 tracking-tight">{t('registration.success.welcome')} <br /><span className="text-brand-red italic font-heading">{userData?.fullName}!</span></h2>
                                 <p className="text-white/40 text-[13px] leading-relaxed mb-8 max-w-[280px] mx-auto font-light">
-                                    Your journey into the sacred art of the Begena has officially begun. Check your Telegram <span className="text-white font-bold">{userData?.telegram}</span> for details.
+                                    {t('registration.success.journeyBegun')} <span className="text-white font-bold">{userData?.telegram}</span> {t('registration.success.forDetails')}
                                 </p>
                             </motion.div>
 
@@ -119,7 +119,7 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
                                     <div className="w-8 h-8 rounded-lg bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-all">
                                         <Download className="w-4 h-4 text-brand-red group-hover:text-white" />
                                     </div>
-                                    <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest group-hover:text-white">Save Receipt</span>
+                                    <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest group-hover:text-white">{t('registration.success.saveReceipt')}</span>
                                 </button>
                                 <button
                                     onClick={handleShare}
@@ -128,7 +128,7 @@ const SuccessModal = ({ isOpen, onClose, userData }) => {
                                     <div className="w-8 h-8 rounded-lg bg-brand-red/10 flex items-center justify-center group-hover:bg-brand-red transition-all">
                                         <Share2 className="w-4 h-4 text-brand-red group-hover:text-white" />
                                     </div>
-                                    <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest group-hover:text-white">Share Journey</span>
+                                    <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest group-hover:text-white">{t('registration.success.shareJourney')}</span>
                                 </button>
                             </motion.div>
 

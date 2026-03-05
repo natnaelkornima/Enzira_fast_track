@@ -79,7 +79,7 @@ const RegistrationForm = () => {
         const file = e.target.files[0];
         if (file) {
             if (file.size > 5 * 1024 * 1024) {
-                setErrors((prev) => ({ ...prev, photo: 'File size must be less than 5MB' }));
+                setErrors((prev) => ({ ...prev, photo: t('registration.validation.fileSize') }));
                 return;
             }
             setFormData((prev) => ({ ...prev, photo: file }));
@@ -94,12 +94,12 @@ const RegistrationForm = () => {
 
     const validate = () => {
         const newErrors = {};
-        if (!formData.fullName.trim()) newErrors.fullName = 'Full name is required';
-        if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
+        if (!formData.fullName.trim()) newErrors.fullName = t('registration.validation.fullName');
+        if (!formData.phoneNumber.trim()) newErrors.phoneNumber = t('registration.validation.phoneNumber');
         else if (!/^\d{6,15}$/.test(formData.phoneNumber.replace(/\s/g, '')))
-            newErrors.phoneNumber = 'Enter a valid phone number';
-        if (!formData.telegram.trim()) newErrors.telegram = 'Telegram username is required';
-        if (!formData.photo) newErrors.photo = 'Please upload your photo';
+            newErrors.phoneNumber = t('registration.validation.validPhone');
+        if (!formData.telegram.trim()) newErrors.telegram = t('registration.validation.telegram');
+        if (!formData.photo) newErrors.photo = t('registration.validation.photo');
         return newErrors;
     };
 
@@ -198,18 +198,18 @@ const RegistrationForm = () => {
                             {t('registration.sectionSubtitle')}
                         </div>
                         <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-8 leading-tight">
-                            Begin Your <br />
-                            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white italic">Spiritual Path</span>
+                            {t('registration.pathTitle1')} <br />
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white italic">{t('registration.pathTitle2')}</span>
                         </h2>
                         <p className="text-white/40 text-lg leading-relaxed mb-12 max-w-lg">
-                            Join a community of dedicated practitioners and learn the sacred art of the Begena. Secure your spot in our next training cycle.
+                            {t('registration.pathDesc')}
                         </p>
 
                         <div className="space-y-6">
                             {[
-                                { title: 'Authentic Curriculum', desc: 'Direct from traditional masters.' },
-                                { title: 'Flexible Schedule', desc: 'Classes that fit your spiritual life.' },
-                                { title: 'Global Community', desc: 'Learn with students from around the world.' }
+                                { title: t('registration.feature1Title'), desc: t('registration.feature1Desc') },
+                                { title: t('registration.feature2Title'), desc: t('registration.feature2Desc') },
+                                { title: t('registration.feature3Title'), desc: t('registration.feature3Desc') }
                             ].map((item, i) => (
                                 <div key={i} className="flex gap-4">
                                     <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center mt-1">

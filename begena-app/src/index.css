@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+/* Amharic Font */
+@font-face {
+  font-family: 'Menbere';
+  src: url('/font/Menbere_Variable_Font_wght_2c787a3cf0.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Loga';
+  src: url('/font/Loga_Medium_beed16d159.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+
 @theme {
   --color-gold-50: #fefce8;
   --color-gold-100: #fef9c3;
@@ -148,6 +163,24 @@
 body {
   @apply bg-dark-950 text-white font-body antialiased;
 }
+
+/* Amharic language font override */
+[lang="am"] {
+  --font-heading: 'Menbere', Georgia, serif;
+  --font-body: 'Menbere', system-ui, sans-serif;
+}
+
+[lang="am"] .hero-title {
+  font-family: 'Loga', Georgia, serif;
+  letter-spacing: 0.05em;
+  line-height: 1.35;
+}
+
+/* Prevent Amharic italic text (like "ና") from being clipped by background-clip: text */
+[lang="am"] .hero-shimmer-text {
+  padding-right: 0.2em;
+}
+
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;

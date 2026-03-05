@@ -17,10 +17,10 @@ const Footer = () => {
     ];
 
     const quickLinks = [
-        { name: 'About the Art', href: '#about' },
-        { name: 'Training Modules', href: '#training' },
-        { name: 'Global Admissions', href: '#register' },
-        { name: 'Sacred History', href: '#' }
+        { name: t('footer.aboutArt'), href: '#about' },
+        { name: t('footer.trainingModules'), href: '#training' },
+        { name: t('footer.globalAdmissions'), href: '#register' },
+        { name: t('footer.sacredHistory'), href: '#' }
     ];
 
     return (
@@ -82,7 +82,7 @@ const Footer = () => {
                                     <Mail className="w-4 h-4 text-brand-red" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Email Us</p>
+                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{t('footer.emailUs')}</p>
                                     <p className="text-sm text-white/60 group-hover:text-white transition-colors">info@begena.org</p>
                                 </div>
                             </a>
@@ -91,7 +91,7 @@ const Footer = () => {
                                     <Phone className="w-4 h-4 text-brand-red" />
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Call Center</p>
+                                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{t('footer.callCenter')}</p>
                                     <p className="text-sm text-white/60 group-hover:text-white transition-colors">+251 911 22 33 44</p>
                                 </div>
                             </a>
@@ -102,14 +102,14 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex items-center gap-2 text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">
-                        <span>© {currentYear} Enzira Fast Track </span>
+                        <span>© {currentYear} {t('footer.copyright')}</span>
                         <div className="w-1 h-1 rounded-full bg-brand-red" />
                         <span>All Rights Reserved</span>
                     </div>
 
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2 group cursor-default">
-                            <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest group-hover:text-white transition-colors">Handcrafted by</span>
+                            <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest group-hover:text-white transition-colors">{t('footer.handcraftedBy')}</span>
                             <Sparkles className="w-3.5 h-3.5 text-brand-red animate-pulse" />
                             <span className="text-[10px] font-black text-brand-red uppercase tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Enzira Tech</span>
                         </div>

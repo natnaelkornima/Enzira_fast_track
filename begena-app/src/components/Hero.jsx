@@ -106,7 +106,7 @@ const Hero = () => {
                         <AnimatedLetters text={t('hero.headingLine1')} delay={0.5} />
                         <br />
                         <span className="italic inline-block hero-shimmer-text">
-                            <AnimatedLetters text={t('hero.headingLine2')} delay={0.9} />
+                            <AnimatedLetters text={t('hero.headingLine2') + '\u00A0'} delay={0.9} />
                         </span>
                     </h1>
                 </div>

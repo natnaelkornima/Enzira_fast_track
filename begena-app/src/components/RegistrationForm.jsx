@@ -242,7 +242,7 @@ const RegistrationForm = () => {
                                 <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
                                     {/* Full Name */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.fullName')}</label>
+                                        <label className="text-sm uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.fullName')}</label>
                                         <div className="relative group">
                                             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
                                                 <User className="w-5 h-5" />
@@ -261,7 +261,7 @@ const RegistrationForm = () => {
 
                                     {/* Phone Number */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.phoneNumber')}</label>
+                                        <label className="text-sm uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.phoneNumber')}</label>
                                         <div className="grid grid-cols-[100px_1fr] gap-4">
                                             <div className="relative" ref={countryPickerRef}>
                                                 <button
@@ -343,7 +343,7 @@ const RegistrationForm = () => {
 
                                     {/* Telegram */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.telegram')}</label>
+                                        <label className="text-sm uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.telegram')}</label>
                                         <div className="relative group">
                                             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
                                                 <Send className="w-5 h-5" />
@@ -362,7 +362,7 @@ const RegistrationForm = () => {
 
                                     {/* Photo Upload */}
                                     <motion.div variants={itemVariants} className="space-y-2">
-                                        <label className="text-[10px] uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.proofOfPayment')}</label>
+                                        <label className="text-sm uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.proofOfPayment')}</label>
                                         <label className="block border-2 border-dashed border-white/20 rounded-2xl p-8 text-center hover:bg-white/5 hover:border-brand-red/30 transition-all cursor-pointer group">
                                             <input
                                                 type="file"

@@ -2,8 +2,11 @@ import { jsPDF } from 'jspdf';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, Download, X, FileText, Share2, Sparkles } from 'lucide-react';
 import autoTable from 'jspdf-autotable';
+import { useLanguage } from '../lib/LanguageContext';
 
 const SuccessModal = ({ isOpen, onClose, userData }) => {
+    const { t } = useLanguage();
+
     const handleDownloadPDF = () => {
         if (!userData) return;
 

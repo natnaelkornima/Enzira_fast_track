@@ -133,7 +133,11 @@
   }
 
   .input-modern {
-    @apply w-full pr-6 pl-14 py-4 rounded-xl bg-dark-900 border border-white/20 text-white placeholder-white/40 transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10;
+    @apply w-full pr-6 pl-14 py-4 rounded-xl bg-dark-900 border border-white/20 text-white transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10;
+  }
+
+  .input-modern::placeholder {
+    @apply text-white/40 text-sm;
   }
 
   .section-container {
@@ -171,7 +175,6 @@ body {
 }
 
 [lang="am"] .hero-title {
-  font-family: 'Loga', Georgia, serif;
   letter-spacing: 0.05em;
   line-height: 1.35;
 }

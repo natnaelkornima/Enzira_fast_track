@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../lib/LanguageContext';
 
 const CheckStatus = () => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [phoneNumber, setPhoneNumber] = useState('');
     const [result, setResult] = useState(null);
     const [status, setStatus] = useState('idle'); // idle | loading | found | not_found | error
@@ -20,13 +20,13 @@ const CheckStatus = () => {
         setResult(null);
 
         try {
-            const cleanPhone = phoneNumber.replace(/\s/g, '');
+            const cleanPhone = phoneNumber.replace(/\D/g, ''); // Extract only digits
             const { data, error } = await supabase
                 .from('registrations')
                 .select('*')
-                .ilike('phone_number', `%${cleanPhone}%`)
+                .filter('phone_number', 'ilike', `%${cleanPhone}%`)
                 .limit(1)
-                .single();
+                .maybeSingle();
 
             if (error || !data) {
                 setStatus('not_found');

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send, MessageCircle, X, Loader2, Trash2, ExternalLink } from 'lucide-react';
+import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send, MessageCircle, X, Loader2, Trash2, ExternalLink, Bold, Italic, Code } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '../../lib/supabase';
+import ConfirmActionModal from './ConfirmActionModal';
+import enziraLogo from '../../assets/enzira-logo.png';
 
 const AdminDashboard = () => {
     const [registrations, setRegistrations] = useState([]);
@@ -13,7 +15,15 @@ const AdminDashboard = () => {
     const [showBroadcast, setShowBroadcast] = useState(false);
     const [broadcastMessage, setBroadcastMessage] = useState('');
     const [broadcastStatus, setBroadcastStatus] = useState('idle'); // idle | sending | sent
+    const [confirmConfig, setConfirmConfig] = useState({ isOpen: false, title: '', message: '', type: 'danger', onConfirm: null });
+    const [selectedStudents, setSelectedStudents] = useState(new Set());
+    const [tempSelectedStudents, setTempSelectedStudents] = useState(new Set());
     const navigate = useNavigate();
+
+    const filteredRegistrations = registrations.filter(r =>
+        r.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.phoneNumber.includes(searchQuery)
+    );
 
     useEffect(() => {
         const fetchRegistrations = async () => {
@@ -72,29 +82,90 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleDeclinePayment = async (id) => {
-        if (!window.confirm('Are you sure you want to decline this payment? This action cannot be undone.')) return;
+    const handleDeclinePayment = (id) => {
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Decline Payment?',
+            message: 'Are you sure you want to decline this payment? This action cannot be undone.',
+            onConfirm: async () => {
+                setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+                try {
+                    const { error } = await supabase
+                        .from('registrations')
+                        .update({ status: 'declined' })
+                        .eq('id', id);
 
-        try {
-            const { error } = await supabase
-                .from('registrations')
-                .update({ status: 'declined' })
-                .eq('id', id);
-
-            if (!error) {
-                setRegistrations(prev => prev.map(r => r._id === id ? { ...r, status: 'declined' } : r));
+                    if (!error) {
+                        setRegistrations(prev => prev.map(r => r._id === id ? { ...r, status: 'declined' } : r));
+                    }
+                } catch (error) {
+                    console.error('Error declining registration:', error);
+                }
             }
-        } catch (error) {
-            console.error('Error declining registration:', error);
+        });
+    };
+
+    const handleSelectAll = () => {
+        if (selectedStudents.size === filteredRegistrations.length && filteredRegistrations.length > 0) {
+            setSelectedStudents(new Set());
+        } else {
+            setSelectedStudents(new Set(filteredRegistrations.map(r => r._id)));
         }
+    };
+
+    const handleSelectStudent = (id) => {
+        const newSelected = new Set(selectedStudents);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedStudents(newSelected);
+    };
+
+    const insertFormatting = (syntax) => {
+        const textarea = document.getElementById('broadcast-message');
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = broadcastMessage;
+
+        const before = text.substring(0, start);
+        const selected = text.substring(start, end);
+        const after = text.substring(end);
+
+        if (syntax === 'bold') {
+            setBroadcastMessage(`${before}*${selected || 'bold text'}*${after}`);
+        } else if (syntax === 'italic') {
+            setBroadcastMessage(`${before}_${selected || 'italic text'}_${after}`);
+        } else if (syntax === 'mono') {
+            setBroadcastMessage(`${before}\`${selected || 'monospace text'}\`${after}`);
+        }
+
+        setTimeout(() => {
+            textarea.focus();
+            const syntaxLength = (syntax === 'bold' || syntax === 'italic') ? 1 : 1;
+            const newCursorPos = start + syntaxLength + (selected ? selected.length : (syntax === 'mono' ? 14 : syntax === 'italic' ? 11 : 9));
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+        }, 0);
     };
 
     const handleBroadcast = () => {
         if (!broadcastMessage.trim()) return;
         setBroadcastStatus('sending');
 
+        // Target selected students from the modal list
+        const targetIds = Array.from(tempSelectedStudents);
+
+        if (targetIds.length === 0) {
+            setBroadcastStatus('idle');
+            return;
+        }
+
         // Collect all Telegram usernames
         const telegramUsers = registrations
+            .filter(r => targetIds.includes(r._id))
             .map(r => r.telegram)
             .filter(t => t && t.trim() !== '');
 
@@ -123,35 +194,86 @@ const AdminDashboard = () => {
         window.open(`https://t.me/${cleanUsername}`, '_blank');
     };
 
-    const handleDeleteUser = async (id) => {
-        if (!window.confirm('Are you sure you want to permanently remove this student? This action cannot be undone.')) return;
+    const handleDeleteUser = (id) => {
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Remove Student?',
+            message: 'Are you sure you want to permanently remove this student? This action cannot be undone.',
+            onConfirm: async () => {
+                setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+                try {
+                    const { error } = await supabase
+                        .from('registrations')
+                        .delete()
+                        .eq('id', id);
 
-        try {
-            const { error } = await supabase
-                .from('registrations')
-                .delete()
-                .eq('id', id);
-
-            if (!error) {
-                setRegistrations(prev => prev.filter(r => r._id !== id));
+                    if (!error) {
+                        setRegistrations(prev => prev.filter(r => r._id !== id));
+                    }
+                } catch (error) {
+                    console.error('Error deleting registration:', error);
+                }
             }
-        } catch (error) {
-            console.error('Error deleting registration:', error);
-        }
+        });
     };
 
-    const downloadPDF = () => {
+    const getTintedLogoBase64 = async (imageUrl, tintColor) => {
+        const res = await fetch(imageUrl);
+        const blob = await res.blob();
+        const img = new Image();
+        const url = URL.createObjectURL(blob);
+
+        return new Promise((resolve, reject) => {
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                // Draw image
+                ctx.drawImage(img, 0, 0);
+
+                // Overlay color
+                ctx.globalCompositeOperation = 'source-in';
+                ctx.fillStyle = tintColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                resolve(canvas.toDataURL('image/png'));
+                URL.revokeObjectURL(url);
+            };
+            img.onerror = reject;
+            img.src = url;
+        });
+    };
+
+    const downloadPDF = async () => {
         const doc = new jsPDF();
 
-        // Header
-        doc.setFontSize(22);
-        doc.setTextColor(152, 28, 0);
-        doc.text('Enzira Training Registrations', 14, 20);
+        try {
+            const logoBase64 = await getTintedLogoBase64(enziraLogo, '#981c00');
+            // Proportional width/height to avoid elongation
+            doc.addImage(logoBase64, 'PNG', 14, 10, 20, 20);
 
-        doc.setFontSize(10);
-        doc.setTextColor(100);
-        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
-        doc.text(`Total Registrations: ${filteredRegistrations.length}`, 14, 34);
+            doc.setFontSize(22);
+            doc.setTextColor(152, 28, 0);
+            doc.text('Enzira Training Registrations', 40, 22);
+
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 40, 28);
+            doc.text(`Total Registrations: ${filteredRegistrations.length}`, 40, 33);
+        } catch (error) {
+            console.error("Error embedding logo in PDF:", error);
+            // Header Fallback
+            doc.setFontSize(22);
+            doc.setTextColor(152, 28, 0);
+            doc.text('Enzira Training Registrations', 14, 20);
+
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 28);
+            doc.text(`Total Registrations: ${filteredRegistrations.length}`, 14, 34);
+        }
 
         // Table
         const tableColumn = ["#", "Date", "Full Name", "Phone", "Telegram", "Status"];
@@ -177,11 +299,6 @@ const AdminDashboard = () => {
         doc.save(`begena-registrations-${new Date().toISOString().split('T')[0]}.pdf`);
     };
 
-    const filteredRegistrations = registrations.filter(r =>
-        r.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.phoneNumber.includes(searchQuery)
-    );
-
     if (loading) {
         return <div className="min-h-screen bg-dark-950 flex items-center justify-center text-white font-body">Loading secure data...</div>;
     }
@@ -193,9 +310,9 @@ const AdminDashboard = () => {
 
             {/* Navbar */}
             <nav className="glass sticky top-0 z-50 border-b border-white/5 py-4 px-6 md:px-12 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-brand-red flex items-center justify-center">
-                        <Users className="w-5 h-5 text-white" />
+                <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 shrink-0 overflow-hidden p-1">
+                        <img src={enziraLogo} alt="Enzira Logo" className="w-full h-full object-contain drop-shadow-lg" />
                     </div>
                     <div>
                         <h1 className="font-heading font-black text-xl leading-none">Admin Panel</h1>
@@ -203,19 +320,33 @@ const AdminDashboard = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button onClick={() => setShowBroadcast(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 transition-all text-sm font-bold text-blue-400">
+                    <button
+                        onClick={() => {
+                            setTempSelectedStudents(new Set(filteredRegistrations.map(r => r._id)));
+                            setShowBroadcast(true);
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 transition-all text-sm font-bold text-blue-400"
+                    >
                         <MessageCircle className="w-4 h-4" />
                         <span className="hidden sm:inline">Broadcast</span>
                     </button>
-                    <button onClick={downloadPDF} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-sm font-bold">
+                    <button onClick={downloadPDF} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-sm font-bold">
                         <FileDown className="w-4 h-4 text-brand-red" />
                         <span className="hidden sm:inline">Export PDF</span>
                     </button>
-                    <button onClick={handleLogout} className="w-10 h-10 rounded-xl bg-white/5 hover:bg-red-500/20 hover:text-red-500 border border-white/5 transition-all flex items-center justify-center">
+                    <button onClick={handleLogout} className="w-10 h-10 rounded-lg bg-white/5 hover:bg-red-500/20 hover:text-red-500 border border-white/5 transition-all flex items-center justify-center">
                         <LogOut className="w-4 h-4" />
                     </button>
                 </div>
             </nav>
+
+            <ConfirmActionModal
+                isOpen={confirmConfig.isOpen}
+                onClose={() => setConfirmConfig(prev => ({ ...prev, isOpen: false }))}
+                onConfirm={confirmConfig.onConfirm}
+                title={confirmConfig.title}
+                message={confirmConfig.message}
+            />
 
             {/* Telegram Broadcast Modal */}
             <AnimatePresence>
@@ -232,16 +363,16 @@ const AdminDashboard = () => {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-full max-w-lg glass rounded-xl p-8 border border-white/10"
+                            className="w-full max-w-lg glass rounded-lg p-8 border border-white/10"
                         >
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                                    <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
                                         <MessageCircle className="w-5 h-5 text-blue-400" />
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-lg">Telegram Broadcast</h3>
-                                        <p className="text-white/40 text-xs">Send a message to all {registrations.length} registered students</p>
+                                        <p className="text-white/40 text-xs">Targeting {tempSelectedStudents.size} students</p>
                                     </div>
                                 </div>
                                 <button onClick={() => setShowBroadcast(false)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
@@ -249,44 +380,70 @@ const AdminDashboard = () => {
                                 </button>
                             </div>
 
-                            <textarea
-                                value={broadcastMessage}
-                                onChange={(e) => setBroadcastMessage(e.target.value)}
-                                placeholder="Type your message here... (e.g., 'Classes start on Monday at 9 AM!')"
-                                rows={5}
-                                className="w-full p-4 rounded-xl bg-dark-900 border border-white/5 text-white placeholder-white/20 focus:outline-hidden focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-none text-sm mb-4"
-                            />
-
-                            {/* Quick Template Buttons */}
+                            {/* Recipient Selection inside modal */}
                             <div className="mb-6">
-                                <p className="text-white/30 text-[10px] uppercase tracking-widest font-bold mb-2">Quick Templates</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {[
-                                        '📢 Class starts tomorrow at 9 AM. Please be on time!',
-                                        '✅ Your payment has been verified. Welcome to Enzira!',
-                                        '📅 Reminder: Submit your materials before the deadline.',
-                                        '🎉 Congratulations on completing the course!'
-                                    ].map((template, i) => (
-                                        <button
-                                            key={i}
-                                            type="button"
-                                            onClick={() => setBroadcastMessage(template)}
-                                            className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-blue-500/10 border border-white/5 hover:border-blue-500/20 text-white/50 hover:text-blue-400 text-[11px] transition-all"
-                                        >
-                                            {template.slice(0, 40)}...
-                                        </button>
+                                <p className="text-white/30 text-[10px] uppercase tracking-widest font-bold mb-3">Include Students ({tempSelectedStudents.size})</p>
+                                <div className="max-h-40 overflow-y-auto custom-scrollbar bg-dark-900/50 rounded-lg border border-white/5 p-2 grid grid-cols-2 gap-2">
+                                    {filteredRegistrations.filter(r => r.telegram).map(r => (
+                                        <label key={r._id} className="flex items-center gap-2 p-2 rounded-md hover:bg-white/5 cursor-pointer transition-colors group">
+                                            <input
+                                                type="checkbox"
+                                                checked={tempSelectedStudents.has(r._id)}
+                                                onChange={() => {
+                                                    const next = new Set(tempSelectedStudents);
+                                                    if (next.has(r._id)) next.delete(r._id);
+                                                    else next.add(r._id);
+                                                    setTempSelectedStudents(next);
+                                                }}
+                                                className="w-3.5 h-3.5 accent-blue-500"
+                                            />
+                                            <span className="text-[11px] text-white/60 group-hover:text-white truncate">{r.fullName}</span>
+                                        </label>
                                     ))}
                                 </div>
                             </div>
 
+                            <div className="flex items-center gap-2 mb-2 bg-dark-900 border border-white/5 rounded-t-xl p-2 border-b-0">
+                                <button
+                                    onClick={() => insertFormatting('bold')}
+                                    className="p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                                    title="Bold"
+                                >
+                                    <Bold className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={() => insertFormatting('italic')}
+                                    className="p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                                    title="Italic"
+                                >
+                                    <Italic className="w-4 h-4" />
+                                </button>
+                                <button
+                                    onClick={() => insertFormatting('mono')}
+                                    className="p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                                    title="Monospace"
+                                >
+                                    <Code className="w-4 h-4" />
+                                </button>
+                            </div>
+
+                            <textarea
+                                id="broadcast-message"
+                                value={broadcastMessage}
+                                onChange={(e) => setBroadcastMessage(e.target.value)}
+                                placeholder="Type your message here... (e.g., 'Classes start on Monday at 9 AM!')"
+                                rows={5}
+                                className="w-full p-4 rounded-b-xl bg-dark-900 border border-white/5 text-white placeholder-white/20 focus:outline-hidden focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-none text-sm mb-6"
+                            />
+
                             <div className="flex items-center justify-between">
-                                <p className="text-white/30 text-xs">
-                                    Sends to {registrations.filter(r => r.telegram && r.telegram.trim() !== '').length} students with Telegram.
+                                <p className="text-white/30 text-xs text-blue-400/60">
+                                    Ready to send to {tempSelectedStudents.size} Students
                                 </p>
                                 <button
                                     onClick={handleBroadcast}
                                     disabled={!broadcastMessage.trim() || broadcastStatus === 'sending'}
-                                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm transition-all disabled:opacity-50"
+                                    className="flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm transition-all disabled:opacity-50"
                                 >
                                     {broadcastStatus === 'sending' ? (
                                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -312,26 +469,26 @@ const AdminDashboard = () => {
             <main className="max-w-7xl mx-auto px-6 md:px-12 py-10 relative z-10">
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-10">
-                    <div className="glass rounded-xl p-6 border-white/5">
+                    <div className="glass rounded-lg p-6 border-white/5">
                         <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Total Students</h3>
                         <p className="text-4xl font-black">{registrations.length}</p>
                     </div>
-                    <div className="glass rounded-xl p-6 border-white/5">
+                    <div className="glass rounded-lg p-6 border-white/5">
                         <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Verified</h3>
                         <p className="text-4xl font-black text-green-400">{registrations.filter(r => r.status === 'verified').length}</p>
                     </div>
-                    <div className="glass rounded-xl p-6 border-white/5">
+                    <div className="glass rounded-lg p-6 border-white/5">
                         <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Pending</h3>
                         <p className="text-4xl font-black text-yellow-400">{registrations.filter(r => r.status === 'pending').length}</p>
                     </div>
-                    <div className="glass rounded-xl p-6 border-white/5">
+                    <div className="glass rounded-lg p-6 border-white/5">
                         <h3 className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-1">Declined</h3>
                         <p className="text-4xl font-black text-brand-red">{registrations.filter(r => r.status === 'declined').length}</p>
                     </div>
                 </div>
 
                 {/* Table Section */}
-                <div className="glass rounded-xl border-white/5 overflow-hidden">
+                <div className="glass rounded-lg border-white/5 overflow-hidden">
                     <div className="p-6 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <h2 className="text-lg font-bold">Recent Registrations</h2>
                         <div className="relative">
@@ -341,7 +498,7 @@ const AdminDashboard = () => {
                                 placeholder="Search students..."
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
-                                className="pl-10 pr-4 py-2 rounded-xl bg-dark-900 border border-white/5 focus:outline-hidden focus:border-brand-red text-sm w-full sm:w-64"
+                                className="pl-10 pr-4 py-2 rounded-lg bg-dark-900 border border-white/5 focus:outline-hidden focus:border-brand-red text-sm w-full sm:w-64"
                             />
                         </div>
                     </div>
@@ -470,7 +627,7 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             </main>
-        </div>
+        </div >
     );
 };
 

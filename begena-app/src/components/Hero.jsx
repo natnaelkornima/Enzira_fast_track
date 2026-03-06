@@ -129,14 +129,15 @@ const Hero = () => {
                     transition={{ duration: 0.8, delay: 2.4, ease: [0.16, 1, 0.3, 1] }}
                     className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-20"
                 >
-                    <motion.button
+                    <motion.a
+                        href="#register"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="btn-primary px-10 py-5 rounded-full"
+                        className="btn-primary px-10 py-5 rounded-full inline-flex items-center gap-2"
                     >
                         <span>{t('hero.startLearning')}</span>
                         <ArrowRight className="w-5 h-5" />
-                    </motion.button>
+                    </motion.a>
 
                     <motion.button
                         whileHover={{ scale: 1.05 }}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send, MessageCircle, X, Loader2, Trash2, ExternalLink, Bold, Italic, Code } from 'lucide-react';
+import { Users, FileDown, LogOut, CheckCircle, Search, Calendar, Phone, Send, MessageCircle, X, Loader2, Trash2, ExternalLink, Bold, Italic, Code, ArrowLeft } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '../../lib/supabase';
@@ -13,6 +13,7 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [showBroadcast, setShowBroadcast] = useState(false);
+    const [broadcastStep, setBroadcastStep] = useState('compose'); // 'compose' | 'select'
     const [broadcastMessage, setBroadcastMessage] = useState('');
     const [broadcastStatus, setBroadcastStatus] = useState('idle'); // idle | sending | sent
     const [confirmConfig, setConfirmConfig] = useState({ isOpen: false, title: '', message: '', type: 'danger', onConfirm: null });
@@ -135,27 +136,35 @@ const AdminDashboard = () => {
         const selected = text.substring(start, end);
         const after = text.substring(end);
 
+        let newText = text;
+        let offset = 0;
+
         if (syntax === 'bold') {
-            setBroadcastMessage(`${before}*${selected || 'bold text'}*${after}`);
+            newText = `${before}*${selected || 'bold text'}*${after}`;
+            offset = selected ? 1 : 1;
         } else if (syntax === 'italic') {
-            setBroadcastMessage(`${before}_${selected || 'italic text'}_${after}`);
+            newText = `${before}_${selected || 'italic text'}_${after}`;
+            offset = selected ? 1 : 1;
         } else if (syntax === 'mono') {
-            setBroadcastMessage(`${before}\`${selected || 'monospace text'}\`${after}`);
+            newText = `${before}\`${selected || 'monospace text'}\`${after}`;
+            offset = selected ? 1 : 1;
         }
+
+        setBroadcastMessage(newText);
 
         setTimeout(() => {
             textarea.focus();
-            const syntaxLength = (syntax === 'bold' || syntax === 'italic') ? 1 : 1;
-            const newCursorPos = start + syntaxLength + (selected ? selected.length : (syntax === 'mono' ? 14 : syntax === 'italic' ? 11 : 9));
-            textarea.setSelectionRange(newCursorPos, newCursorPos);
-        }, 0);
+            const newPos = selected ? end + 2 : start + offset + (syntax === 'bold' ? 9 : syntax === 'italic' ? 11 : 14);
+            textarea.setSelectionRange(newPos, newPos);
+        }, 10);
     };
+
+    const [recipientSearch, setRecipientSearch] = useState('');
 
     const handleBroadcast = () => {
         if (!broadcastMessage.trim()) return;
         setBroadcastStatus('sending');
 
-        // Target selected students from the modal list
         const targetIds = Array.from(tempSelectedStudents);
 
         if (targetIds.length === 0) {
@@ -163,29 +172,31 @@ const AdminDashboard = () => {
             return;
         }
 
-        // Collect all Telegram usernames
         const telegramUsers = registrations
             .filter(r => targetIds.includes(r._id))
             .map(r => r.telegram)
             .filter(t => t && t.trim() !== '');
 
-        // Build the pre-filled message for Telegram
         const encodedMessage = encodeURIComponent(broadcastMessage);
 
-        // Open each Telegram user in a new tab with the message
         telegramUsers.forEach((username, index) => {
             const cleanUsername = username.replace('@', '');
             setTimeout(() => {
                 window.open(`https://t.me/${cleanUsername}?text=${encodedMessage}`, '_blank');
-            }, index * 500);
+            }, index * 800);
         });
 
-        setBroadcastStatus('sent');
         setTimeout(() => {
-            setBroadcastStatus('idle');
-            setShowBroadcast(false);
-            setBroadcastMessage('');
-        }, 2000);
+            setBroadcastStatus('sent');
+            setTimeout(() => {
+                setBroadcastStatus('idle');
+                setShowBroadcast(false);
+                setBroadcastStep('compose');
+                setBroadcastMessage('');
+                setTempSelectedStudents(new Set());
+                setRecipientSearch('');
+            }, 2000);
+        }, telegramUsers.length * 800);
     };
 
     const handleSendDM = (telegram) => {
@@ -363,7 +374,7 @@ const AdminDashboard = () => {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="w-full max-w-lg glass rounded-lg p-8 border border-white/10"
+                            className="w-full max-w-lg rounded-2xl p-8 border border-white/10 bg-dark-950/95 backdrop-blur-xl shadow-2xl"
                         >
                             <div className="flex items-center justify-between mb-6">
                                 <div className="flex items-center gap-3">
@@ -372,94 +383,186 @@ const AdminDashboard = () => {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-lg">Telegram Broadcast</h3>
-                                        <p className="text-white/40 text-xs">Targeting {tempSelectedStudents.size} students</p>
+                                        <p className="text-white/40 text-xs">Step {broadcastStep === 'compose' ? '1' : '2'} of 2</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setShowBroadcast(false)} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                                <button onClick={() => {
+                                    setShowBroadcast(false);
+                                    setBroadcastStep('compose');
+                                }} className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
                                     <X className="w-4 h-4" />
                                 </button>
                             </div>
 
-                            {/* Recipient Selection inside modal */}
-                            <div className="mb-6">
-                                <p className="text-white/30 text-[10px] uppercase tracking-widest font-bold mb-3">Include Students ({tempSelectedStudents.size})</p>
-                                <div className="max-h-40 overflow-y-auto custom-scrollbar bg-dark-900/50 rounded-lg border border-white/5 p-2 grid grid-cols-2 gap-2">
-                                    {filteredRegistrations.filter(r => r.telegram).map(r => (
-                                        <label key={r._id} className="flex items-center gap-2 p-2 rounded-md hover:bg-white/5 cursor-pointer transition-colors group">
-                                            <input
-                                                type="checkbox"
-                                                checked={tempSelectedStudents.has(r._id)}
-                                                onChange={() => {
-                                                    const next = new Set(tempSelectedStudents);
-                                                    if (next.has(r._id)) next.delete(r._id);
-                                                    else next.add(r._id);
-                                                    setTempSelectedStudents(next);
+                            {broadcastStep === 'compose' && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.15 }}
+                                >
+                                    <div className="flex items-center gap-2 mb-2 bg-dark-900 border border-white/5 rounded-t-xl p-2 border-b-0">
+                                        <button
+                                            onClick={() => insertFormatting('bold')}
+                                            className="p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                                            title="Bold"
+                                        >
+                                            <Bold className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => insertFormatting('italic')}
+                                            className="p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                                            title="Italic"
+                                        >
+                                            <Italic className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => insertFormatting('mono')}
+                                            className="p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                                            title="Monospace"
+                                        >
+                                            <Code className="w-4 h-4" />
+                                        </button>
+                                    </div>
+
+                                    <textarea
+                                        id="broadcast-message"
+                                        value={broadcastMessage}
+                                        onChange={(e) => setBroadcastMessage(e.target.value)}
+                                        placeholder="Write your message... Use *bold* or _italic_ for formatting."
+                                        rows={8}
+                                        className="w-full p-4 rounded-b-xl bg-dark-900 border border-white/5 text-white placeholder-white/20 focus:outline-hidden focus:border-blue-500 transition-all resize-none text-sm mb-6"
+                                    />
+
+                                    <div className="flex justify-end">
+                                        <button
+                                            onClick={() => setBroadcastStep('select')}
+                                            disabled={!broadcastMessage.trim()}
+                                            className="flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm transition-all disabled:opacity-30"
+                                        >
+                                            Next: Select Recipients
+                                            <ExternalLink className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {broadcastStep === 'select' && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.15 }}
+                                >
+                                    <div className="mb-6">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div>
+                                                <p className="text-white/30 text-[10px] uppercase tracking-widest font-bold mb-1">Select Recipients</p>
+                                                <h4 className="text-white text-sm font-bold">{tempSelectedStudents.size} students chosen</h4>
+                                            </div>
+                                            <button
+                                                onClick={() => setBroadcastStep('compose')}
+                                                className="flex items-center gap-1.5 text-[10px] text-blue-400 hover:text-blue-300 transition-colors uppercase tracking-widest font-bold"
+                                            >
+                                                <ArrowLeft className="w-3 h-3" />
+                                                Edit Message
+                                            </button>
+                                        </div>
+
+                                        {/* Search and Filter */}
+                                        <div className="flex gap-2 mb-4">
+                                            <div className="relative flex-1">
+                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/20" />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search students..."
+                                                    value={recipientSearch}
+                                                    onChange={(e) => setRecipientSearch(e.target.value)}
+                                                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-dark-900/50 border border-white/5 text-xs text-white placeholder-white/20 focus:outline-hidden focus:border-blue-500/50 transition-all"
+                                                />
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    const studentsWithTelegram = filteredRegistrations.filter(r => r.telegram);
+                                                    if (tempSelectedStudents.size === studentsWithTelegram.length) {
+                                                        setTempSelectedStudents(new Set());
+                                                    } else {
+                                                        setTempSelectedStudents(new Set(studentsWithTelegram.map(r => r._id)));
+                                                    }
                                                 }}
-                                                className="w-3.5 h-3.5 accent-blue-500"
-                                            />
-                                            <span className="text-[11px] text-white/60 group-hover:text-white truncate">{r.fullName}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
+                                                className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[10px] text-white/60 hover:text-white hover:bg-white/10 transition-all font-bold uppercase tracking-wider"
+                                            >
+                                                {tempSelectedStudents.size === filteredRegistrations.filter(r => r.telegram).length ? 'Unselect All' : 'Select All'}
+                                            </button>
+                                        </div>
 
-                            <div className="flex items-center gap-2 mb-2 bg-dark-900 border border-white/5 rounded-t-xl p-2 border-b-0">
-                                <button
-                                    onClick={() => insertFormatting('bold')}
-                                    className="p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
-                                    title="Bold"
-                                >
-                                    <Bold className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={() => insertFormatting('italic')}
-                                    className="p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
-                                    title="Italic"
-                                >
-                                    <Italic className="w-4 h-4" />
-                                </button>
-                                <button
-                                    onClick={() => insertFormatting('mono')}
-                                    className="p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
-                                    title="Monospace"
-                                >
-                                    <Code className="w-4 h-4" />
-                                </button>
-                            </div>
+                                        <div className="max-h-[320px] overflow-y-auto custom-scrollbar pr-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            {filteredRegistrations
+                                                .filter(r => r.telegram && (r.fullName || '').toLowerCase().includes((recipientSearch || '').toLowerCase()))
+                                                .map((r, idx) => (
+                                                    <motion.label
+                                                        key={r._id}
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        transition={{ delay: idx * 0.03 }}
+                                                        className={`relative flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition-all border group ${tempSelectedStudents.has(r._id)
+                                                            ? 'bg-blue-500/10 border-blue-500/40 shadow-[0_0_15px_rgba(59,130,246,0.1)]'
+                                                            : 'bg-dark-900/30 border-white/5 hover:border-white/20 hover:bg-dark-900/50'
+                                                            }`}
+                                                    >
+                                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 transition-all ${tempSelectedStudents.has(r._id) ? 'bg-blue-500 text-white' : 'bg-white/5 text-white/40'
+                                                            }`}>
+                                                            {(r.fullName || '?').charAt(0).toUpperCase()}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className={`text-xs font-bold truncate ${tempSelectedStudents.has(r._id) ? 'text-white' : 'text-white/60'}`}>{r.fullName || 'Unknown'}</p>
+                                                            <p className="text-[10px] text-white/20 truncate">{r.telegram}</p>
+                                                        </div>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={tempSelectedStudents.has(r._id)}
+                                                            onChange={() => {
+                                                                const next = new Set(tempSelectedStudents);
+                                                                if (next.has(r._id)) next.delete(r._id);
+                                                                else next.add(r._id);
+                                                                setTempSelectedStudents(next);
+                                                            }}
+                                                            className="hidden"
+                                                        />
+                                                        {tempSelectedStudents.has(r._id) && (
+                                                            <motion.div
+                                                                initial={{ scale: 0 }}
+                                                                animate={{ scale: 1 }}
+                                                                className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center border-2 border-dark-950"
+                                                            >
+                                                                <CheckCircle className="w-3 h-3 text-white" />
+                                                            </motion.div>
+                                                        )}
+                                                    </motion.label>
+                                                ))}
+                                        </div>
+                                    </div>
 
-                            <textarea
-                                id="broadcast-message"
-                                value={broadcastMessage}
-                                onChange={(e) => setBroadcastMessage(e.target.value)}
-                                placeholder="Type your message here... (e.g., 'Classes start on Monday at 9 AM!')"
-                                rows={5}
-                                className="w-full p-4 rounded-b-xl bg-dark-900 border border-white/5 text-white placeholder-white/20 focus:outline-hidden focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-none text-sm mb-6"
-                            />
-
-                            <div className="flex items-center justify-between">
-                                <p className="text-white/30 text-xs text-blue-400/60">
-                                    Ready to send to {tempSelectedStudents.size} Students
-                                </p>
-                                <button
-                                    onClick={handleBroadcast}
-                                    disabled={!broadcastMessage.trim() || broadcastStatus === 'sending'}
-                                    className="flex items-center gap-2 px-6 py-3 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm transition-all disabled:opacity-50"
-                                >
-                                    {broadcastStatus === 'sending' ? (
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                    ) : broadcastStatus === 'sent' ? (
-                                        <>
-                                            <CheckCircle className="w-4 h-4" />
-                                            Sent!
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Send className="w-4 h-4" />
-                                            Send to All
-                                        </>
-                                    )}
-                                </button>
-                            </div>
+                                    <div className="flex items-center justify-between mt-8 p-4 bg-white/2 rounded-2xl border border-white/5">
+                                        <div>
+                                            <p className="text-[10px] text-white/20 uppercase font-bold tracking-widest">Final Payload</p>
+                                            <p className="text-white font-bold text-sm tracking-tight">{tempSelectedStudents.size} Recipients</p>
+                                        </div>
+                                        <button
+                                            onClick={handleBroadcast}
+                                            disabled={tempSelectedStudents.size === 0 || broadcastStatus === 'sending'}
+                                            className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm transition-all shadow-xl shadow-blue-500/20 disabled:opacity-30 active:scale-95 group"
+                                        >
+                                            {broadcastStatus === 'sending' ? (
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                            ) : broadcastStatus === 'sent' ? (
+                                                <CheckCircle className="w-4 h-4" />
+                                            ) : (
+                                                <Send className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                            )}
+                                            {broadcastStatus === 'sending' ? 'Blasting...' : broadcastStatus === 'sent' ? 'Sent!' : 'Blast Telegram'}
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
                         </motion.div>
                     </motion.div>
                 )}

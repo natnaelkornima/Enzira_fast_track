@@ -77,22 +77,22 @@ const Footer = () => {
                     <div>
                         <h4 className="text-xs font-black uppercase tracking-[0.3em] text-white/50 mb-10">{t('footer.connect')}</h4>
                         <div className="space-y-6">
-                            <a href="mailto:info@begena.org" className="flex items-center gap-4 group">
+                            <a href="mailto:kirubelhabtamuenyew@gmail.com" className="flex items-center gap-4 group">
                                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:border-brand-red transition-all">
                                     <Mail className="w-4 h-4 text-brand-red" />
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{t('footer.emailUs')}</p>
-                                    <p className="text-sm text-white/60 group-hover:text-white transition-colors">info@begena.org</p>
+                                    <p className="text-sm text-white/60 group-hover:text-white transition-colors">kirubelhabtamuenyew@gmail.com</p>
                                 </div>
                             </a>
-                            <a href="tel:+251911223344" className="flex items-center gap-4 group">
+                            <a href="tel:+251920312156" className="flex items-center gap-4 group">
                                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5 group-hover:border-brand-red transition-all">
                                     <Phone className="w-4 h-4 text-brand-red" />
                                 </div>
                                 <div>
                                     <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{t('footer.callCenter')}</p>
-                                    <p className="text-sm text-white/60 group-hover:text-white transition-colors">+251 911 22 33 44</p>
+                                    <p className="text-sm text-white/60 group-hover:text-white transition-colors">+251 92 031 2156</p>
                                 </div>
                             </a>
                         </div>

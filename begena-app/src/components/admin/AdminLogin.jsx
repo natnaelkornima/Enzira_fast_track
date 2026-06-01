@@ -28,7 +28,7 @@ const AdminLogin = () => {
                 setStatus('error');
             } else if (data.session) {
                 // Application-level security check: Only allow the specific admin email
-                const ALLOWED_ADMIN_EMAIL = 'admin@begena.com';
+                const ALLOWED_ADMIN_EMAIL = 'enzirabegena19@gmail.com';
 
                 if (data.session.user.email !== ALLOWED_ADMIN_EMAIL) {
                     // Force logout the unauthorized user immediately

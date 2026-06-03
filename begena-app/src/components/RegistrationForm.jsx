@@ -4,6 +4,8 @@ import { User, Phone, Send, Upload, CheckCircle, AlertCircle, Loader2, Globe, Sp
 import SuccessModal from './SuccessModal';
 import { supabase } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
+import telebirrLogo from '../assets/telebirr-logo.png';
+import cbeLogo from '../assets/cbe-logo.png';
 
 const countryCodes = [
     { code: '+251', country: 'Ethiopia', iso: 'et' },
@@ -32,24 +34,14 @@ const countryCodes = [
 ];
 
 const CBELogo = () => (
-    <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#0c2340] border border-[#d4a847]/20 shadow-md shrink-0">
-        <svg viewBox="0 0 100 100" className="w-8 h-8">
-            <circle cx="50" cy="50" r="45" fill="#0c2340" />
-            <path d="M50 15 A35 35 0 0 0 15 50 A35 35 0 0 0 50 85 A35 35 0 0 0 85 50" fill="none" stroke="#d4a847" strokeWidth="8" strokeLinecap="round" />
-            <path d="M50 27 A23 23 0 0 0 27 50 A23 23 0 0 0 50 73" fill="none" stroke="#f59e0b" strokeWidth="6" strokeLinecap="round" />
-            <circle cx="50" cy="50" r="10" fill="#d4a847" />
-        </svg>
+    <div className="flex items-center justify-center w-28 h-12 rounded-lg bg-white border border-white/20 shadow-sm shrink-0 overflow-hidden">
+        <img src={cbeLogo} alt="Commercial Bank of Ethiopia" className="w-full h-full object-contain" />
     </div>
 );
 
 const TelebirrLogo = () => (
-    <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#0066b2] border border-white/5 shadow-md shrink-0">
-        <svg viewBox="0 0 100 100" className="w-9 h-9">
-            <rect width="100" height="100" rx="15" fill="#0066b2" />
-            <path d="M25 35 C35 35 45 45 45 75" fill="none" stroke="white" strokeWidth="12" strokeLinecap="round" />
-            <path d="M40 30 C50 30 65 45 65 75" fill="none" stroke="#e01b22" strokeWidth="12" strokeLinecap="round" />
-            <path d="M55 25 C65 25 80 45 80 75" fill="none" stroke="#fec107" strokeWidth="12" strokeLinecap="round" />
-        </svg>
+    <div className="flex items-center justify-center w-28 h-12 rounded-lg bg-white border border-white/20 shadow-sm shrink-0 overflow-hidden p-1">
+        <img src={telebirrLogo} alt="Telebirr" className="w-full h-full object-contain" />
     </div>
 );
 
@@ -66,11 +58,12 @@ const PaymentCard = ({ name, accountNumber, logo: Logo, color }) => {
         <div className="glass p-5 flex items-center justify-between border border-white/5 hover:border-brand-red/20 transition-all duration-300 relative overflow-hidden rounded-lg">
             <div className={`absolute -top-12 -right-12 w-32 h-32 bg-${color}/5 rounded-full blur-2xl pointer-events-none transition-colors duration-500`} />
             
-            <div className="flex items-center gap-4 relative z-10 mr-4">
+            <div className="flex items-center gap-5 relative z-10 mr-4">
                 <Logo />
                 <div>
-                    <h4 className="text-white font-bold text-xs tracking-wide uppercase text-white/80">{name}</h4>
-                    <p className="text-white font-mono font-black text-lg md:text-xl mt-1 tracking-wider">{accountNumber}</p>
+                    <h4 className="text-white font-bold text-[10px] md:text-xs tracking-wide uppercase text-white/50">{name}</h4>
+                    <p className="text-white font-mono font-black text-base md:text-lg lg:text-xl mt-1 tracking-wider">{accountNumber}</p>
+                    <p className="text-brand-red font-bold text-[9px] md:text-[10px] uppercase tracking-widest mt-1">Kirubel Habtamu Enyew</p>
                 </div>
             </div>
             
@@ -269,13 +262,13 @@ const RegistrationForm = () => {
                         <div className="space-y-4">
                             <PaymentCard 
                                 name="Commercial Bank of Ethiopia (CBE)" 
-                                accountNumber="1000624842816" 
+                                accountNumber="1000432170393" 
                                 logo={CBELogo} 
                                 color="yellow-500"
                             />
                             <PaymentCard 
                                 name="Telebirr" 
-                                accountNumber="0961263695" 
+                                accountNumber="0920312156" 
                                 logo={TelebirrLogo} 
                                 color="blue-500"
                             />

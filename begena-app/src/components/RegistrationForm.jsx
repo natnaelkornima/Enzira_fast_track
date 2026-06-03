@@ -31,6 +31,65 @@ const countryCodes = [
     { code: '+55', country: 'Brazil', iso: 'br' },
 ];
 
+const CBELogo = () => (
+    <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#0c2340] border border-[#d4a847]/20 shadow-md shrink-0">
+        <svg viewBox="0 0 100 100" className="w-8 h-8">
+            <circle cx="50" cy="50" r="45" fill="#0c2340" />
+            <path d="M50 15 A35 35 0 0 0 15 50 A35 35 0 0 0 50 85 A35 35 0 0 0 85 50" fill="none" stroke="#d4a847" strokeWidth="8" strokeLinecap="round" />
+            <path d="M50 27 A23 23 0 0 0 27 50 A23 23 0 0 0 50 73" fill="none" stroke="#f59e0b" strokeWidth="6" strokeLinecap="round" />
+            <circle cx="50" cy="50" r="10" fill="#d4a847" />
+        </svg>
+    </div>
+);
+
+const TelebirrLogo = () => (
+    <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-[#0066b2] border border-white/5 shadow-md shrink-0">
+        <svg viewBox="0 0 100 100" className="w-9 h-9">
+            <rect width="100" height="100" rx="15" fill="#0066b2" />
+            <path d="M25 35 C35 35 45 45 45 75" fill="none" stroke="white" strokeWidth="12" strokeLinecap="round" />
+            <path d="M40 30 C50 30 65 45 65 75" fill="none" stroke="#e01b22" strokeWidth="12" strokeLinecap="round" />
+            <path d="M55 25 C65 25 80 45 80 75" fill="none" stroke="#fec107" strokeWidth="12" strokeLinecap="round" />
+        </svg>
+    </div>
+);
+
+const PaymentCard = ({ name, accountNumber, logo: Logo, color }) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(accountNumber);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="glass p-5 flex items-center justify-between border border-white/5 hover:border-brand-red/20 transition-all duration-300 relative overflow-hidden rounded-lg">
+            <div className={`absolute -top-12 -right-12 w-32 h-32 bg-${color}/5 rounded-full blur-2xl pointer-events-none transition-colors duration-500`} />
+            
+            <div className="flex items-center gap-4 relative z-10 mr-4">
+                <Logo />
+                <div>
+                    <h4 className="text-white font-bold text-xs tracking-wide uppercase text-white/80">{name}</h4>
+                    <p className="text-white font-mono font-black text-lg md:text-xl mt-1 tracking-wider">{accountNumber}</p>
+                </div>
+            </div>
+            
+            <button
+                type="button"
+                onClick={handleCopy}
+                className="relative z-10 flex items-center justify-center px-3 py-2 rounded-lg bg-white/5 hover:bg-brand-red text-white/50 hover:text-white border border-white/10 hover:border-brand-red transition-all cursor-pointer group/btn select-none shrink-0"
+                title="Copy to clipboard"
+            >
+                {copied ? (
+                    <span className="text-[10px] font-bold text-green-400 group-hover/btn:text-white uppercase tracking-widest">Copied</span>
+                ) : (
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-hover/btn:text-white">Copy</span>
+                )}
+            </button>
+        </div>
+    );
+};
+
 const RegistrationForm = () => {
     const { t } = useLanguage();
     const [formData, setFormData] = useState({
@@ -186,41 +245,40 @@ const RegistrationForm = () => {
 
             <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
-                    {/* Left Side: Info */}
+                    {/* Left Side: Payment Info */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="lg:sticky lg:top-32"
+                        className="lg:sticky lg:top-32 space-y-8"
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red text-xs font-bold tracking-widest uppercase mb-6">
-                            <Sparkles className="w-3.5 h-3.5" />
-                            {t('registration.sectionSubtitle')}
+                        <div>
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red text-xs font-bold tracking-widest uppercase mb-6">
+                                <Sparkles className="w-3.5 h-3.5" />
+                                {t('registration.sectionSubtitle')}
+                            </div>
+                            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+                                {t('registration.pathTitle1')} <br />
+                                <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white italic">{t('registration.pathTitle2')}</span>
+                            </h2>
+                            <p className="text-white/40 text-sm leading-relaxed max-w-lg">
+                                {t('registration.pathDesc')}
+                            </p>
                         </div>
-                        <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-8 leading-tight">
-                            {t('registration.pathTitle1')} <br />
-                            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white italic">{t('registration.pathTitle2')}</span>
-                        </h2>
-                        <p className="text-white/40 text-lg leading-relaxed mb-12 max-w-lg">
-                            {t('registration.pathDesc')}
-                        </p>
 
-                        <div className="space-y-6">
-                            {[
-                                { title: t('registration.feature1Title'), desc: t('registration.feature1Desc') },
-                                { title: t('registration.feature2Title'), desc: t('registration.feature2Desc') },
-                                { title: t('registration.feature3Title'), desc: t('registration.feature3Desc') }
-                            ].map((item, i) => (
-                                <div key={i} className="flex gap-4">
-                                    <div className="w-6 h-6 rounded-full bg-brand-red/20 flex items-center justify-center mt-1">
-                                        <div className="w-2 h-2 rounded-full bg-brand-red" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-white font-bold text-sm tracking-wide">{item.title}</h4>
-                                        <p className="text-white/30 text-xs mt-1">{item.desc}</p>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="space-y-4">
+                            <PaymentCard 
+                                name="Commercial Bank of Ethiopia (CBE)" 
+                                accountNumber="1000624842816" 
+                                logo={CBELogo} 
+                                color="yellow-500"
+                            />
+                            <PaymentCard 
+                                name="Telebirr" 
+                                accountNumber="0961263695" 
+                                logo={TelebirrLogo} 
+                                color="blue-500"
+                            />
                         </div>
                     </motion.div>
 

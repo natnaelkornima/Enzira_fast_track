@@ -97,6 +97,30 @@
       transform: translateY(0);
     }
   }
+
+  /* Theme Radius Overrides */
+  --radius-xs: 5px;
+  --radius-sm: 5px;
+  --radius-md: 5px;
+  --radius-lg: 5px;
+  --radius-xl: 5px;
+  --radius-2xl: 5px;
+  --radius-3xl: 5px;
+
+  /* Theme Font Size Overrides */
+  --text-xs: 0.7rem;
+  --text-sm: 0.8rem;
+  --text-base: 0.9rem;
+  --text-lg: 1rem;
+  --text-xl: 1.15rem;
+  --text-2xl: 1.35rem;
+  --text-3xl: 1.6rem;
+  --text-4xl: 2rem;
+  --text-5xl: 2.5rem;
+  --text-6xl: 3.2rem;
+  --text-7xl: 4rem;
+  --text-8xl: 5rem;
+  --text-9xl: 6.2rem;
 }
 
 /* Custom Utilities */
@@ -114,7 +138,7 @@
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
+    border-radius: 5px;
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 

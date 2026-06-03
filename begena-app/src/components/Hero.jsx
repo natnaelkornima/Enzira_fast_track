@@ -92,7 +92,7 @@ const Hero = () => {
             >
                 {/* Floating Badge */}
                 <motion.div variants={itemVariants} className="mb-10 flex justify-center">
-                    <span className="group flex items-center gap-2 px-5 py-2 glass rounded-full border border-white/5 hover:border-brand-red/30 transition-all duration-500 cursor-pointer">
+                    <span className="group flex items-center gap-2 px-5 py-2 glass rounded-md border border-white/5 hover:border-brand-red/30 transition-all duration-500 cursor-pointer">
                         <div className="w-2 h-2 rounded-full bg-brand-red animate-pulse" />
                         <span className="text-[10px] uppercase font-bold tracking-[0.3em] text-white/50 group-hover:text-white transition-colors">
                             {t('hero.badge')}
@@ -133,7 +133,7 @@ const Hero = () => {
                         href="#register"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="btn-primary px-10 py-5 rounded-full inline-flex items-center gap-2"
+                        className="btn-primary px-10 py-5 inline-flex items-center gap-2"
                     >
                         <span>{t('hero.startLearning')}</span>
                         <ArrowRight className="w-5 h-5" />
@@ -142,7 +142,7 @@ const Hero = () => {
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="btn-secondary px-10 py-5 rounded-full group overflow-hidden relative"
+                        className="btn-secondary px-10 py-5 group overflow-hidden relative"
                     >
                         <div className="absolute inset-0 bg-brand-red/0 group-hover:bg-brand-red/5 transition-colors" />
                         <Play className="w-5 h-5 text-brand-red group-hover:text-white transition-colors relative z-10" />

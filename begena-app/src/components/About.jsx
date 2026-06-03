@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { History, GraduationCap, Music, PlayCircle, Heart, Star, Shield, Sun } from 'lucide-react';
-import begenaImg from '../assets/about-image.jpg';
 import { useLanguage } from '../lib/LanguageContext';
 
 const About = () => {
@@ -55,68 +54,37 @@ const About = () => {
             <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-brand-red/5 rounded-full blur-[120px] -z-10" />
 
             <div className="max-w-6xl mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+                <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-24">
                     <motion.div
-                        initial={{ opacity: 0, x: -40 }}
-                        whileInView={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
+                        className="flex flex-col items-center"
                     >
                         <h4 className="text-brand-red font-bold tracking-[0.3em] uppercase text-xs mb-6">{t('about.subtitle')}</h4>
                         <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-8 leading-tight">
                             {t('about.titleLine1')} <br />
                             <span className="italic text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white">{t('about.titleLine2')}</span>
                         </h2>
-                        <p className="text-white/40 text-lg leading-relaxed mb-8 max-w-xl">
+                        <p className="text-white/40 text-lg leading-relaxed mb-10 max-w-2xl">
                             {t('about.description')}
                         </p>
 
-                        <div className="grid grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full justify-center">
                             {[
                                 { icon: Shield, label: t('about.pill1') },
                                 { icon: Star, label: t('about.pill2') },
                                 { icon: Heart, label: t('about.pill3') },
                                 { icon: Sun, label: t('about.pill4') }
                             ].map((item, i) => (
-                                <div key={i} className="flex items-center gap-3 group">
+                                <div key={i} className="flex flex-col items-center gap-3 p-4 rounded-xl bg-white/2 border border-white/5 hover:border-brand-red/30 transition-all w-full group">
                                     <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-brand-red/30 transition-all">
                                         <item.icon className="w-5 h-5 text-brand-red" />
                                     </div>
                                     <span className="text-xs font-bold text-white/50 group-hover:text-white transition-colors">{item.label}</span>
                                 </div>
                             ))}
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className="relative w-full max-w-lg mx-auto lg:ml-auto lg:mr-0 group"
-                    >
-                        {/* Glow effect */}
-                        <div className="absolute -inset-4 bg-brand-red/20 rounded-2xl blur-2xl group-hover:bg-brand-red/30 transition-all duration-700 opacity-50 group-hover:opacity-100" />
-
-                        <div className="aspect-4/5 w-full rounded-2xl overflow-hidden bg-dark-900 border border-white/10 relative transform transition-all duration-700 group-hover:-translate-y-4 shadow-2xl shadow-black/50 group-hover:shadow-[0_20px_60px_-15px_rgba(152,28,0,0.5)]">
-                            <div className="absolute inset-0 bg-linear-to-tr from-brand-red/30 to-transparent mix-blend-overlay z-10 opacity-70 group-hover:opacity-30 transition-opacity duration-700" />
-                            <img
-                                src={begenaImg}
-                                alt="Enzira Strings"
-                                className="w-full h-full object-cover rounded-2xl grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
-                            />
-
-                            {/* Modern Decorative Accent */}
-                            <div className="absolute top-8 left-8 w-24 h-24 border-t-2 border-l-2 border-white/50 rounded-tl-3xl z-20 transition-all duration-700 opacity-0 group-hover:opacity-100 group-hover:scale-110" />
-                            <div className="absolute bottom-8 right-8 w-24 h-24 border-b-2 border-r-2 border-white/50 rounded-br-3xl z-20 transition-all duration-700 opacity-0 group-hover:opacity-100 group-hover:scale-110" />
-                        </div>
-
-                        {/* Floating elements */}
-                        <div className="absolute -right-8 top-1/4 w-16 h-16 glass rounded-xl hidden md:flex items-center justify-center animate-float shadow-xl z-30 border border-white/10">
-                            <Star className="w-6 h-6 text-brand-red" />
-                        </div>
-                        <div className="absolute -left-6 bottom-1/4 w-12 h-12 glass rounded-full hidden md:flex items-center justify-center animate-float shadow-xl z-30 border border-white/10" style={{ animationDelay: '1s' }}>
-                            <Music className="w-4 h-4 text-white" />
                         </div>
                     </motion.div>
                 </div>

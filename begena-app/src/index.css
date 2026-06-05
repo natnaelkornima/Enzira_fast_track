@@ -216,8 +216,17 @@ body {
 
 [lang="am"] .font-balderasu {
   font-family: 'Balderasu', system-ui, sans-serif !important;
-  font-size: 0.8em !important; /* make medium text size */
   line-height: 1.05 !important; /* make medium or small gap */
+}
+
+/* Make only the starting hero title larger */
+[lang="am"] .hero-title.font-balderasu {
+  font-size: 5em !important;
+}
+
+/* Keep the payment part/registration sub-headings medium size */
+[lang="am"] h2.font-balderasu {
+  font-size: 1.5em !important;
 }
 
 [lang="am"] .hero-title {

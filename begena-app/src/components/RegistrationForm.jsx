@@ -388,57 +388,41 @@ const RegistrationForm = () => {
 
                     {/* Right Side: Step-Based Form */}
                     <div className="relative">
-                        <div className="glass rounded-2xl p-8 md:p-12 border-white/5 relative overflow-hidden">
+                        <div className="registration-card-premium">
                             {/* Form Header */}
-                            <div className="mb-8 flex flex-col">
-                                <h3 className="text-2xl font-bold text-white mb-2">{t('registration.formTitle')}</h3>
-                                <p className="text-white/30 text-sm">{t('registration.formDesc')}</p>
+                            <div className="mb-6 flex flex-col">
+                                <h3 className="text-lg font-bold text-white tracking-wide">{t('registration.formTitle')}</h3>
+                                <p className="text-white/40 text-[11px] mt-1">{t('registration.formDesc')}</p>
                             </div>
 
-                            {/* Custom Wizard Progress Tracker */}
-                            <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/5">
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs transition-all duration-300 ${step === 1 ? 'bg-brand-red text-white shadow-[0_0_15px_rgba(152,28,0,0.5)]' : 'bg-green-500/20 text-green-400 border border-green-500/30'}`}>
-                                        {step > 1 ? "✓" : "1"}
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold">Step 1</span>
-                                        <span className={`text-[11px] font-bold ${step === 1 ? 'text-white' : 'text-white/50'}`}>{t('registration.step1')}</span>
-                                    </div>
+                            {/* Custom Premium Progress Tracker */}
+                            <div className="space-y-3 mb-8">
+                                <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.15em] font-bold text-white/40">
+                                    <span>{step === 1 ? t('registration.step1') : t('registration.step2')}</span>
+                                    <span>{step} / 2</span>
                                 </div>
-                                
-                                <div className="flex-1 h-[2px] mx-4 bg-white/5 relative overflow-hidden">
-                                    <div className={`absolute inset-y-0 left-0 bg-brand-red transition-all duration-500 ${step === 2 ? 'w-full' : 'w-0'}`} />
-                                </div>
-
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs transition-all duration-300 ${step === 2 ? 'bg-brand-red text-white shadow-[0_0_15px_rgba(152,28,0,0.5)]' : 'bg-white/5 text-white/30 border border-white/10'}`}>
-                                        2
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-[9px] uppercase tracking-widest text-white/30 font-bold">Step 2</span>
-                                        <span className={`text-[11px] font-bold ${step === 2 ? 'text-white' : 'text-white/30'}`}>{t('registration.step2')}</span>
-                                    </div>
+                                <div className="h-[3px] bg-white/5 rounded-full overflow-hidden">
+                                    <div className="h-full bg-brand-red transition-all duration-500 ease-out" style={{ width: step === 1 ? '50%' : '100%' }} />
                                 </div>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-8">
+                            <form onSubmit={handleSubmit} className="space-y-6">
                                 <AnimatePresence mode="wait">
                                     {step === 1 ? (
                                         <motion.div
                                             key="step1-fields"
-                                            initial={{ opacity: 0, x: -20 }}
+                                            initial={{ opacity: 0, x: -15 }}
                                             animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: 20 }}
-                                            transition={{ duration: 0.3 }}
-                                            className="space-y-6"
+                                            exit={{ opacity: 0, x: 15 }}
+                                            transition={{ duration: 0.25 }}
+                                            className="space-y-5"
                                         >
                                             {/* Full Name */}
-                                            <div className="space-y-2">
-                                                <label className="text-sm uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.fullName')}</label>
+                                            <div className="flex flex-col gap-2">
+                                                <label className="label-premium">{t('registration.fullName')}</label>
                                                 <div className="relative group">
-                                                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
-                                                        <User className="w-5 h-5" />
+                                                    <div className="input-icon-wrapper-premium">
+                                                        <User className="w-4.5 h-4.5" />
                                                     </div>
                                                     <input
                                                         type="text"
@@ -446,29 +430,29 @@ const RegistrationForm = () => {
                                                         value={formData.fullName}
                                                         onChange={handleChange}
                                                         placeholder={t('registration.fullNamePlaceholder')}
-                                                        className={`input-modern ${errors.fullName ? 'border-red-500/50 bg-red-500/5 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}`}
+                                                        className={`input-premium ${errors.fullName ? 'border-red-500/30 bg-red-500/[0.01]' : ''}`}
                                                     />
                                                 </div>
                                                 {errors.fullName && (
-                                                    <span className="text-xs text-red-500 font-semibold mt-1 ml-4 block">{errors.fullName}</span>
+                                                    <span className="text-[10px] text-red-500 font-semibold mt-1 ml-1 block">{errors.fullName}</span>
                                                 )}
                                             </div>
 
                                             {/* Phone Number */}
-                                            <div className="space-y-2">
-                                                <label className="text-sm uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.phoneNumber')}</label>
-                                                <div className="grid grid-cols-[100px_1fr] gap-4">
+                                            <div className="flex flex-col gap-2">
+                                                <label className="label-premium">{t('registration.phoneNumber')}</label>
+                                                <div className="grid grid-cols-[90px_1fr] gap-3">
                                                     <div className="relative" ref={countryPickerRef}>
                                                         <button
                                                             type="button"
                                                             onClick={() => setIsCountryPickerOpen(!isCountryPickerOpen)}
-                                                            className="w-full h-full bg-dark-900 border border-white/20 rounded-2xl pl-12 pr-4 text-xs text-white appearance-none focus:outline-hidden focus:border-brand-red flex items-center justify-between transition-all"
+                                                            className="country-trigger-premium"
                                                         >
-                                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-4 flex items-center justify-center rounded-[2px] overflow-hidden">
+                                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-3 flex items-center justify-center rounded-[1px] overflow-hidden shadow-xs">
                                                                 <img src={`https://flagcdn.com/w20/${selectedCountry.iso}.png`} srcSet={`https://flagcdn.com/w40/${selectedCountry.iso}.png 2x`} alt={selectedCountry.country} className="w-full h-full object-cover" />
                                                             </div>
-                                                            <span>{selectedCountry.code}</span>
-                                                            <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${isCountryPickerOpen ? 'rotate-180' : ''}`} />
+                                                            <span className="text-xs font-semibold">{selectedCountry.code}</span>
+                                                            <ChevronDown className={`w-3.5 h-3.5 text-white/30 transition-transform duration-300 ${isCountryPickerOpen ? 'rotate-180' : ''}`} />
                                                         </button>
 
                                                         <AnimatePresence>
@@ -477,9 +461,9 @@ const RegistrationForm = () => {
                                                                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                                    className="absolute top-full left-0 mt-2 w-64 glass rounded-2xl border border-white/10 shadow-2xl z-50 overflow-hidden"
+                                                                    className="dropdown-premium"
                                                                 >
-                                                                    <div className="p-3 border-b border-white/5">
+                                                                    <div className="p-2 border-b border-white/5">
                                                                         <div className="relative">
                                                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/20" />
                                                                             <input
@@ -487,7 +471,7 @@ const RegistrationForm = () => {
                                                                                 placeholder="Search country..."
                                                                                 value={searchQuery}
                                                                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                                                                className="w-full bg-white/5 border border-white/5 rounded-xl pl-9 pr-3 py-2 text-[10px] text-white focus:outline-hidden focus:border-brand-red/50"
+                                                                                className="w-full bg-white/5 border border-white/5 rounded-lg pl-9 pr-3 py-1.5 text-[11px] text-white focus:outline-hidden focus:border-brand-red/50"
                                                                             />
                                                                         </div>
                                                                     </div>
@@ -500,9 +484,9 @@ const RegistrationForm = () => {
                                                                                     setFormData(prev => ({ ...prev, countryCode: c.code }));
                                                                                     setIsCountryPickerOpen(false);
                                                                                 }}
-                                                                                className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors text-left ${formData.countryCode === c.code ? 'bg-brand-red/10' : ''}`}
+                                                                                className={`w-full px-4 py-2.5 flex items-center gap-3 hover:bg-white/5 transition-colors text-left ${formData.countryCode === c.code ? 'bg-brand-red/10' : ''}`}
                                                                             >
-                                                                                <div className="w-5 h-3.5 shrink-0 flex items-center justify-center rounded-[2px] overflow-hidden drop-shadow-sm">
+                                                                                <div className="w-4.5 h-3 shrink-0 flex items-center justify-center rounded-[2px] overflow-hidden drop-shadow-sm">
                                                                                     <img src={`https://flagcdn.com/w20/${c.iso}.png`} srcSet={`https://flagcdn.com/w40/${c.iso}.png 2x`} alt={c.country} className="w-full h-full object-cover" />
                                                                                 </div>
                                                                                 <div className="flex flex-col">
@@ -510,7 +494,7 @@ const RegistrationForm = () => {
                                                                                     <span className="text-[9px] text-white/30">{c.code}</span>
                                                                                 </div>
                                                                                 {formData.countryCode === c.code && (
-                                                                                    <CheckCircle className="w-3 h-3 text-brand-red ml-auto" />
+                                                                                    <CheckCircle className="w-3.5 h-3.5 text-brand-red ml-auto" />
                                                                                 )}
                                                                             </button>
                                                                         ))}
@@ -519,9 +503,9 @@ const RegistrationForm = () => {
                                                             )}
                                                         </AnimatePresence>
                                                     </div>
-                                                    <div className="relative group">
-                                                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
-                                                            <Phone className="w-5 h-5" />
+                                                    <div className="relative group col-span-1">
+                                                        <div className="input-icon-wrapper-premium">
+                                                            <Phone className="w-4.5 h-4.5" />
                                                         </div>
                                                         <input
                                                             type="tel"
@@ -529,21 +513,21 @@ const RegistrationForm = () => {
                                                             value={formData.phoneNumber}
                                                             onChange={handleChange}
                                                             placeholder="911 22 33 44"
-                                                            className={`input-modern ${errors.phoneNumber ? 'border-red-500/50 bg-red-500/5 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}`}
+                                                            className={`input-premium ${errors.phoneNumber ? 'border-red-500/30 bg-red-500/[0.01]' : ''}`}
                                                         />
                                                     </div>
                                                 </div>
                                                 {errors.phoneNumber && (
-                                                    <span className="text-xs text-red-500 font-semibold mt-1 ml-4 block">{errors.phoneNumber}</span>
+                                                    <span className="text-[10px] text-red-500 font-semibold mt-1 ml-1 block">{errors.phoneNumber}</span>
                                                 )}
                                             </div>
 
                                             {/* Telegram */}
-                                            <div className="space-y-2">
-                                                <label className="text-sm uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.telegram')}</label>
+                                            <div className="flex flex-col gap-2">
+                                                <label className="label-premium">{t('registration.telegram')}</label>
                                                 <div className="relative group">
-                                                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-brand-red transition-colors">
-                                                        <Send className="w-5 h-5" />
+                                                    <div className="input-icon-wrapper-premium">
+                                                        <Send className="w-4.5 h-4.5" />
                                                     </div>
                                                     <input
                                                         type="text"
@@ -551,62 +535,56 @@ const RegistrationForm = () => {
                                                         value={formData.telegram}
                                                         onChange={handleChange}
                                                         placeholder="@username"
-                                                        className={`input-modern ${errors.telegram ? 'border-red-500/50 bg-red-500/5 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : ''}`}
+                                                        className={`input-premium ${errors.telegram ? 'border-red-500/30 bg-red-500/[0.01]' : ''}`}
                                                     />
                                                 </div>
                                                 {errors.telegram && (
-                                                    <span className="text-xs text-red-500 font-semibold mt-1 ml-4 block">{errors.telegram}</span>
+                                                    <span className="text-[10px] text-red-500 font-semibold mt-1 ml-1 block">{errors.telegram}</span>
                                                 )}
                                             </div>
 
                                             {/* Proceed to Payment Button */}
-                                            <div className="pt-4">
+                                            <div className="pt-2">
                                                 <button
                                                     type="button"
                                                     onClick={handleProceedToPayment}
-                                                    className="btn-primary w-full py-5 group relative overflow-hidden cursor-pointer"
+                                                    className="btn-premium-action group"
                                                 >
-                                                    <div className="flex items-center justify-center gap-3 relative z-10">
-                                                        <span>{t('registration.proceedToPayment')}</span>
-                                                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                                                    </div>
-                                                    <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[sweep_2s_infinite]" />
+                                                    <span>{t('registration.proceedToPayment')}</span>
+                                                    <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform duration-300" />
                                                 </button>
                                             </div>
                                         </motion.div>
                                     ) : (
                                         <motion.div
                                             key="step2-fields"
-                                            initial={{ opacity: 0, x: 20 }}
+                                            initial={{ opacity: 0, x: 15 }}
                                             animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -20 }}
-                                            transition={{ duration: 0.3 }}
-                                            className="space-y-6"
+                                            exit={{ opacity: 0, x: -15 }}
+                                            transition={{ duration: 0.25 }}
+                                            className="space-y-5"
                                         >
                                             {/* Premium Location-Based Price Badge */}
-                                            <div className="glass border border-brand-red/20 rounded-2xl p-6 bg-gradient-to-br from-brand-red/10 to-transparent relative overflow-hidden">
-                                                <div className="absolute top-0 right-0 p-4 opacity-10">
-                                                    <Sparkles className="w-16 h-16 text-brand-red animate-pulse" />
-                                                </div>
-                                                <span className="text-[10px] uppercase tracking-widest text-brand-red font-extrabold">{t('registration.amountToPay')}</span>
-                                                <div className="flex items-baseline gap-2 mt-2">
+                                            <div className="price-card-premium">
+                                                <span className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-bold block">{t('registration.amountToPay')}</span>
+                                                <div className="flex items-baseline gap-1.5 mt-2">
                                                     {loadingLocation ? (
-                                                        <div className="flex items-center gap-2 text-white/50 text-sm py-2">
-                                                            <Loader2 className="w-4 h-4 animate-spin text-brand-red" />
+                                                        <div className="flex items-center gap-2 text-white/40 text-xs py-1">
+                                                            <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-red" />
                                                             <span>{t('registration.detectingLocation')}</span>
                                                         </div>
                                                     ) : (
                                                         <>
-                                                            <span className="text-4xl md:text-5xl font-black text-white tracking-tight">
+                                                            <span className="text-3xl font-black text-white tracking-tight">
                                                                 {isEthiopia ? "2,500" : "50"}
                                                             </span>
-                                                            <span className="text-lg font-bold text-white/70">
+                                                            <span className="text-sm font-bold text-white/60">
                                                                 {isEthiopia ? "Birr" : "USD"}
                                                             </span>
                                                         </>
                                                     )}
                                                 </div>
-                                                <p className="text-white/40 text-xs mt-2 leading-relaxed">
+                                                <p className="text-white/30 text-[10px] mt-1.5 leading-relaxed">
                                                     {isEthiopia 
                                                         ? "Special pricing applied for participants within Ethiopia." 
                                                         : "Standard pricing applied for international participants."}
@@ -614,9 +592,9 @@ const RegistrationForm = () => {
                                             </div>
 
                                             {/* Photo Upload */}
-                                            <div className="space-y-2">
-                                                <label className="text-sm uppercase font-bold tracking-widest text-white/90 ml-4">{t('registration.proofOfPayment')}</label>
-                                                <label className={`block border-2 border-dashed rounded-2xl p-8 text-center hover:bg-white/5 transition-all cursor-pointer group ${errors.photo ? 'border-red-500/50 bg-red-500/5' : 'border-white/20 hover:border-brand-red/30'}`}>
+                                            <div className="flex flex-col gap-2">
+                                                <label className="label-premium">{t('registration.proofOfPayment')}</label>
+                                                <label className={`upload-zone-premium ${errors.photo ? 'has-error' : ''}`}>
                                                     <input
                                                         type="file"
                                                         accept="image/*"
@@ -624,50 +602,49 @@ const RegistrationForm = () => {
                                                         onChange={handlePhotoChange}
                                                     />
                                                     {photoPreview ? (
-                                                        <div className="relative w-24 h-24 mx-auto rounded-2xl overflow-hidden border-2 border-brand-red group-hover:scale-110 transition-transform">
+                                                        <div className="relative w-20 h-20 mx-auto rounded-xl overflow-hidden border border-brand-red/50 hover:scale-105 transition-transform duration-300">
                                                             <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
                                                         </div>
                                                     ) : (
-                                                        <div className="flex flex-col items-center gap-3">
-                                                            <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-brand-red group-hover:text-white transition-all">
-                                                                <Upload className="w-6 h-6 text-white/20 group-hover:text-inherit" />
+                                                        <div className="flex flex-col items-center gap-2.5">
+                                                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-brand-red group-hover:text-white transition-all duration-300">
+                                                                <Upload className="w-5 h-5 text-white/30 group-hover:text-inherit" />
                                                             </div>
                                                             <div>
                                                                 <p className="text-white/60 text-xs font-bold">{t('registration.uploadText')}</p>
-                                                                <p className="text-white/20 text-[10px] mt-1 uppercase tracking-widest">{t('registration.uploadHint')}</p>
+                                                                <p className="text-white/20 text-[9px] mt-0.5 uppercase tracking-widest">{t('registration.uploadHint')}</p>
                                                             </div>
                                                         </div>
                                                     )}
                                                 </label>
                                                 {errors.photo && (
-                                                    <span className="text-xs text-red-500 font-semibold mt-1 ml-4 block">{errors.photo}</span>
+                                                    <span className="text-[10px] text-red-500 font-semibold mt-1 ml-1 block">{errors.photo}</span>
                                                 )}
                                             </div>
 
                                             {/* Submit & Back Buttons */}
-                                            <div className="pt-4 space-y-4">
+                                            <div className="pt-2 space-y-4">
                                                 <button
                                                     type="submit"
                                                     disabled={status === 'loading'}
-                                                    className="btn-primary w-full py-5 group relative overflow-hidden cursor-pointer"
+                                                    className="btn-premium-action group"
                                                 >
                                                     {status === 'loading' ? (
-                                                        <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                                                        <Loader2 className="w-5 h-5 animate-spin mx-auto" />
                                                     ) : (
-                                                        <div className="flex items-center justify-center gap-3">
+                                                        <>
                                                             <span>{t('registration.submitButton')}</span>
-                                                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                                        </div>
+                                                            <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform duration-300" />
+                                                        </>
                                                     )}
-                                                    <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[sweep_2s_infinite]" />
                                                 </button>
 
                                                 <button
                                                     type="button"
                                                     onClick={() => setStep(1)}
-                                                    className="flex items-center justify-center gap-2 mx-auto text-xs uppercase tracking-widest text-white/40 hover:text-white font-bold transition-colors py-2 group cursor-pointer"
+                                                    className="flex items-center justify-center gap-2 mx-auto text-[10px] uppercase tracking-widest text-white/30 hover:text-white font-bold transition-colors py-2 group cursor-pointer"
                                                 >
-                                                    <ArrowRight className="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
+                                                    <ArrowRight className="w-3.5 h-3.5 rotate-180 group-hover:-translate-x-0.5 transition-transform" />
                                                     <span>{t('registration.backToDetails')}</span>
                                                 </button>
                                             </div>

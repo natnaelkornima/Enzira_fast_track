@@ -16,7 +16,7 @@ export const translations = {
         hero: {
             badge: 'Enzira',
             headingLine1: 'Advanced',
-            headingLine2: 'Enzira Training',
+            headingLine2: 'Begena Training',
             description:
                 'Have you ever wondered when you will finally be able to play the Begena fluently? In this advanced Enzira training, we are designed to help you play the Begena with complete dexterity and ease.',
             startLearning: 'Start Learning',

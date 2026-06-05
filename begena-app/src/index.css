@@ -173,11 +173,11 @@
   }
 
   .input-modern {
-    @apply w-full pr-6 pl-14 py-4 rounded-xl bg-dark-900 border border-white/20 text-white transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10;
+    @apply w-full pr-4 pl-12 py-3.5 rounded-xl bg-white/[0.015] border border-white/10 text-white transition-all duration-300 focus:outline-hidden focus:bg-white/[0.03] focus:border-brand-red focus:shadow-[0_0_20px_rgba(152,28,0,0.15)];
   }
 
   .input-modern::placeholder {
-    @apply text-white/40 text-sm;
+    @apply text-white/35 text-xs;
   }
 
   .section-container {
@@ -285,4 +285,210 @@ body {
 
 .hero-shimmer-text {
   color: #ffffff;
+}
+
+/* ==========================================
+   Premium Registration Box Styles
+   ========================================== */
+
+.registration-card-premium {
+  background: rgba(18, 11, 8, 0.45);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px !important; /* Forces premium rounded corners, bypassing the global 5px limit */
+  padding: 2.25rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 30px 60px -15px rgba(0, 0, 0, 0.8),
+    0 0 50px -10px rgba(152, 28, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 768px) {
+  .registration-card-premium {
+    padding: 2.75rem;
+  }
+}
+
+/* Premium Top Border Indicator */
+.registration-card-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(152, 28, 0, 0.4) 50%, transparent);
+  pointer-events: none;
+}
+
+.label-premium {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: 0.25rem;
+  display: block;
+}
+
+.input-premium {
+  width: 100%;
+  padding: 0.95rem 1rem 0.95rem 2.75rem;
+  border-radius: 12px !important; /* Force modern rounded corner */
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.input-premium::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.8rem;
+}
+
+.input-premium:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(152, 28, 0, 0.5);
+  box-shadow: 
+    0 0 20px rgba(152, 28, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.02);
+}
+
+/* Input Icon Container */
+.input-icon-wrapper-premium {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.group:focus-within .input-icon-wrapper-premium {
+  color: rgba(152, 28, 0, 0.8);
+}
+
+/* Country Selector Button */
+.country-trigger-premium {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px !important;
+  padding-left: 2.5rem;
+  padding-right: 0.75rem;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.country-trigger-premium:focus,
+.country-trigger-premium:hover {
+  outline: none;
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(152, 28, 0, 0.5);
+}
+
+/* Dropdown Content */
+.dropdown-premium {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  width: 16rem;
+  background: rgba(18, 11, 8, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px !important;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+  z-index: 50;
+  overflow: hidden;
+}
+
+/* Button Action */
+.btn-premium-action {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: 12px !important;
+  background: #981c00;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  box-shadow: 0 10px 25px -5px rgba(152, 28, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-premium-action:hover {
+  background: #b52200;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px -5px rgba(152, 28, 0, 0.4);
+}
+
+.btn-premium-action:active {
+  transform: translateY(1px);
+}
+
+.btn-premium-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Price Card Premium */
+.price-card-premium {
+  border: 1px solid rgba(152, 28, 0, 0.15);
+  background: rgba(152, 28, 0, 0.03);
+  border-radius: 14px !important;
+  padding: 1.25rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Upload Zone Premium */
+.upload-zone-premium {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 14px !important;
+  padding: 1.75rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.005);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.upload-zone-premium:hover {
+  background: rgba(255, 255, 255, 0.015);
+  border-color: rgba(152, 28, 0, 0.4);
+}
+
+.upload-zone-premium.has-error {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.01);
 }

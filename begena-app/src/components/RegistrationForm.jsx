@@ -317,13 +317,12 @@ const RegistrationForm = () => {
                                     className="space-y-8"
                                 >
                                     <div>
-                                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red text-xs font-bold tracking-widest uppercase mb-6">
-                                            <Sparkles className="w-3.5 h-3.5" />
+                                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs font-bold tracking-widest uppercase mb-6">
                                             {t('nav.enrollNow')}
                                         </div>
-                                        <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+                                        <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight font-balderasu">
                                             {t('hero.headingLine1')} <br />
-                                            <span className="text-white italic">{t('hero.headingLine2')}</span>
+                                            <span className="text-white">{t('hero.headingLine2')}</span>
                                         </h2>
                                         <p className="text-white/40 text-sm leading-relaxed max-w-lg">
                                             {t('hero.description')}
@@ -356,13 +355,12 @@ const RegistrationForm = () => {
                                     className="space-y-8"
                                 >
                                     <div>
-                                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red text-xs font-bold tracking-widest uppercase mb-6">
-                                            <Sparkles className="w-3.5 h-3.5" />
+                                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs font-bold tracking-widest uppercase mb-6">
                                             {t('registration.sectionSubtitle')}
                                         </div>
-                                        <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+                                        <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight font-balderasu">
                                             {t('registration.pathTitle1')} <br />
-                                            <span className="text-white italic">{t('registration.pathTitle2')}</span>
+                                            <span className="text-white">{t('registration.pathTitle2')}</span>
                                         </h2>
                                         <p className="text-white/40 text-sm leading-relaxed max-w-lg">
                                             {t('registration.pathDesc')}

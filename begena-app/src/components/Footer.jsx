@@ -110,8 +110,7 @@ const Footer = () => {
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2 group cursor-default">
                             <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest group-hover:text-white transition-colors">{t('footer.handcraftedBy')}</span>
-                            <Sparkles className="w-3.5 h-3.5 text-brand-red animate-pulse" />
-                            <span className="text-[10px] font-black text-brand-red uppercase tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Enzira Tech</span>
+                            <span className="text-[10px] font-black text-brand-red uppercase tracking-widest bg-brand-red/10 px-3 py-1 rounded-full">Enzira Production</span>
                         </div>
                     </div>
                 </div>

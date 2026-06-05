@@ -15,6 +15,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'GeezFutura';
+  src: url('/font/GeezFutura-Book (1).ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Balderasu';
+  src: url('/font/Balderasu-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --color-gold-50: #fefce8;
   --color-gold-100: #fef9c3;
@@ -194,8 +210,14 @@ body {
 
 /* Amharic language font override */
 [lang="am"] {
-  --font-heading: 'Menbere', Georgia, serif;
-  --font-body: 'Menbere', system-ui, sans-serif;
+  --font-heading: 'GeezFutura', system-ui, sans-serif;
+  --font-body: 'GeezFutura', system-ui, sans-serif;
+}
+
+[lang="am"] .font-balderasu {
+  font-family: 'Balderasu', system-ui, sans-serif !important;
+  font-size: 0.8em !important; /* make medium text size */
+  line-height: 1.05 !important; /* make medium or small gap */
 }
 
 [lang="am"] .hero-title {

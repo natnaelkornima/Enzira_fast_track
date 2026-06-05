@@ -65,7 +65,7 @@ const About = () => {
                         <h4 className="text-brand-red font-bold tracking-[0.3em] uppercase text-xs mb-6">{t('about.subtitle')}</h4>
                         <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-8 leading-tight">
                             {t('about.titleLine1')} <br />
-                            <span className="italic text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white">{t('about.titleLine2')}</span>
+                            <span className="italic text-white">{t('about.titleLine2')}</span>
                         </h2>
                         <p className="text-white/40 text-lg leading-relaxed mb-10 max-w-2xl">
                             {t('about.description')}
@@ -110,7 +110,7 @@ const About = () => {
                                     <feature.icon className="w-6 h-6 text-brand-red group-hover:text-white transition-colors duration-500" />
                                 </div>
                                 <h3 className="font-heading text-lg font-bold text-white mb-3 relative overflow-hidden">
-                                    <span className="relative z-10 bg-linear-to-r from-white to-white bg-[length:0%_100%] bg-no-repeat group-hover:bg-[length:100%_100%] bg-clip-text group-hover:text-transparent transition-all duration-700">
+                                    <span className="relative z-10">
                                         {feature.title}
                                     </span>
                                 </h3>

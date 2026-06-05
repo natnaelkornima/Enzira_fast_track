@@ -323,7 +323,7 @@ const RegistrationForm = () => {
                                         </div>
                                         <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
                                             {t('hero.headingLine1')} <br />
-                                            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white italic">{t('hero.headingLine2')}</span>
+                                            <span className="text-white italic">{t('hero.headingLine2')}</span>
                                         </h2>
                                         <p className="text-white/40 text-sm leading-relaxed max-w-lg">
                                             {t('hero.description')}
@@ -362,7 +362,7 @@ const RegistrationForm = () => {
                                         </div>
                                         <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
                                             {t('registration.pathTitle1')} <br />
-                                            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-red to-white italic">{t('registration.pathTitle2')}</span>
+                                            <span className="text-white italic">{t('registration.pathTitle2')}</span>
                                         </h2>
                                         <p className="text-white/40 text-sm leading-relaxed max-w-lg">
                                             {t('registration.pathDesc')}

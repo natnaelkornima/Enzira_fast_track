@@ -53,8 +53,8 @@
   --color-brand-red-light: #c22b0a;
   --color-dark-950: #121212;
 
-  --font-heading: 'Zain', Georgia, serif;
-  --font-body: 'Zain', system-ui, sans-serif;
+  --font-heading: 'Noto Sans Mono', monospace;
+  --font-body: 'Noto Sans Mono', monospace;
 
   --animate-float: float 6s ease-in-out infinite;
   --animate-glow: glow 4s ease-in-out infinite;
@@ -108,19 +108,19 @@
   --radius-3xl: 5px;
 
   /* Theme Font Size Overrides */
-  --text-xs: 0.7rem;
-  --text-sm: 0.8rem;
-  --text-base: 0.9rem;
-  --text-lg: 1rem;
-  --text-xl: 1.15rem;
-  --text-2xl: 1.35rem;
-  --text-3xl: 1.6rem;
-  --text-4xl: 2rem;
-  --text-5xl: 2.5rem;
-  --text-6xl: 3.2rem;
-  --text-7xl: 4rem;
-  --text-8xl: 5rem;
-  --text-9xl: 6.2rem;
+  --text-xs: 0.65rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.85rem;
+  --text-lg: 0.95rem;
+  --text-xl: 1.05rem;
+  --text-2xl: 1.25rem;
+  --text-3xl: 1.5rem;
+  --text-4xl: 1.85rem;
+  --text-5xl: 2.2rem;
+  --text-6xl: 2.8rem;
+  --text-7xl: 3.5rem;
+  --text-8xl: 4.5rem;
+  --text-9xl: 5.5rem;
 }
 
 /* Custom Utilities */
@@ -253,15 +253,5 @@ body {
 }
 
 .hero-shimmer-text {
-  background: linear-gradient(90deg,
-      var(--color-brand-red) 0%,
-      #c22b0a 25%,
-      #ffffff 50%,
-      #c22b0a 75%,
-      var(--color-brand-red) 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: hero-shimmer 4s ease-in-out infinite;
+  color: #ffffff;
 }

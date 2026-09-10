@@ -43,7 +43,7 @@ const CheckStatus = () => {
                 });
                 setStatus('found');
             }
-        } catch (err) {
+        } catch {
             setErrorMsg(t('checkStatus.error'));
             setStatus('error');
         }
@@ -226,6 +226,19 @@ const CheckStatus = () => {
                                     </div>
                                     <h3 className="text-xl font-bold text-white mb-2">No Registration Found</h3>
                                     <p className="text-white/40 text-sm max-w-xs">{t('checkStatus.notFound')}</p>
+                                </motion.div>
+                            ) : status === 'error' ? (
+                                <motion.div
+                                    key="error"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="flex flex-col items-center justify-center text-center p-12 h-full"
+                                >
+                                    <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-6">
+                                        <AlertCircle className="w-10 h-10 text-red-400" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-white mb-2">Error Occurred</h3>
+                                    <p className="text-white/40 text-sm max-w-xs">{errorMsg}</p>
                                 </motion.div>
                             ) : status === 'idle' ? (
                                 <div className="flex flex-col items-center justify-center text-center p-12 h-full border-2 border-dashed border-white/5 rounded-2xl">

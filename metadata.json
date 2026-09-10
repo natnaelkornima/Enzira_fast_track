@@ -1,0 +1,6 @@
+{
+  "name": "Enzira Begena Training",
+  "description": "Spiritual and traditional Begena training program to master the ancient Ethiopian harp, featuring registration, student verification, and admin portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

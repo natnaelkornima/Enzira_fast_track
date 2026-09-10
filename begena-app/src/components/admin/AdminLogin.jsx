@@ -41,7 +41,7 @@ const AdminLogin = () => {
                 setStatus('success');
                 navigate('/admin/dashboard');
             }
-        } catch (err) {
+        } catch {
             setError('Server error. Please try again.');
             setStatus('error');
         }

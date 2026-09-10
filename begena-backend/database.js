@@ -6,11 +6,11 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/begena
 
 const connectDB = async () => {
     try {
+        mongoose.set('bufferCommands', false);
         await mongoose.connect(MONGODB_URI);
         console.log('MongoDB successfully connected.');
     } catch (err) {
-        console.error('MongoDB connection error:', err.message);
-        process.exit(1);
+        console.warn('MongoDB not connected — using fallback:', err.message);
     }
 };
 

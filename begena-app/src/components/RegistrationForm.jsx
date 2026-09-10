@@ -45,8 +45,9 @@ const TelebirrLogo = () => (
     </div>
 );
 
-const PaymentCard = ({ name, accountNumber, logo: Logo, color }) => {
+const PaymentCard = ({ name, accountNumber, logo, color }) => {
     const [copied, setCopied] = useState(false);
+    const LogoComponent = logo;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(accountNumber);
@@ -59,7 +60,7 @@ const PaymentCard = ({ name, accountNumber, logo: Logo, color }) => {
             <div className={`absolute -top-12 -right-12 w-32 h-32 bg-${color}/5 rounded-full blur-2xl pointer-events-none transition-colors duration-500`} />
             
             <div className="flex items-center gap-5 relative z-10 mr-4">
-                <Logo />
+                <LogoComponent />
                 <div>
                     <h4 className="text-white font-bold text-[10px] md:text-xs tracking-wide uppercase text-white/50">{name}</h4>
                     <p className="text-white font-mono font-black text-base md:text-lg lg:text-xl mt-1 tracking-wider">{accountNumber}</p>
@@ -99,8 +100,8 @@ const RegistrationForm = () => {
     const [isCountryPickerOpen, setIsCountryPickerOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [step, setStep] = useState(1);
-    const [isEthiopia, setIsEthiopia] = useState(true);
     const [loadingLocation, setLoadingLocation] = useState(false);
+    const isEthiopia = formData.countryCode === '+251';
 
     const countryPickerRef = useRef(null);
 
@@ -125,9 +126,6 @@ const RegistrationForm = () => {
                 }
                 
                 if (countryCode) {
-                    const isEt = countryCode.toUpperCase() === 'ET';
-                    setIsEthiopia(isEt);
-                    
                     // Match and pre-select phone code dropdown if matching
                     const matchedCountry = countryCodes.find(c => c.iso.toUpperCase() === countryCode.toUpperCase());
                     if (matchedCountry) {
@@ -146,15 +144,6 @@ const RegistrationForm = () => {
 
         detectLocation();
     }, []);
-
-    // Keep pricing dynamically in sync with the selected country code in phone field
-    useEffect(() => {
-        if (formData.countryCode === '+251') {
-            setIsEthiopia(true);
-        } else {
-            setIsEthiopia(false);
-        }
-    }, [formData.countryCode]);
 
     // Close dropdown when clicking outside
     useEffect(() => {

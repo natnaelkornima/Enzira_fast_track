@@ -1,0 +1,14 @@
+{
+  "name": "enzira-begena",
+  "private": true,
+  "workspaces": [
+    "begena-app",
+    "begena-backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=begena-app",
+    "build": "npm run build --workspace=begena-app",
+    "lint": "npm run lint --workspace=begena-app",
+    "preview": "npm run preview --workspace=begena-app"
+  }
+}

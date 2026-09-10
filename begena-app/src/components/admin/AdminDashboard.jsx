@@ -106,7 +106,7 @@ const AdminDashboard = () => {
         });
     };
 
-    const handleSelectAll = () => {
+    const _handleSelectAll = () => {
         if (selectedStudents.size === filteredRegistrations.length && filteredRegistrations.length > 0) {
             setSelectedStudents(new Set());
         } else {
@@ -114,7 +114,7 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleSelectStudent = (id) => {
+    const _handleSelectStudent = (id) => {
         const newSelected = new Set(selectedStudents);
         if (newSelected.has(id)) {
             newSelected.delete(id);

@@ -9,7 +9,7 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const { language, toggleLanguage, t } = useLanguage();
+    const { toggleLanguage, t } = useLanguage();
 
     useEffect(() => {
         const handleScroll = () => {

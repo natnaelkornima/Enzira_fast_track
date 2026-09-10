@@ -19,6 +19,7 @@ const AdminDashboard = () => {
     const [confirmConfig, setConfirmConfig] = useState({ isOpen: false, title: '', message: '', type: 'danger', onConfirm: null });
     const [selectedStudents, setSelectedStudents] = useState(new Set());
     const [tempSelectedStudents, setTempSelectedStudents] = useState(new Set());
+    const [viewingReceipt, setViewingReceipt] = useState(null);
     const navigate = useNavigate();
 
     const filteredRegistrations = registrations.filter(r =>
@@ -359,6 +360,60 @@ const AdminDashboard = () => {
                 message={confirmConfig.message}
             />
 
+            {/* Receipt Preview Modal */}
+            <AnimatePresence>
+                {viewingReceipt && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/80 backdrop-blur-md z-110 flex items-center justify-center p-4"
+                        onClick={() => setViewingReceipt(null)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-dark-950 border border-white/10 rounded-2xl max-w-2xl w-full p-6 shadow-2xl overflow-hidden"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
+                                <div>
+                                    <h3 className="text-white font-bold text-base">Payment Receipt</h3>
+                                    <p className="text-white/40 text-xs">{viewingReceipt.name}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {viewingReceipt.url?.startsWith('http') && (
+                                        <a
+                                            href={viewingReceipt.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all text-xs flex items-center gap-1"
+                                            title="Open full image in new tab"
+                                        >
+                                            <ExternalLink className="w-4 h-4" />
+                                        </a>
+                                    )}
+                                    <button
+                                        onClick={() => setViewingReceipt(null)}
+                                        className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all cursor-pointer"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="max-h-[70vh] overflow-auto flex items-center justify-center bg-black/40 rounded-xl p-2">
+                                <img
+                                    src={viewingReceipt.url}
+                                    alt="Payment Receipt"
+                                    className="max-h-[65vh] max-w-full object-contain rounded-lg shadow-md"
+                                />
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Telegram Broadcast Modal */}
             <AnimatePresence>
                 {showBroadcast && (
@@ -654,14 +709,13 @@ const AdminDashboard = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <a
-                                                href={r.paymentReceiptPath}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-xs text-brand-red hover:underline"
+                                            <button
+                                                type="button"
+                                                onClick={() => setViewingReceipt({ url: r.paymentReceiptPath, name: r.fullName })}
+                                                className="text-xs text-brand-red hover:underline font-medium cursor-pointer"
                                             >
                                                 View Image
-                                            </a>
+                                            </button>
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${r.status === 'verified' ? 'bg-green-500/10 text-green-400 border border-green-500/20' :

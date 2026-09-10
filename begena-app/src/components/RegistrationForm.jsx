@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Phone, Send, Upload, CheckCircle, AlertCircle, Loader2, Globe, Sparkles, ArrowRight, ChevronDown, Search } from 'lucide-react';
 import SuccessModal from './SuccessModal';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { compressImage } from '../lib/imageUtils';
 import { useLanguage } from '../lib/LanguageContext';
 import telebirrLogo from '../assets/telebirr-logo.png';
 import cbeLogo from '../assets/cbe-logo.png';
@@ -101,32 +102,82 @@ const RegistrationForm = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [step, setStep] = useState(1);
     const [loadingLocation, setLoadingLocation] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
     const isEthiopia = formData.countryCode === '+251';
 
     const countryPickerRef = useRef(null);
 
-    // Fetch user's IP-based location to set fee structure
+    // Fetch user's IP-based location to set fee structure (with safe timeouts & timezone fallback)
     useEffect(() => {
+        let isMounted = true;
+
         const detectLocation = async () => {
             setLoadingLocation(true);
+            let countryCode = '';
+
+            const fetchWithTimeout = async (url, timeoutMs = 2500) => {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), timeoutMs);
+                try {
+                    const res = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timer);
+                    if (res.ok) {
+                        return await res.json();
+                    }
+                } catch {
+                    clearTimeout(timer);
+                }
+                return null;
+            };
+
             try {
-                let countryCode = '';
                 // Attempt freeipapi.com
-                const response = await fetch('https://freeipapi.com/api/json');
-                if (response.ok) {
-                    const data = await response.json();
-                    countryCode = data.countryCode;
-                } else {
-                    // Fallback to ipapi.co
-                    const response2 = await fetch('https://ipapi.co/json/');
-                    if (response2.ok) {
-                        const data2 = await response2.json();
+                const data1 = await fetchWithTimeout('https://freeipapi.com/api/json');
+                if (data1?.countryCode) {
+                    countryCode = data1.countryCode;
+                }
+
+                // If not found, fallback to ipapi.co
+                if (!countryCode) {
+                    const data2 = await fetchWithTimeout('https://ipapi.co/json/');
+                    if (data2?.country) {
                         countryCode = data2.country;
                     }
                 }
-                
-                if (countryCode) {
-                    // Match and pre-select phone code dropdown if matching
+
+                // If network geolocation failed (e.g. adblocker, iframe CORS, or rate limits), fallback to browser timezone
+                if (!countryCode) {
+                    try {
+                        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+                        if (tz.includes('Addis_Ababa') || tz.includes('Nairobi') || tz.includes('Asmara')) {
+                            countryCode = 'ET';
+                        } else if (tz.startsWith('America/')) {
+                            countryCode = 'US';
+                        } else if (tz.startsWith('Europe/London')) {
+                            countryCode = 'GB';
+                        } else if (tz.startsWith('Europe/Berlin') || tz.startsWith('Europe/Frankfurt')) {
+                            countryCode = 'DE';
+                        } else if (tz.startsWith('Europe/Paris')) {
+                            countryCode = 'FR';
+                        } else if (tz.startsWith('Europe/Stockholm')) {
+                            countryCode = 'SE';
+                        } else if (tz.startsWith('Europe/Rome')) {
+                            countryCode = 'IT';
+                        } else if (tz.startsWith('Asia/Dubai')) {
+                            countryCode = 'AE';
+                        } else if (tz.startsWith('Asia/Riyadh')) {
+                            countryCode = 'SA';
+                        } else if (tz.startsWith('Australia/')) {
+                            countryCode = 'AU';
+                        } else if (tz.startsWith('Asia/Kolkata')) {
+                            countryCode = 'IN';
+                        }
+                    } catch {
+                        // ignore timezone detection failure
+                    }
+                }
+
+                if (isMounted && countryCode) {
                     const matchedCountry = countryCodes.find(c => c.iso.toUpperCase() === countryCode.toUpperCase());
                     if (matchedCountry) {
                         setFormData(prev => ({
@@ -135,14 +186,20 @@ const RegistrationForm = () => {
                         }));
                     }
                 }
-            } catch (error) {
-                console.error('Error detecting location:', error);
+            } catch {
+                // Silently fallback to default (+251 Ethiopia)
             } finally {
-                setLoadingLocation(false);
+                if (isMounted) {
+                    setLoadingLocation(false);
+                }
             }
         };
 
         detectLocation();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     // Close dropdown when clicking outside
@@ -171,20 +228,51 @@ const RegistrationForm = () => {
         }
     };
 
+    const processSelectedFile = (file) => {
+        if (!file) return;
+
+        if (!file.type || !file.type.startsWith('image/')) {
+            setErrors((prev) => ({ ...prev, photo: 'Please select a valid image file (PNG, JPG, JPEG, WEBP).' }));
+            return;
+        }
+
+        if (file.size > 10 * 1024 * 1024) {
+            setErrors((prev) => ({ ...prev, photo: t('registration.validation.fileSize') }));
+            return;
+        }
+
+        setFormData((prev) => ({ ...prev, photo: file }));
+        const reader = new FileReader();
+        reader.onloadend = () => setPhotoPreview(reader.result);
+        reader.readAsDataURL(file);
+        if (errors.photo) {
+            setErrors((prev) => ({ ...prev, photo: '' }));
+        }
+    };
+
     const handlePhotoChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                setErrors((prev) => ({ ...prev, photo: t('registration.validation.fileSize') }));
-                return;
-            }
-            setFormData((prev) => ({ ...prev, photo: file }));
-            const reader = new FileReader();
-            reader.onloadend = () => setPhotoPreview(reader.result);
-            reader.readAsDataURL(file);
-            if (errors.photo) {
-                setErrors((prev) => ({ ...prev, photo: '' }));
-            }
+        const file = e.target.files?.[0];
+        processSelectedFile(file);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        if (e.dataTransfer?.files?.[0]) {
+            processSelectedFile(e.dataTransfer.files[0]);
         }
     };
 
@@ -235,32 +323,76 @@ const RegistrationForm = () => {
             return;
         }
 
+        if (!formData.photo) {
+            setErrors({ photo: t('registration.validation.photo') });
+            return;
+        }
+
         setErrors({});
         setStatus('loading');
 
         try {
-            // 1. Upload photo to Supabase Storage
-            const fileExt = formData.photo.name.split('.').pop()
-            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+            // 1. Process & optimize screenshot (reduces network load, prevents timeouts)
+            let uploadBlob = formData.photo;
+            let fallbackDataUrl = photoPreview || '';
 
-            const { error: uploadError } = await supabase.storage
-                .from('receipts')
-                .upload(fileName, formData.photo, {
-                    cacheControl: '3600',
-                    upsert: false,
-                    contentType: formData.photo.type
-                })
-
-            if (uploadError) {
-                console.error('Upload error:', uploadError);
-                throw new Error(uploadError.message || 'Failed to upload screenshot. Please try again.');
+            try {
+                const optimized = await compressImage(formData.photo);
+                if (optimized.blob) {
+                    uploadBlob = optimized.blob;
+                }
+                if (optimized.dataUrl) {
+                    fallbackDataUrl = optimized.dataUrl;
+                }
+            } catch (optError) {
+                console.warn('Image optimization notice (continuing with original):', optError);
             }
 
-            const { data: publicUrlData } = supabase.storage
-                .from('receipts')
-                .getPublicUrl(fileName)
+            let receiptFinalPath = '';
 
-            // 2. Insert into Supabase Database
+            // 2. Try Supabase Storage upload if credentials are present
+            if (isSupabaseConfigured()) {
+                try {
+                    const rawExt = formData.photo.name?.split('.').pop() || 'jpg';
+                    const fileExt = rawExt.toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+                    const fileName = `receipt_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+                    const contentType = uploadBlob.type || `image/${fileExt === 'png' ? 'png' : 'jpeg'}`;
+
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('receipts')
+                        .upload(fileName, uploadBlob, {
+                            cacheControl: '3600',
+                            upsert: true,
+                            contentType
+                        });
+
+                    if (!uploadError && uploadData) {
+                        const { data: publicUrlData } = supabase.storage
+                            .from('receipts')
+                            .getPublicUrl(fileName);
+
+                        if (publicUrlData?.publicUrl) {
+                            receiptFinalPath = publicUrlData.publicUrl;
+                        }
+                    } else if (uploadError) {
+                        console.warn('Supabase storage upload notice, falling back to embedded receipt data:', uploadError);
+                    }
+                } catch (storageException) {
+                    console.warn('Supabase storage exception, falling back to embedded receipt data:', storageException);
+                }
+            }
+
+            // Fallback: If storage bucket upload didn't succeed (e.g., bucket not created or storage RLS policy missing),
+            // safely store the compressed image data URI in the database so the student registration is never lost!
+            if (!receiptFinalPath) {
+                receiptFinalPath = fallbackDataUrl || photoPreview;
+            }
+
+            if (!receiptFinalPath) {
+                throw new Error('Could not process payment screenshot. Please choose an image file and try again.');
+            }
+
+            // 3. Insert record into Supabase database
             const { error: dbError } = await supabase
                 .from('registrations')
                 .insert([
@@ -269,18 +401,22 @@ const RegistrationForm = () => {
                         country_code: formData.countryCode,
                         phone_number: formData.phoneNumber,
                         telegram: formData.telegram,
-                        payment_receipt_path: publicUrlData.publicUrl,
+                        payment_receipt_path: receiptFinalPath,
                         status: 'pending'
                     }
-                ])
+                ]);
 
             if (dbError) {
-                throw new Error('Failed to save registration details. ' + dbError.message);
+                console.error('Database insert error:', dbError);
+                if (dbError.message && dbError.message.includes('violates row-level security')) {
+                    throw new Error('Database permission error. Please run the supabase_setup.sql script in your Supabase SQL editor to enable public registration submissions.');
+                }
+                throw new Error(dbError.message || 'Failed to save registration details. Please try again.');
             }
 
             setStatus('success');
         } catch (error) {
-            console.error(error);
+            console.error('Registration submission error:', error);
             setErrorMessage(error.message || 'Something went wrong. Please try again.');
             setStatus('error');
         }
@@ -583,16 +719,27 @@ const RegistrationForm = () => {
                                             {/* Photo Upload */}
                                             <div className="flex flex-col gap-2">
                                                 <label className="label-premium">{t('registration.proofOfPayment')}</label>
-                                                <label className={`upload-zone-premium ${errors.photo ? 'has-error' : ''}`}>
+                                                <label
+                                                    onDragOver={handleDragOver}
+                                                    onDragLeave={handleDragLeave}
+                                                    onDrop={handleDrop}
+                                                    className={`upload-zone-premium cursor-pointer transition-all duration-200 ${errors.photo ? 'has-error' : ''} ${isDragging ? 'ring-2 ring-brand-red bg-brand-red/10' : ''}`}
+                                                >
                                                     <input
                                                         type="file"
                                                         accept="image/*"
                                                         className="hidden"
+                                                        onClick={(e) => { e.target.value = null; }}
                                                         onChange={handlePhotoChange}
                                                     />
                                                     {photoPreview ? (
-                                                        <div className="relative w-20 h-20 mx-auto rounded-xl overflow-hidden border border-brand-red/50 hover:scale-105 transition-transform duration-300">
-                                                            <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            <div className="relative w-24 h-24 mx-auto rounded-xl overflow-hidden border border-brand-red/50 hover:scale-105 transition-transform duration-300 shadow-lg">
+                                                                <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                                                            </div>
+                                                            <span className="text-[10px] text-brand-red font-bold uppercase tracking-wider hover:underline">
+                                                                Click to change image
+                                                            </span>
                                                         </div>
                                                     ) : (
                                                         <div className="flex flex-col items-center gap-2.5">

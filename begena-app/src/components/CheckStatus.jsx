@@ -33,11 +33,11 @@ const CheckStatus = () => {
                 setStatus('not_found');
             } else {
                 setResult({
-                    fullName: data.full_name,
-                    phone: `${data.country_code} ${data.phone_number}`,
-                    telegram: data.telegram,
+                    fullName: data.name || data.full_name || 'Student',
+                    phone: data.country_code ? `${data.country_code} ${data.phone_number}` : data.phone_number,
+                    telegram: data.username || data.telegram || '-',
                     status: data.status,
-                    date: new Date(data.created_at).toLocaleDateString(language === 'am' ? 'am-ET' : 'en-US', {
+                    date: new Date(data.created_at || Date.now()).toLocaleDateString(language === 'am' ? 'am-ET' : 'en-US', {
                         year: 'numeric', month: 'long', day: 'numeric'
                     })
                 });

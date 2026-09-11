@@ -20,19 +20,31 @@ const AdminDashboard = () => {
     const [selectedStudents, setSelectedStudents] = useState(new Set());
     const [tempSelectedStudents, setTempSelectedStudents] = useState(new Set());
     const [viewingReceipt, setViewingReceipt] = useState(null);
+    const [adminEmail, setAdminEmail] = useState(import.meta.env.VITE_ADMIN_EMAIL || 'enzirabegena19@gmail.com');
     const navigate = useNavigate();
 
     const filteredRegistrations = registrations.filter(r =>
-        r.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        r.phoneNumber.includes(searchQuery)
+        (r.fullName && r.fullName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (r.phoneNumber && r.phoneNumber.includes(searchQuery)) ||
+        (r.username && r.username.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (r.telegram && r.telegram.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     useEffect(() => {
         const fetchRegistrations = async () => {
             const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
+            const hasLocalAdminAuth = localStorage.getItem('begena_admin_auth') === 'true';
+
+            if (!session && !hasLocalAdminAuth) {
                 navigate('/admin');
                 return;
+            }
+
+            if (session?.user?.email) {
+                setAdminEmail(session.user.email);
+            } else {
+                const storedEmail = localStorage.getItem('begena_admin_email') || import.meta.env.VITE_ADMIN_EMAIL;
+                if (storedEmail) setAdminEmail(storedEmail);
             }
 
             try {
@@ -43,14 +55,17 @@ const AdminDashboard = () => {
 
                 if (error) throw error;
 
-                const formattedData = data.map(r => ({
+                const formattedData = (data || []).map(r => ({
                     ...r,
                     _id: r.id,
-                    fullName: r.full_name,
-                    countryCode: r.country_code,
-                    phoneNumber: r.phone_number,
-                    registrationDate: r.created_at,
-                    paymentReceiptPath: r.payment_receipt_path
+                    fullName: r.name || r.full_name || 'Anonymous Student',
+                    countryCode: r.country_code || '',
+                    phoneNumber: r.phone_number || '',
+                    username: r.username || r.telegram || '',
+                    telegram: r.telegram || r.username || '',
+                    registrationDate: r.created_at || new Date().toISOString(),
+                    paymentReceiptPath: r.uploaded_screenshot || r.payment_receipt_path || '',
+                    status: r.status || 'pending'
                 }));
 
                 setRegistrations(formattedData);
@@ -65,6 +80,8 @@ const AdminDashboard = () => {
     }, [navigate]);
 
     const handleLogout = async () => {
+        localStorage.removeItem('begena_admin_auth');
+        localStorage.removeItem('begena_admin_email');
         await supabase.auth.signOut();
         navigate('/admin');
     };
@@ -328,7 +345,9 @@ const AdminDashboard = () => {
                     </div>
                     <div>
                         <h1 className="font-heading font-black text-xl leading-none">Admin Panel</h1>
-                        <span className="text-white/40 text-xs tracking-widest uppercase">Owner Dashboard</span>
+                        <span className="text-white/40 text-xs tracking-widest uppercase block truncate max-w-[240px]" title={adminEmail}>
+                            {adminEmail}
+                        </span>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">

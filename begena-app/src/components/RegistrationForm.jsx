@@ -393,25 +393,76 @@ const RegistrationForm = () => {
             }
 
             // 3. Insert record into Supabase database
-            const { error: dbError } = await supabase
-                .from('registrations')
-                .insert([
-                    {
-                        full_name: formData.fullName,
-                        country_code: formData.countryCode,
-                        phone_number: formData.phoneNumber,
-                        telegram: formData.telegram,
-                        payment_receipt_path: receiptFinalPath,
-                        status: 'pending'
-                    }
-                ]);
+            // Adaptive payload: supports name, phone_number, username, uploaded_screenshot as requested,
+            // while maintaining full compatibility with legacy schemas.
+            const fullPhone = `${formData.countryCode} ${formData.phoneNumber}`.trim();
+            const candidatePayloads = [
+                // Option A: Unified payload (populates both requested and legacy columns)
+                {
+                    name: formData.fullName,
+                    full_name: formData.fullName,
+                    phone_number: formData.phoneNumber,
+                    country_code: formData.countryCode,
+                    username: formData.telegram,
+                    telegram: formData.telegram,
+                    uploaded_screenshot: receiptFinalPath,
+                    payment_receipt_path: receiptFinalPath,
+                    status: 'pending'
+                },
+                // Option B: Specifically user's requested 4 fields (name, phone_number, username, uploaded_screenshot) + status
+                {
+                    name: formData.fullName,
+                    phone_number: fullPhone,
+                    username: formData.telegram,
+                    uploaded_screenshot: receiptFinalPath,
+                    status: 'pending'
+                },
+                // Option C: Specifically user's requested 4 fields without status
+                {
+                    name: formData.fullName,
+                    phone_number: fullPhone,
+                    username: formData.telegram,
+                    uploaded_screenshot: receiptFinalPath
+                },
+                // Option D: Legacy column naming
+                {
+                    full_name: formData.fullName,
+                    country_code: formData.countryCode,
+                    phone_number: formData.phoneNumber,
+                    telegram: formData.telegram,
+                    payment_receipt_path: receiptFinalPath,
+                    status: 'pending'
+                }
+            ];
 
-            if (dbError) {
-                console.error('Database insert error:', dbError);
-                if (dbError.message && dbError.message.includes('violates row-level security')) {
+            let insertSuccess = false;
+            let lastDbError = null;
+
+            for (const payload of candidatePayloads) {
+                const { error: dbError } = await supabase
+                    .from('registrations')
+                    .insert([payload]);
+
+                if (!dbError) {
+                    insertSuccess = true;
+                    break;
+                } else {
+                    lastDbError = dbError;
+                    // If error is about a missing column, try next candidate payload
+                    if (dbError.message && dbError.message.includes('column') && dbError.message.includes('does not exist')) {
+                        continue;
+                    }
+                    // For RLS permission or network errors, do not retry blindly
+                    break;
+                }
+            }
+
+            if (!insertSuccess && lastDbError) {
+                console.error('Database insert error:', lastDbError);
+                if (lastDbError.message && lastDbError.message.includes('violates row-level security')) {
                     throw new Error('Database permission error. Please run the supabase_setup.sql script in your Supabase SQL editor to enable public registration submissions.');
                 }
-                throw new Error(dbError.message || 'Failed to save registration details. Please try again.');
+                throw new Error(lastDbError.message || 'Failed to save registration details. Please try again.');
             }
 
             setStatus('success');

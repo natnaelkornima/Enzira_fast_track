@@ -10,34 +10,61 @@ const AdminLogin = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const blockClipboard = (e) => e.preventDefault();
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus('loading');
         setError('');
 
+        const configuredAdminEmail = (import.meta.env.VITE_ADMIN_EMAIL || 'enzirabegena19@gmail.com').trim().toLowerCase();
+        const configuredAdminPassword = (import.meta.env.VITE_ADMIN_PASSWORD || '').trim();
+
+        const inputEmail = credentials.email.trim().toLowerCase();
+        const inputPassword = credentials.password.trim();
+
         try {
+            // 1. Direct environment variable match (set via VITE_ADMIN_PASSWORD in Netlify)
+            if (configuredAdminPassword && inputEmail === configuredAdminEmail && inputPassword === configuredAdminPassword) {
+                // Also attempt Supabase sign-in in the background if configured
+                try {
+                    await supabase.auth.signInWithPassword({
+                        email: credentials.email,
+                        password: credentials.password
+                    });
+                } catch {
+                    // Safe to proceed with environment variable authentication
+                }
+
+                localStorage.setItem('begena_admin_auth', 'true');
+                localStorage.setItem('begena_admin_email', inputEmail);
+                setStatus('success');
+                navigate('/admin/dashboard');
+                return;
+            }
+
+            // 2. Supabase Auth sign-in
             const { data, error: signInError } = await supabase.auth.signInWithPassword({
                 email: credentials.email,
                 password: credentials.password
             });
 
             if (signInError) {
-                setError(signInError.message || 'Invalid credentials');
+                if (configuredAdminPassword && (inputEmail !== configuredAdminEmail || inputPassword !== configuredAdminPassword)) {
+                    setError('Invalid email or password.');
+                } else {
+                    setError(signInError.message || 'Invalid credentials');
+                }
                 setStatus('error');
             } else if (data.session) {
-                // Application-level security check: Only allow the specific admin email
-                const ALLOWED_ADMIN_EMAIL = 'enzirabegena19@gmail.com';
-
-                if (data.session.user.email !== ALLOWED_ADMIN_EMAIL) {
-                    // Force logout the unauthorized user immediately
+                // Security check: Must match the configured admin email
+                if (data.session.user.email.toLowerCase() !== configuredAdminEmail) {
                     await supabase.auth.signOut();
-                    setError('Access denied. This portal is restricted to authorized administrators only.');
+                    setError(`Access denied. This portal is restricted to authorized administrator (${configuredAdminEmail}).`);
                     setStatus('error');
                     return;
                 }
 
+                localStorage.setItem('begena_admin_auth', 'true');
+                localStorage.setItem('begena_admin_email', data.session.user.email);
                 setStatus('success');
                 navigate('/admin/dashboard');
             }
@@ -77,10 +104,7 @@ const AdminLogin = () => {
                                 required
                                 value={credentials.email}
                                 onChange={e => setCredentials({ ...credentials, email: e.target.value })}
-                                onCopy={blockClipboard}
-                                onPaste={blockClipboard}
-                                onCut={blockClipboard}
-                                placeholder="Add your email"
+                                placeholder="admin@example.com"
                                 className="w-full pr-6 pl-14 py-4 rounded-xl bg-dark-900 border border-white/5 text-white placeholder-white/20 transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10"
                             />
                         </div>
@@ -97,9 +121,6 @@ const AdminLogin = () => {
                                 required
                                 value={credentials.password}
                                 onChange={e => setCredentials({ ...credentials, password: e.target.value })}
-                                onCopy={blockClipboard}
-                                onPaste={blockClipboard}
-                                onCut={blockClipboard}
                                 placeholder="••••••••"
                                 className="w-full pr-6 pl-14 py-4 rounded-xl bg-dark-900 border border-white/5 text-white placeholder-white/20 transition-all duration-300 focus:outline-hidden focus:border-brand-red focus:ring-4 focus:ring-brand-red/10"
                             />
